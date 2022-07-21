@@ -1,0 +1,33 @@
+@import "../breakpoints/include-media";
+
+$min-width-phone: 320px;
+
+.toolbar {
+  z-index: 1200;
+  background-color: white;
+  @include media('<=phone') {
+    min-width: $min-width-phone;
+    .buttonDirect {
+      color: red;
+    }
+  }
+
+  @include media('>phone', '<=425px') {
+
+  }
+
+  @include media('>425px', '<=tablet') {
+
+  }
+
+  @include media('>tablet', '<=desktop') {
+
+  }
+
+  @include media('>desktop', '>=ultra') {
+
+  }
+
+}
+
+
