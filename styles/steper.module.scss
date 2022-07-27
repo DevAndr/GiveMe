@@ -1,0 +1,13 @@
+.MarkerStep {
+  border-radius: 30px;
+  width: 64px;
+  display: flex;
+  height: 64px;
+  justify-content: center;
+
+  .icon {
+    color: white;
+    align-self: center;
+    font-size: 2rem;
+  }
+}

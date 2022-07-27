@@ -1,8 +1,8 @@
-import styles from '../../../styles/Home.module.css'
 import Footer from '../footer'
 import {ReactNode, useState} from "react"
 import NavBarRight from "../nav/NavBarRight";
 import Toolbar from "../nav/toolbar";
+import style from "../../../styles/page.module.scss"
 
 export interface LayoutProps {
     children: ReactNode;
@@ -22,7 +22,7 @@ const Layout = ({children}: LayoutProps) => {
             <NavBarRight toggle={show} handleHide={() => {
                 setShow(false)
             }}/>
-            <main className={styles.main}>{children}</main>
+            <main className={style.main}>{children}</main>
             <Footer/>
         </>
     )
