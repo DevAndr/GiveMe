@@ -1,15 +1,11 @@
-import React, {
-    useState,
-    useEffect,
-    createContext,
-    useContext} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 const defaultValue = {}
 
 const BreakpointContext = createContext(defaultValue);
 
 const BreakpointProvider = ({children, queries}) => {
-    const [queryMatch, setQueryMatch] = useState({});
+    const [queryMatch, setQueryMatch] = useState({name: "xl"});
 
     useEffect(() => {
         const mediaQueryLists = {};
@@ -21,7 +17,19 @@ const BreakpointProvider = ({children, queries}) => {
                 acc[media] = !!(mediaQueryLists[media] && mediaQueryLists[media].matches);
                 return acc;
             }, {})
-            setQueryMatch(updatedMatches)
+
+            let cur = {}
+
+            Object.keys(updatedMatches).map((k) => {
+                if (!cur?.name && updatedMatches[k]) {
+                    cur['name'] = k
+                }
+            })
+
+            if (!cur?.name)
+                cur['name'] = 'xl'
+
+            setQueryMatch(cur)
         }
 
         if (window && window.matchMedia) {
@@ -34,19 +42,30 @@ const BreakpointProvider = ({children, queries}) => {
                     matches[media] = false
                 }
             });
-            setQueryMatch(matches);
+
+            let cur = {}
+
+            Object.keys(matches).map((k) => {
+                if (matches[k])
+                    cur['name'] = k
+            })
+
+            if (!cur?.name)
+                cur['name'] = 'xl'
+
+            setQueryMatch(cur);
             isAttached = true;
             keys.forEach(media => {
-                if(typeof queries[media] === 'string') {
+                if (typeof queries[media] === 'string') {
                     mediaQueryLists[media].addListener(handleQueryListener)
                 }
             });
         }
 
         return () => {
-            if(isAttached) {
+            if (isAttached) {
                 keys.forEach(media => {
-                    if(typeof queries[media] === 'string') {
+                    if (typeof queries[media] === 'string') {
                         mediaQueryLists[media].removeListener(handleQueryListener)
                     }
                 });
@@ -64,9 +83,11 @@ const BreakpointProvider = ({children, queries}) => {
 
 function useBreakpoint() {
     const context = useContext(BreakpointContext);
-    if(context === defaultValue) {
+
+    if (context === defaultValue) {
         throw new Error('useBreakpoint must be used within BreakpointProvider');
     }
     return context;
 }
+
 export {useBreakpoint, BreakpointProvider};
