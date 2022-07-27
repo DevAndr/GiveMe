@@ -1,14 +1,18 @@
 import Footer from '../footer'
-import {ReactNode, useState} from "react"
+import {FC, ReactNode, useState} from "react"
 import NavBarRight from "../nav/NavBarRight";
 import Toolbar from "../nav/toolbar";
-import style from "../../../styles/page.module.scss"
+import style from "../../styles/page.module.scss"
+import clsx from 'clsx';
 
-export interface LayoutProps {
-    children: ReactNode;
+export interface MainLayoutProps {
+    children: ReactNode
+    isHideMenu?: boolean
+    className?: string
+    isHideHeader?: boolean
 }
 
-const Layout = ({children}: LayoutProps) => {
+const MainLayout: FC<MainLayoutProps> = ({children, className, isHideMenu, isHideHeader}) => {
     const [show, setShow] = useState(false)
 
     const handleClickMenu = () => {
@@ -17,15 +21,15 @@ const Layout = ({children}: LayoutProps) => {
     }
 
     return (
-        <>
-            <Toolbar onClickMenu={handleClickMenu}/>
+        <div className={clsx('wrapper', className)}>
+            <Toolbar hide={isHideHeader} onClickMenu={handleClickMenu}/>
             <NavBarRight toggle={show} handleHide={() => {
                 setShow(false)
             }}/>
             <main className={style.main}>{children}</main>
             <Footer/>
-        </>
+        </div>
     )
 }
 
-export default Layout
+export default MainLayout

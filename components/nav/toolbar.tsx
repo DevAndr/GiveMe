@@ -1,16 +1,16 @@
 import {Button} from 'primereact/button';
-import {MouseEventHandler} from "react";
-import styles from "../../../styles/Toolbar.module.scss"
-import {useBreakpoint} from "../../../hooks/breakpoint";
+import {FC, MouseEventHandler} from "react";
+import styles from "../../styles/Toolbar.module.scss"
+import {useBreakpoint} from "../../hooks/breakpoint";
 import { Toolbar as TB } from 'primereact/toolbar';
 
 interface INavBar {
     onClickMenu: MouseEventHandler
+    hide?: boolean
 }
 
-const Toolbar = (props: INavBar) => {
+const Toolbar: FC<INavBar> = ({onClickMenu, hide}) => {
     const breakpoint: any = useBreakpoint();
-    const {onClickMenu} = props
 
     const items = [
         {
@@ -52,6 +52,9 @@ const Toolbar = (props: INavBar) => {
             }
         </>
     );
+
+    if (hide)
+        return (<></>)
 
     return (
         <nav className={`sticky max-w-full top-0 ${styles.toolbar}`}>
