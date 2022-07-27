@@ -13,8 +13,7 @@ let queries = {
     sm: EnumDevices.LargePhone,
     md: EnumDevices.Tablet,
     lg: EnumDevices.Desktop,
-    xl: EnumDevices.UltraWide,
-    // xxl: EnumDevices.Phone,
+    xl: EnumDevices.UltraWide
 }
 
 function MyApp({Component, pageProps}: AppProps) {
