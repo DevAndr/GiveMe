@@ -1,9 +1,10 @@
 import Footer from '../footer'
-import {FC, ReactNode, useState} from "react"
+import React, {FC, ReactNode, useEffect, useState} from "react"
 import NavBarRight from "../nav/NavBarRight";
 import Toolbar from "../nav/toolbar";
 import style from "../../styles/page.module.scss"
 import clsx from 'clsx';
+import AuthDialog from "../dialogs/AuthDialog";
 
 export interface MainLayoutProps {
     children: ReactNode
@@ -15,6 +16,10 @@ export interface MainLayoutProps {
 const MainLayout: FC<MainLayoutProps> = ({children, className, isHideMenu, isHideHeader}) => {
     const [show, setShow] = useState(false)
 
+    useEffect(() => {
+
+    })
+
     const handleClickMenu = () => {
         console.log('click')
         setShow(!show)
@@ -22,11 +27,12 @@ const MainLayout: FC<MainLayoutProps> = ({children, className, isHideMenu, isHid
 
     return (
         <div className={clsx('wrapper', className)}>
-            <Toolbar hide={isHideHeader} onClickMenu={handleClickMenu}/>
+            <Toolbar onClickMenu={handleClickMenu}/>
             <NavBarRight toggle={show} handleHide={() => {
                 setShow(false)
             }}/>
-            <main className={style.main}>{children}</main>
+            <main className={`${style.main}`} style={show ? {marginLeft: '22rem'} : {}}>{children}</main>
+            <AuthDialog/>
             <Footer/>
         </div>
     )
