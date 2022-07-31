@@ -1,16 +1,23 @@
 import {Button} from 'primereact/button';
-import {FC, MouseEventHandler} from "react";
+import {FC, MouseEventHandler, useState} from "react";
 import styles from "../../styles/Toolbar.module.scss"
 import {useBreakpoint} from "../../hooks/breakpoint";
-import { Toolbar as TB } from 'primereact/toolbar';
+import {Toolbar as TB} from 'primereact/toolbar';
+import {useAppDispatch, useAppSelector} from "../../redux/hooks";
+import { setVisibleAuthDialog } from '../../redux/reducers/auth.slice';
+import {setHide} from "../../redux/reducers/toolbar.slice";
 
 interface INavBar {
     onClickMenu: MouseEventHandler
-    hide?: boolean
 }
 
-const Toolbar: FC<INavBar> = ({onClickMenu, hide}) => {
+const Toolbar: FC<INavBar> = ({onClickMenu}) => {
     const breakpoint: any = useBreakpoint();
+    const dispatch = useAppDispatch()
+    const {hide} = useAppSelector(state => state.toolbar)
+    const {isAuth} = useAppSelector(state => state.auth)
+
+
 
     const items = [
         {
@@ -28,7 +35,8 @@ const Toolbar: FC<INavBar> = ({onClickMenu, hide}) => {
                 window.location.href = 'https://reactjs.org/'
             }
         },
-        {   label: 'Upload',
+        {
+            label: 'Upload',
             icon: 'pi pi-upload',
             command: () => {
                 window.location.hash = "/fileupload"
@@ -42,36 +50,49 @@ const Toolbar: FC<INavBar> = ({onClickMenu, hide}) => {
         </>
     );
 
-    const rightContents = (
-        <>
-            {
-                ["lg", "xl"].includes(breakpoint?.name) ?
-                    <Button label='Личный кабинет' className={`${styles.buttonDirect}`} aria-label='Личный кабинет'
-                            icon="pi pi-user"/> :
-                    <Button className={`${styles.buttonDirect}`} aria-label='Личный кабинет' icon="pi pi-user"/>
+    const handleProfile = () => {
+
+    }
+
+    const handleAuth = () => {
+        dispatch(setVisibleAuthDialog(true))
+        dispatch(setHide(true))
+    }
+
+    const rightContents = () => {
+        const components = []
+
+        if (isAuth) {
+            if (["lg", "xl"].includes(breakpoint?.name)) {
+                components.push(<Button key="profile-s" label='Личный кабинет' className={`${styles.buttonDirect}`}
+                                        aria-label='Личный кабинет'
+                                        onClick={handleProfile} icon="pi pi-user"/>)
+            } else {
+                components.push(<Button key="profile-m" className={`${styles.buttonDirect}`} aria-label='Личный кабинет'
+                                        icon="pi pi-user" onClick={handleProfile}/>)
             }
-        </>
-    );
+        } else {
+            if (["lg", "xl"].includes(breakpoint?.name)) {
+                components.push(<Button key="auth-s" label='Войти' className={`${styles.buttonDirect}`}
+                                        aria-label='Войти'
+                                        onClick={handleAuth} icon="pi pi-user"/>)
+            } else {
+                components.push(<Button key="profile-m" className={`${styles.buttonDirect}`} aria-label='Войти'
+                                        icon="pi pi-user" onClick={handleAuth}/>)
+            }
+        }
+
+        return components
+    }
+
 
     if (hide)
         return (<></>)
 
     return (
         <nav className={`sticky max-w-full top-0 ${styles.toolbar}`}>
-            <TB className="bg-white p-2 border-none border-bottom-2" left={leftContents} right={rightContents} />
+            <TB className="bg-white p-2 border-none border-bottom-2" left={leftContents} right={rightContents}/>
         </nav>
-
-        // <nav className={`sticky max-w-full top-0 ${styles.toolbar}`}>
-        //     <div className="flex flex-wrap p-2 align-items-center justify-content-between">
-        //         <Button aria-label='Меню' icon="pi pi-bars" onClick={onClickMenu}/>
-        //         {
-        //             ["lg", "xl"].includes(breakpoint?.name) ?
-        //                 <Button label='Личный кабинет' className={`${styles.buttonDirect}`} aria-label='Личный кабинет'
-        //                         icon="pi pi-user"/> :
-        //                 <Button className={`${styles.buttonDirect}`} aria-label='Личный кабинет' icon="pi pi-user"/>
-        //         }
-        //     </div>
-        // </nav>
     )
 }
 
