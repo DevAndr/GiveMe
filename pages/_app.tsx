@@ -6,6 +6,8 @@ import "primeicons/primeicons.css"; //icons
 import type {AppProps} from 'next/app'
 import {BreakpointProvider} from '../hooks/breakpoint'
 import {EnumDevices} from "../hooks/BreakPointEntries";
+import {Provider} from "react-redux";
+import {store} from "../redux/store";
 
 
 let queries = {
@@ -19,7 +21,9 @@ let queries = {
 function MyApp({Component, pageProps}: AppProps) {
     return (
         <BreakpointProvider queries={queries}>
-            <Component {...pageProps} />
+            <Provider store={store}>
+                <Component {...pageProps} />
+            </Provider>
         </BreakpointProvider>
     )
 }

@@ -12,8 +12,6 @@ import StepsForUse from "../components/steps/StepsForUse";
 const Home: NextPage = () => {
     const breakpoints: any = useBreakpoint();
 
-
-
     useEffect(() => {
 
     }, [])

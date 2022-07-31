@@ -13,14 +13,14 @@ import {Dialog} from 'primereact/dialog';
 import {Divider} from 'primereact/divider';
 import {classNames} from 'primereact/utils';
 
-interface IErrorForm {
+export interface IErrorForm {
     name?: string
     email?: string
     password?: string
     accept?: string
 }
 
-interface IDataForm {
+export interface IDataForm {
     name?: string
     email?: string
     date?: string | null
@@ -28,13 +28,12 @@ interface IDataForm {
     accept?: boolean
 }
 
-enum TypeAuthView {
+export enum TypeAuthView {
     SIGN_IN,
     SIGN_UP
 }
 
 const AuthPage: NextPage = ({}) => {
-    const [countries, setCountries] = useState([]);
     const [showMessage, setShowMessage] = useState(false);
     const [formData, setFormData] = useState<IDataForm>({});
     const [typeView, setTypeView] = useState<TypeAuthView>(TypeAuthView.SIGN_IN)
