@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/user/5ddacf2a-d840-478d-8cfe-492bd450e99b/project/227a5224-713a-49e3-add9-25328dd7cac6.svg)](https://wakatime.com/badge/user/5ddacf2a-d840-478d-8cfe-492bd450e99b/project/227a5224-713a-49e3-add9-25328dd7cac6)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -9,8 +11,7 @@ npm run dev
 # or
 yarn dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ 
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
