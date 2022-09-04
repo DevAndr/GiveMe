@@ -1,0 +1,222 @@
+.dataviewProducts {
+  .p-dropdown {
+    width: 14rem;
+    font-weight: normal;
+    color: red;
+
+    & span.p-inputtext {
+      padding: 0;
+    }
+  }
+
+  .productName {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .productDescription {
+    margin: 0 0 1rem 0;
+  }
+
+  .productCategoryIcon {
+    vertical-align: middle;
+    margin-right: .5rem;
+  }
+
+  .productCategory {
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: .2rem;
+  }
+
+  .productListItem {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+
+    img {
+      width: 150px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+      margin-right: 2rem;
+    }
+
+    .productListDetail {
+      min-width: fit-content;
+    }
+
+    .p-rating {
+      margin: 0 0 .5rem 0;
+    }
+
+    .productListAction {
+      margin-top: 2rem;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .p-button {
+      margin-bottom: .5rem;
+    }
+
+    .productListDetail {
+      text-align: left;
+    }
+
+    .productListAction {
+      display: flex;
+      flex-direction: column;
+      align-items: self-end;
+    }
+
+    .productPrice {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: .5rem;
+      align-self: flex-end;
+    }
+  }
+
+  .productGridItem {
+    margin: .5em;
+    border: 1px solid var(--surface-border);
+    padding: 2rem;
+
+    .productGridItemTop {
+      .productGridItem {
+        .productGridItemBottom {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        img {
+          width: 75%;
+          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+          margin: 2rem 0;
+        }
+
+        .productGridItemContent {
+          text-align: center;
+        }
+
+        .productPrice {
+          font-size: 1.5rem;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .productPrice {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: .5rem;
+        align-self: flex-end;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .productPrice {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: .5rem;
+      align-self: flex-end;
+      display: flex;
+      align-items: center;
+    }
+
+    .productListAction {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .productGridItem .productGridItemTop,
+  .productGridItem .productGridItemBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .productGridItem .productGridItemContent {
+    text-align: center;
+  }
+
+  .dataViewListProducts  {
+    width: 60% !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .dataviewProducts {
+    .productListItem {
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        width: 75%;
+        margin: 2rem 0;
+      }
+
+      .productListDetail {
+        text-align: center;
+      }
+
+      .productPrice {
+        align-self: center;
+        display: flex;
+        align-items: center;
+      }
+
+      .productListAction {
+        display: flex;
+        flex-direction: column;
+        margin-top: 2rem;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.dropDownSmall {
+  padding: 0;
+  margin: 0;
+
+  & span {
+    padding: .5rem;
+    //margin: 0;
+  }
+}
+
+.statusProduct {
+  position: relative;
+  right: -25px;
+  top: 0px;
+  transform: rotate(45deg);
+}
+
+.statusProduct.done {
+  color: white;
+  font-variant: all-petite-caps;
+  font-weight: 400;
+}
+
+.productGridItem.done {
+  background: linear-gradient(-135deg, transparent 90px, #ffffff 0) right, linear-gradient(293deg, transparent 90px, #876aed 0) left;
+  background-size: 101%;
+
+}
+
+.productGridItem.new {
+  background: linear-gradient(-135deg, transparent 90px, #ffffff 0) right, linear-gradient(293deg, transparent 15px, #946aff 0) left;
+  background-size: 101%;
+}
+

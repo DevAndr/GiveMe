@@ -4,20 +4,23 @@ import styles from "../../styles/Toolbar.module.scss"
 import {useBreakpoint} from "../../hooks/breakpoint";
 import {Toolbar as TB} from 'primereact/toolbar';
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
-import { setVisibleAuthDialog } from '../../redux/reducers/auth.slice';
+import {setVisibleAuthDialog} from '../../redux/reducers/auth.slice';
 import {setHide} from "../../redux/reducers/toolbar.slice";
+import {setHideBasket} from "../../redux/reducers/basketshop.slice";
+import {Badge} from "primereact/badge";
 
 interface INavBar {
     onClickMenu: MouseEventHandler
+    isHideLeftMenu?: boolean
+    isPresentView?: boolean
 }
 
-const Toolbar: FC<INavBar> = ({onClickMenu}) => {
+const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
     const breakpoint: any = useBreakpoint();
     const dispatch = useAppDispatch()
     const {hide} = useAppSelector(state => state.toolbar)
+    const {showBasket, products} = useAppSelector(state => state.basketShop)
     const {isAuth} = useAppSelector(state => state.auth)
-
-
 
     const items = [
         {
@@ -44,11 +47,12 @@ const Toolbar: FC<INavBar> = ({onClickMenu}) => {
         }
     ];
 
-    const leftContents = (
-        <>
-            <Button aria-label='Меню' icon="pi pi-bars" onClick={onClickMenu}/>
-        </>
-    );
+    const leftContents = () => {
+        return isHideLeftMenu ? <></> :
+            <>
+                <Button aria-label='Меню' icon="pi pi-bars" onClick={onClickMenu}/>
+            </>
+    }
 
     const handleProfile = () => {
 
@@ -59,10 +63,19 @@ const Toolbar: FC<INavBar> = ({onClickMenu}) => {
         dispatch(setHide(true))
     }
 
+    const handleShowBasketHop = () => {
+        dispatch(setHideBasket(!showBasket))
+    }
+
     const rightContents = () => {
         const components = []
 
         if (isAuth) {
+            components.push(<i
+                className="pi pi-bell mr-4 p-text-secondary p-overlay-badge hover:bg-black-alpha-10 border-circle p-2 cursor-pointer"
+                style={{fontSize: '1.4rem'}}>
+                <Badge className="p-0 m-0 text-xs mt-2 mr-2" value="10+"></Badge></i>)
+
             if (["lg", "xl"].includes(breakpoint?.name)) {
                 components.push(<Button key="profile-s" label='Личный кабинет' className={`${styles.buttonDirect}`}
                                         aria-label='Личный кабинет'
@@ -72,6 +85,14 @@ const Toolbar: FC<INavBar> = ({onClickMenu}) => {
                                         icon="pi pi-user" onClick={handleProfile}/>)
             }
         } else {
+            components.push(<i
+                className="pi pi-shopping-cart mr-4 p-text-secondary p-overlay-badge hover:bg-black-alpha-10 border-circle p-2 cursor-pointer"
+                style={{fontSize: '1.4rem'}} onClick={handleShowBasketHop}>
+                {
+                    products.length ? <Badge className="p-0 m-0 text-xs mt-2 mr-2" value={products.length}/> : <></>
+                }
+            </i>)
+
             if (["lg", "xl"].includes(breakpoint?.name)) {
                 components.push(<Button key="auth-s" label='Войти' className={`${styles.buttonDirect}`}
                                         aria-label='Войти'
@@ -80,11 +101,14 @@ const Toolbar: FC<INavBar> = ({onClickMenu}) => {
                 components.push(<Button key="profile-m" className={`${styles.buttonDirect}`} aria-label='Войти'
                                         icon="pi pi-user" onClick={handleAuth}/>)
             }
+
+            if (isPresentView)
+                components.pop()
         }
 
-        return components
-    }
 
+        return <div>{components}</div>
+    }
 
     if (hide)
         return (<></>)
