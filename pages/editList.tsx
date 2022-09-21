@@ -1,7 +1,7 @@
 import {NextPage} from "next";
 import Head from "next/head";
 import MainLayout from "../components/layouts/MainLayout";
-import React, {useRef, useState, MouseEvent} from "react";
+import React, {useRef, useState, MouseEvent, ChangeEventHandler, useEffect} from "react";
 import {Splitter, SplitterPanel} from "primereact/splitter";
 import {DataScroller} from "primereact/datascroller";
 import {Button} from "primereact/button";
@@ -12,10 +12,23 @@ import {InputText} from "primereact/inputtext";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable, DataTableSelectionChangeParams} from "primereact/datatable";
 import {Column} from "primereact/column";
-import {Tag} from 'primereact/tag';
 import {Chips} from "primereact/chips";
 import ProductDialog from "../components/dialogs/ProductDialog";
 import {InputTextarea} from "primereact/inputtextarea";
+import {Dialog} from "primereact/dialog";
+import {Skeleton} from 'primereact/skeleton';
+import {useMutation, useQuery, useSubscription} from "@apollo/client";
+import {ParamsCreateList, ParamsRemoveList, ResponseList} from "../services/graphql/types";
+import {CREATE_LIST, GET_LISTS_CURRENT_USER, REMOVE_LIST, SUB_CREATED_LIST} from "../services/graphql";
+import {IoIosGift} from "react-icons/io";
+import styled from 'styled-components';
+import style from '../styles/editList.module.scss'
+import FormAddNewWishList from "../components/forms/FormAddNewWishList";
+
+const TitleItemWishList = styled.h1`
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+`;
 
 const dataTable = {
     data: [
@@ -31,7 +44,7 @@ const dataTable = {
         },
         {
             id: 1003,
-            name: "Для секс игр",
+            name: "fsdfsadf",
             count: 22
         },
     ]
@@ -41,14 +54,40 @@ const dataListTemp =
     [
         {
             id: 1000,
-            name: "Сникерс",
-            description: "wgifusjoivj waierjf iergj eirjg [er fddfgadjas  erjgerf jf i iwer Snbasdfbws ekrbf hreogih",
+            name: "dddd",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
+            count: 3
+        },
+        {
+            id: 1000,
+            name: "hgfhkhjk",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
+            count: 3
+        },
+        {
+            id: 1000,
+            name: "jkhjkk Ммммм",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
             count: 3
         },
         {
             id: 1001,
-            name: "убуба",
-            description: "wgifusjoivj waierjf iergj eirjg [er",
+            name: "Для учебы",
+            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
+            description: "Готовлюсь к 1 сентября)",
+            labels: [
+                "Hot", "Cool", "Yep", "Yep", "Happy"
+            ],
+            count: 12
+        },
+        {
+            id: 1001,
+            name: "Для учебы",
+            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
+            description: "Готовлюсь к 1 сентября)",
             labels: [
                 "Hot", "Cool", "Yep", "Yep", "Happy"
             ],
@@ -56,65 +95,191 @@ const dataListTemp =
         },
         {
             id: 1003,
-            name: "Киндер",
-            description: "wgifusjoivj waierjf iergj eirjg [er",
+            name: "Вазелин",
+            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
+            description: "На всякий случай",
             labels: [
                 "Хочу"
             ],
             count: 22
         },
+        {
+            id: 1003,
+            name: "Вазелин",
+            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
+            description: "На всякий случай",
+            labels: [
+                "Хочу"
+            ],
+            count: 22
+        },
+        {
+            id: 1000,
+            name: "ghjghj",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
+            count: 3
+        },
+        {
+            id: 1000,
+            name: "gjghfjgfhk fghk",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
+            count: 3
+        },
+        {
+            id: 1000,
+            name: "hjkhjkhjk",
+            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
+            description: "Вот бы сейчас....",
+            count: 3
+        },
+        {
+            id: 1001,
+            name: "Для учебы",
+            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
+            description: "Готовлюсь к 1 сентября)",
+            labels: [
+                "Hot", "Cool", "Yep", "Yep", "Happy"
+            ],
+            count: 12
+        },
+        {
+            id: 1001,
+            name: "Для учебы",
+            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
+            description: "Готовлюсь к 1 сентября)",
+            labels: [
+                "Hot", "Cool", "Yep", "Yep", "Happy"
+            ],
+            count: 12
+        },
+        {
+            id: 1003,
+            name: "Вазелин",
+            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
+            description: "На всякий случай",
+            labels: [
+                "Хочу"
+            ],
+            count: 22
+        },
+        {
+            id: 1003,
+            name: "Вазелин",
+            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
+            description: "На всякий случай",
+            labels: [
+                "Хочу"
+            ],
+            count: 22
+        }
     ]
 
-
 const EditList: NextPage = () => {
-    const [selectedCustomers, setSelectedCustomers] = useState(null);
+    // const {loading: loadingLists, error: errorLists, data: dataWishLists} = useQuery(GET_LISTS_CURRENT_USER);
+    // const {data: dataCreatedList, loading: loadingCreatedList} = useSubscription(SUB_CREATED_LIST, {
+    //     variables: {
+    //         uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
+    //     }
+    // });
+    const [removeList] = useMutation<ResponseList, ParamsRemoveList>(REMOVE_LIST);
+    const {
+        subscribeToMore,
+        loading: loadingLists,
+        error: errorLists,
+        data: dataWishLists
+    } = useQuery(GET_LISTS_CURRENT_USER);
+
     const [visible, setVisible] = useState<boolean>(false);
     const [showDialog, setShowDialog] = useState(false)
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [dataList, setDataList] = useState(dataListTemp)
-    const [selectedProducts, setSelectedProducts] = useState([])
+    const [selectedProducts, setSelectedProducts] = useState<any[]>([])
     const [value2, setValue2] = useState('');
-    const toast = useRef(null);
+
+    const [nameList, setNameList] = useState<string>()
+    const [descriptionList, setDescriptionList] = useState<string>()
+
+    const refToast = useRef<null | any>(null);
+    const refSelectListItem = useRef<null | any>(null);
+
+    useEffect(() => {
+        subscribeToMore({
+            document: SUB_CREATED_LIST, variables: {
+                uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
+            },
+            updateQuery: (prev, {subscriptionData}) => {
+                if (!subscriptionData.data) return prev;
+
+                const newList = subscriptionData.data.listCreated;
+
+                return Object.assign({}, prev, {
+                    wishListsCurrentUser: [...prev.wishListsCurrentUser, newList]
+                });
+            }
+        });
+    }, [])
 
     const accept = () => {
-        toast?.current.show({severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000});
+        refToast?.current.show({severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000});
     };
 
     const reject = () => {
-        toast?.current.show({severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000});
+        refToast?.current.show({severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000});
     };
 
-    const confirm = (event: MouseEvent<HTMLElement>) => {
+    function confirm(event: MouseEvent<HTMLElement>) {
+        console.log(event.currentTarget)
         confirmPopup({
             target: event.currentTarget,
-            message: 'Do you want to delete this record?',
+            message: 'Удалить список?',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
-            accept,
-            reject
+            className: style.confirmPopup,
+            rejectLabel: "Нет",
+            acceptLabel: "Да",
+            accept: this.accept,
+            reject: this.reject
         });
-    };
+    }
 
-    const itemTemplate = (data: any) => {
+    const itemWishListTemplate = (data: any) => {
         return (
             <div id="item"
                  className="flex align-items-center p-2 w-full justify-content-between hover:text-primary hover:bg-black-alpha-10">
                 <ConfirmPopup/>
                 <div id="item-title" className="product-detail">
-                    <div className="text-base font-bold">{data.name}</div>
+                    <TitleItemWishList>{data.name}</TitleItemWishList>
+                    <p className=' m-0 mt-2 mb-1'>{data?.description}</p>
+                    <div className={style.indicatorGiftsList}>получено: <span
+                        className="font-medium">4</span>/10<IoIosGift color="#A855F7"/></div>
                 </div>
                 <div className="flex flex-column align-items-end">
                     <MultiCheckbox/>
                     <br/>
-                    <Button icon="pi pi-times"
-                            className="p-button-rounded p-button-help p-button-outlined w-2rem h-2rem"
-                            aria-label="Cancel" onClick={confirm}/>
+                    <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
+                            className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem h-1rem ${style.btnRemoveList}`}
+                            aria-label="Удалить" onClick={(e) => {
+                        confirm.bind({
+                            accept: async () => {
+                                const {data: removedList} = await removeList({
+                                    variables: {
+                                        uid: data.uid
+                                    }
+                                })
 
+                                console.log('accept')
+                            }, reject
+                        })(e)
+                    }}/>
                 </div>
-                <ConfirmPopup target={document.getElementById('item-title')} visible={visible}
-                              onHide={() => setVisible(false)} message="Are you sure you want to proceed?"
-                              icon="pi pi-exclamation-triangle" accept={accept} reject={reject}/>
             </div>
         );
+    }
+
+    const handleShowDeleteDialog = () => {
+        setShowDeleteDialog(true)
     }
 
     const leftToolbarTemplate = () => {
@@ -122,7 +287,8 @@ const EditList: NextPage = () => {
             <>
                 <Button label="Добавить" icon="pi pi-plus" className="p-button mr-2 p-button-sm"
                         onClick={handleAddProduct}/>
-                <Button label="Удалить" icon="pi pi-trash" className="p-button-danger p-button-sm"/>
+                <Button label="Удалить" icon="pi pi-trash" className="p-button-danger p-button-sm"
+                        onClick={handleShowDeleteDialog} disabled={!selectedProducts || !selectedProducts.length}/>
             </>
         )
     }
@@ -130,23 +296,20 @@ const EditList: NextPage = () => {
     const rightToolbarTemplate = () => {
         return (
             <>
-                <Button label="Копировать ссылку" icon="pi pi-clone p-button-sm" className="p-button p-button-sm"/>
+                <Button label="Копировать ссылку" icon="pi pi-clone p-button-sm" className="p-button p-button-sm"
+                        onClick={handleCopyUrl}/>
             </>
         )
     }
 
-    const actionBodyTemplate = (rowData: any) => {
-        return (
-            <>
-                <Button type="button" icon="pi pi-pencil" className="p-button-sm"/>
-            </>
-        );
+    const handleCopyUrl = () => {
+        refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Скопировано', life: 3000});
     }
 
     const imageBodyTemplate = (rowData: any) => {
-        return <img src={`images/product/${rowData.image}`}
-                    onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
-                    alt={rowData.image} className="product-image"/>
+        return <img src={`${rowData.img}`}
+                    onError={(e: any) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
+                    alt={rowData.image} className="w-4rem"/>
     }
 
     const labelBodyTemplate = (rowData: any) => {
@@ -174,21 +337,12 @@ const EditList: NextPage = () => {
     }
 
     const descriptionEditor = (options) => {
-        return  <InputTextarea value={options.value} onChange={(e) => options.editorCallback(e.target.value)} rows={5} cols={30} />
+        return <InputTextarea value={options.value} onChange={(e) => options.editorCallback(e.target.value)} rows={5}
+                              cols={30}/>
     }
 
     const labelsEditor = (options) => {
         return <Chips value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>
-    }
-
-    const onEditorValueChange = (props, value) => {
-        let updatedProducts = [...props.value];
-        updatedProducts[props.rowIndex][props.field] = value;
-        setDataList(updatedProducts);
-    }
-
-    const textEditor = (options) => {
-        return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
     }
 
     const handleRowEditComplete = (e) => {
@@ -200,6 +354,77 @@ const EditList: NextPage = () => {
         setDataList(_dataList);
     }
 
+    const hideDeleteProductDialog = () => {
+        setShowDeleteDialog(false)
+    }
+
+    const handleDeleteSelectedProducts = () => {
+        const products = dataList.filter(val => !selectedProducts.includes(val));
+        setDataList(products);
+        setShowDeleteDialog(false);
+        setSelectedProducts([]);
+        refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Желания удалены!', life: 3000});
+    }
+
+    const deleteProductsDialogFooter = (
+        <>
+            <Button label="No" icon="pi pi-times" className="p-button-outlined p-button-sm"
+                    onClick={hideDeleteProductDialog}/>
+            <Button label="Yes" icon="pi pi-check" className="p-button p-button-sm"
+                    onClick={handleDeleteSelectedProducts}/>
+        </>
+    );
+
+    const SkeletonProductsList = (
+        <>
+            <DataTable value={[1, 2, 3, 4, 5]} className="p-datatable-striped">
+                <Column field="img" style={{width: '25%'}} body={<Skeleton/>}/>
+                <Column field="name" header="Имя" style={{width: '25%'}} body={<Skeleton/>}/>
+                <Column field="description" header="Описание" style={{width: '25%'}} body={<Skeleton/>}/>
+                <Column field="labels" header="Метки" style={{width: '25%'}} body={<Skeleton/>}/>
+            </DataTable>
+        </>
+    )
+
+    const SkeletonWishList = (
+        <div className="p-4">
+            <ul className="m-0 p-0 list-none">
+                <li className="mb-4">
+                    <div className="flex">
+                        <div style={{flex: '1'}}>
+                            <Skeleton width="100%" className="mb-2"/>
+                            <Skeleton width="75%"/>
+                        </div>
+                    </div>
+                </li>
+                <li className="mb-4">
+                    <div className="flex">
+                        <div style={{flex: '1'}}>
+                            <Skeleton width="100%" className="mb-2"/>
+                            <Skeleton width="75%"/>
+                        </div>
+                    </div>
+                </li>
+                <li className="mb-4">
+                    <div className="flex">
+                        <div style={{flex: '1'}}>
+                            <Skeleton width="100%" className="mb-2"/>
+                            <Skeleton width="75%"/>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div className="flex">
+                        <div style={{flex: '1'}}>
+                            <Skeleton width="100%" className="mb-2"/>
+                            <Skeleton width="75%"/>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    )
+
     return (
         <>
             <Head>
@@ -207,19 +432,23 @@ const EditList: NextPage = () => {
                 <meta name="description" content="Generated by create next app"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
-            <MainLayout>
-                <Toast ref={toast} position="bottom-right"/>
+            <MainLayout isHideMenu={false}>
                 <div className="card justify-content-between w-full h-screen">
-                    <Splitter className="mb-5 w-full h-full">
+                    <Splitter className={`mb-5 w-full h-full sliderSplitter`}>
                         <SplitterPanel className="flex align-items-center justify-content-center" size={20}
                                        minSize={10}>
-                            <div className="w-full align-self-baseline">
-                                <DataScroller className="w-full" value={dataTable.data} itemTemplate={itemTemplate}
-                                              rows={10} inline scrollHeight="500px"/>
+                            <div className="w-full h-full flex flex-column">
+                                {
+                                    loadingLists ? SkeletonWishList : dataWishLists?.wishListsCurrentUser &&
+                                        <DataScroller className="w-full" value={dataWishLists?.wishListsCurrentUser}
+                                                      itemTemplate={itemWishListTemplate}
+                                                      rows={10} inline scrollHeight="500px"/>
+                                }
+                                <FormAddNewWishList/>
                             </div>
                         </SplitterPanel>
                         <SplitterPanel className="flex" size={80} minSize={60}>
-                            <div className="flex flex-column align-self-baseline p-5 w-full">
+                            <div className="flex flex-column align-self-baseline p-5 w-full h-full">
                                 <div className="grid p-fluid">
                                         <span className="p-float-label w-full">
                                             <InputText id="name-list" className="font-medium" value={value2}
@@ -227,18 +456,11 @@ const EditList: NextPage = () => {
                                             <label htmlFor="name-list">Имя списка</label>
                                         </span>
                                 </div>
-                                {/*<div className="grid p-fluid absolute bottom-0">*/}
-                                {/*    <div className="mt-4 w-full">*/}
-                                {/*        <div className="p-inputgroup">*/}
-                                {/*        <span className="p-inputgroup-addon">*/}
-                                {/*            <i className="pi pi-link"></i>*/}
-                                {/*        </span>*/}
-                                {/*            <InputText placeholder="Ссылка на товар"/>*/}
-                                {/*            <Button label="Добавить"/>*/}
-                                {/*        </div>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                                <div className="w-full h-full mt-4 mb-4">
+                                <div className="mt-4 mb-4" style={{height: '78%'}}>
+                                    {/*{*/}
+                                    {/*    SkeletonProductsList*/}
+                                    {/*}*/}
+
                                     <DataTable editMode="row"
                                                dataKey="id"
                                                resizableColumns
@@ -246,14 +468,20 @@ const EditList: NextPage = () => {
                                                selection={selectedProducts}
                                                onSelectionChange={handleSelectionChange}
                                                onRowEditComplete={handleRowEditComplete}
-                                               breakpoint="640px"
+                                               scrollable scrollHeight="flex" className={style.tableProducts}
                                                size="normal" responsiveLayout="stack">
-                                        <Column selectionMode="multiple" headerStyle={{width: '1rem'}} exportable={false}/>
-                                        <Column field="img" headerStyle={{width: '1rem'}} body={imageBodyTemplate}/>
-                                        <Column field="name" bodyStyle={{fontWeight: 500}}  editor={nameEditor} header="Имя" sortable/>
-                                        <Column field="description" header="Описание" editor={descriptionEditor}/>
-                                        <Column field="labels" header="Метки" body={labelBodyTemplate} editor={labelsEditor}/>
-                                        <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}/>
+                                        <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
+                                                style={{flex: '0 0 2.5rem'}} exportable={false}/>
+                                        <Column field="img" style={{flex: '0 0 5.8rem'}}
+                                                body={imageBodyTemplate}/>
+                                        <Column field="name" bodyStyle={{fontWeight: 500}} editor={nameEditor}
+                                                header="Имя" sortable/>
+                                        <Column field="description" header="Описание" editor={descriptionEditor}
+                                                style={{flex: '0 0 20rem'}}/>
+                                        <Column field="labels" header="Метки" body={labelBodyTemplate}
+                                                editor={labelsEditor} style={{flex: '0 0 35rem'}}/>
+                                        <Column rowEditor headerStyle={{width: '1rem'}} style={{flex: '0 0 7rem'}}
+                                                bodyStyle={{textAlign: 'center'}}/>
                                     </DataTable>
                                 </div>
                                 <div className="flex align-items-center justify-content-between flex-column bottom-0">
@@ -261,12 +489,24 @@ const EditList: NextPage = () => {
                                              right={rightToolbarTemplate}/>
                                 </div>
                             </div>
-                            <ProductDialog visible={showDialog} onHide={() => {
+                            <ProductDialog visible={showDialog} onShow={handleAddProduct} onHide={() => {
                                 setShowDialog(false)
                             }}/>
                         </SplitterPanel>
                     </Splitter>
+                    <ConfirmPopup visible={visible} onHide={() => setVisible(false)} icon="pi pi-exclamation-triangle"
+                                  accept={accept} reject={reject}/>
+                    <Dialog visible={showDeleteDialog} style={{width: '450px'}}
+                            header="Удалить желания" modal footer={deleteProductsDialogFooter}
+                            onHide={hideDeleteProductDialog}>
+                        <div className="confirmation-content">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{fontSize: '2rem'}}/>
+                            {selectedProducts.length &&
+                                <span>Вы уверены, что хотите удалить <b>{selectedProducts.length}</b> желания?</span>}
+                        </div>
+                    </Dialog>
                 </div>
+                <Toast ref={refToast} position="bottom-right"/>
             </MainLayout>
         </>
     )
