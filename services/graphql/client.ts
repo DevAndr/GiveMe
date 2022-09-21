@@ -1,7 +1,10 @@
-import {ApolloClient, createHttpLink, from, InMemoryCache} from '@apollo/client';
+import {ApolloClient, createHttpLink, from, InMemoryCache, split} from '@apollo/client';
 import {onError} from "@apollo/client/link/error";
 import {setContext} from "@apollo/client/link/context";
 import AuthService from "../auth.service";
+import {GraphQLWsLink} from "@apollo/client/link/subscriptions";
+import { createClient } from 'graphql-ws';
+import {getMainDefinition} from "@apollo/client/utilities";
 
 const HOST_GRAPQL = process.env.HOST_GRAPQL
 const url = HOST_GRAPQL ? HOST_GRAPQL : 'http://localhost:3030/graphql'
@@ -34,6 +37,15 @@ const authLink = setContext((_, { headers }) => {
     }
 });
 
+const wsLink = typeof window !== "undefined" ? new GraphQLWsLink(
+            createClient({
+                url: "ws://localhost:3030/graphql",
+                options: {
+                    reconnect: true,
+                    lazy: true,
+                }
+            })
+        ) : null;
 
 const publicLinkHttp = createHttpLink({
     uri: url,
@@ -49,11 +61,23 @@ const errorLink = onError(({graphQLErrors, networkError}) => {
     if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
+const splitLink =  typeof window !== "undefined" && wsLink != null ? split(
+        ({ query }) => {
+            const def = getMainDefinition(query);
+            return (
+                def.kind === "OperationDefinition" &&
+                def.operation === "subscription"
+            );
+        },
+        wsLink,
+        authLink.concat(credentialLinkHttp)
+    ) : authLink.concat(credentialLinkHttp);
+
 const client = new ApolloClient({
-    uri: url,
     cache: new InMemoryCache(),
     // link: credentialLnkHttp
-    link: authLink.concat(credentialLinkHttp)
+    link: splitLink
+    // link: authLink.concat(credentialLinkHttp)
     // link: from([authLnkHttp, credentialLnkHttp])
     // from([errorLink, authLnkHttp, publicLinkHttp])
 });
