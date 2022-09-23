@@ -73,3 +73,24 @@ export interface ResponseList {
 export interface ParamsRemoveList {
     uid: string
 }
+
+//----------------------------------------
+export interface ResponseListCurrentUser {
+    wishListsCurrentUser: IList[]
+}
+
+export interface SubCreatedList {
+    listCreated: IList
+}
+
+export interface UIDUser {
+    uidUser: string
+}
+
+export interface ParamsSubCreatedList extends UIDUser {}
+
+export interface SubRemoveList {
+    list: IList
+}
+
+export interface ParamsSubRemoveList extends UIDUser {}

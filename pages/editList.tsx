@@ -1,7 +1,7 @@
 import {NextPage} from "next";
 import Head from "next/head";
 import MainLayout from "../components/layouts/MainLayout";
-import React, {useRef, useState, MouseEvent, ChangeEventHandler, useEffect} from "react";
+import React, {useRef, useState, MouseEvent, useEffect} from "react";
 import {Splitter, SplitterPanel} from "primereact/splitter";
 import {DataScroller} from "primereact/datascroller";
 import {Button} from "primereact/button";
@@ -17,9 +17,14 @@ import ProductDialog from "../components/dialogs/ProductDialog";
 import {InputTextarea} from "primereact/inputtextarea";
 import {Dialog} from "primereact/dialog";
 import {Skeleton} from 'primereact/skeleton';
-import {useMutation, useQuery, useSubscription} from "@apollo/client";
-import {ParamsCreateList, ParamsRemoveList, ResponseList} from "../services/graphql/types";
-import {CREATE_LIST, GET_LISTS_CURRENT_USER, REMOVE_LIST, SUB_CREATED_LIST} from "../services/graphql";
+import {
+    IList, ParamsSubCreatedList, ParamsSubRemoveList, SubCreatedList, SubRemoveList
+} from "../services/graphql/types";
+import {
+    SUB_CREATED_LIST,
+    SUB_LIST,
+    useGetListsCurrentUser, useRemoveList
+} from "../services/graphql";
 import {IoIosGift} from "react-icons/io";
 import styled from 'styled-components';
 import style from '../styles/editList.module.scss'
@@ -177,19 +182,13 @@ const dataListTemp =
     ]
 
 const EditList: NextPage = () => {
-    // const {loading: loadingLists, error: errorLists, data: dataWishLists} = useQuery(GET_LISTS_CURRENT_USER);
-    // const {data: dataCreatedList, loading: loadingCreatedList} = useSubscription(SUB_CREATED_LIST, {
-    //     variables: {
-    //         uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
-    //     }
-    // });
-    const [removeList] = useMutation<ResponseList, ParamsRemoveList>(REMOVE_LIST);
+    const removeList = useRemoveList();
     const {
         subscribeToMore,
         loading: loadingLists,
         error: errorLists,
         data: dataWishLists
-    } = useQuery(GET_LISTS_CURRENT_USER);
+    } = useGetListsCurrentUser();
 
     const [visible, setVisible] = useState<boolean>(false);
     const [showDialog, setShowDialog] = useState(false)
@@ -205,17 +204,35 @@ const EditList: NextPage = () => {
     const refSelectListItem = useRef<null | any>(null);
 
     useEffect(() => {
-        subscribeToMore({
+        subscribeToMore<SubCreatedList, ParamsSubCreatedList>({
             document: SUB_CREATED_LIST, variables: {
                 uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
             },
             updateQuery: (prev, {subscriptionData}) => {
                 if (!subscriptionData.data) return prev;
 
+                console.log(subscriptionData.data)
+
                 const newList = subscriptionData.data.listCreated;
 
                 return Object.assign({}, prev, {
                     wishListsCurrentUser: [...prev.wishListsCurrentUser, newList]
+                });
+            }
+        });
+
+        //ws событие удаленного списка от сервера
+        subscribeToMore<SubRemoveList, ParamsSubRemoveList>({
+            document: SUB_LIST, variables: {
+                uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
+            },
+            updateQuery: (prev, {subscriptionData: {data}}) => {
+                if (!data) return prev;
+
+                const removeList = data.list;
+
+                return Object.assign({}, prev, {
+                    wishListsCurrentUser: prev.wishListsCurrentUser.filter(list => list.uid !== removeList.uid)
                 });
             }
         });
@@ -244,7 +261,7 @@ const EditList: NextPage = () => {
         });
     }
 
-    const itemWishListTemplate = (data: any) => {
+    const itemWishListTemplate = (data: IList) => {
         return (
             <div id="item"
                  className="flex align-items-center p-2 w-full justify-content-between hover:text-primary hover:bg-black-alpha-10">
@@ -263,11 +280,9 @@ const EditList: NextPage = () => {
                             aria-label="Удалить" onClick={(e) => {
                         confirm.bind({
                             accept: async () => {
-                                const {data: removedList} = await removeList({
-                                    variables: {
-                                        uid: data.uid
-                                    }
-                                })
+                                const {data: removedList} = await removeList(
+                                    data.uid
+                                )
 
                                 console.log('accept')
                             }, reject

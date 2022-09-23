@@ -1,23 +1,23 @@
-import {useMutation} from "@apollo/client";
-import {ParamsRemoveList, ResponseList} from "./types";
+import {ApolloCache, useMutation, useQuery} from "@apollo/client";
+import {IList, ParamsRemoveList, ResponseList, ResponseListCurrentUser} from "./types";
 import {GET_LISTS_CURRENT_USER, REMOVE_LIST} from "./gqls";
 
 export const useRemoveList = () => {
     const [removeList] = useMutation<ResponseList, ParamsRemoveList>(REMOVE_LIST);
-    return uid => {
+    return (uid: string) => {
 
         return removeList({
             variables: {uid},
-            update: async store => {
+            update: async (store: ApolloCache<IList>) => {
 
-                const {wishListsCurrentUser} = await store.readQuery({
+                const data = await store.readQuery<ResponseListCurrentUser>({
                     query: GET_LISTS_CURRENT_USER,
                 });
 
                 store.writeQuery({
                     query: GET_LISTS_CURRENT_USER,
                     data: {
-                        wishListsCurrentUser: wishListsCurrentUser.filter(
+                        wishListsCurrentUser: data?.wishListsCurrentUser?.filter(
                             list => list.uid !== uid,
                         ),
                     },
@@ -27,3 +27,5 @@ export const useRemoveList = () => {
         });
     }
 }
+
+export const useGetListsCurrentUser = () => useQuery<ResponseListCurrentUser>(GET_LISTS_CURRENT_USER);

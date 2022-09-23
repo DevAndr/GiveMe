@@ -1,0 +1,52 @@
+.sliderSplitter {
+  color: #876aed;
+}
+
+.sliderSplitter div.p-splitter-gutter {
+  background: #ddd9ed;
+}
+
+
+.header {
+  color: #e680ff;
+}
+
+.indicatorGiftsList {
+  display: flex;
+  align-items: center;
+  font-size: smaller;
+  gap: 4px;
+}
+
+.confirmPopup {
+  padding: 0;
+  box-shadow: none;
+  border: 1px solid #876aed;
+
+  & > div:nth-child(2) {
+    padding: 0 1rem 1rem 1rem;
+    margin: 0;
+
+    & > button {
+      padding: .2rem 1rem .2rem 1rem;
+    }
+  }
+}
+
+.btnRemoveList {
+  padding: 2rem;
+  color: red;
+
+  & span:hover {
+    color: rgba(255, 255, 255, 0.42);
+    background: var(--primary-color);
+  }
+}
+
+//.tableProducts {
+//  & div:nth-child(2) > th {
+//    color: red;
+//    padding: 0;
+//  }
+//}
+
