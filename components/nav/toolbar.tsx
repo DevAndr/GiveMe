@@ -71,7 +71,7 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
         const components = []
 
         if (isAuth) {
-            components.push(<i
+            components.push(<i key="badge-icon"
                 className="pi pi-bell mr-4 p-text-secondary p-overlay-badge hover:bg-black-alpha-10 border-circle p-2 cursor-pointer"
                 style={{fontSize: '1.4rem'}}>
                 <Badge className="p-0 m-0 text-xs mt-2 mr-2" value="10+"></Badge></i>)
@@ -85,7 +85,7 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
                                         icon="pi pi-user" onClick={handleProfile}/>)
             }
         } else {
-            components.push(<i
+            components.push(<i key="cart-shop"
                 className="pi pi-shopping-cart mr-4 p-text-secondary p-overlay-badge hover:bg-black-alpha-10 border-circle p-2 cursor-pointer"
                 style={{fontSize: '1.4rem'}} onClick={handleShowBasketHop}>
                 {

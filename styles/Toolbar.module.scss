@@ -3,7 +3,7 @@
 $min-width-phone: 320px;
 
 .toolbar {
-  z-index: 1200;
+  z-index: 1102;
   background-color: white;
   @include media('<=phone') {
     min-width: $min-width-phone;
