@@ -1,6 +1,14 @@
 import {ApolloCache, useMutation, useQuery} from "@apollo/client";
-import {IList, ParamsRemoveList, ResponseList, ResponseListCurrentUser} from "./types";
-import {GET_LISTS_CURRENT_USER, REMOVE_LIST} from "./gqls";
+import {
+    AuthData,
+    IList, ParamsRefreshToken,
+    ParamsRemoveList,
+    ParamsSignUpAuth,
+    ResponseList,
+    ResponseListCurrentUser, ResponseRefreshToken,
+    RsponseAuth
+} from "./types";
+import {GET_LISTS_CURRENT_USER, REFRESH_TOKEN, REMOVE_LIST, SIGN_UP} from "./gqls";
 
 export const useRemoveList = () => {
     const [removeList] = useMutation<ResponseList, ParamsRemoveList>(REMOVE_LIST);
@@ -29,3 +37,18 @@ export const useRemoveList = () => {
 }
 
 export const useGetListsCurrentUser = () => useQuery<ResponseListCurrentUser>(GET_LISTS_CURRENT_USER);
+
+export const useGetTokens = () => useMutation<ResponseRefreshToken, ParamsRefreshToken>(REFRESH_TOKEN);
+
+// export const useLogIn = () => {
+//     const [logInAuth] = useMutation<RsponseAuth, ParamsSignUpAuth>(SIGN_UP);
+//
+//     return (credentials: AuthData) => logInAuth({
+//         variables: {
+//             ...credentials
+//         }, update: async (store) => {
+//
+//         }
+//     })
+// }
+
