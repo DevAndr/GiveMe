@@ -1,36 +1,45 @@
-import React, {createContext, FC, ReactNode, useContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import {ITokens} from "../services/graphql/types";
 import AuthService from "../services/auth.service";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import {useGetTokens} from "../services/graphql";
+import {useAppDispatch} from "../redux/hooks";
+import {setAuth} from "../redux/reducers/auth.slice";
 
 //роуты для общего доступа
 const publicPaths = ['auth', 'viewList', ''];// авторизация, просмотр списка, лэндинг
 
-type AuthContext = Partial<ITokens> & {
-    value: any
+export type AuthContextType = Partial<ITokens> & {
     isAuth: boolean
+    updateStateAuth?: (valueAuth: boolean) => void
     isPublic: boolean
     uidUser?: string
 }
 
-const initial: AuthContext = {
-    value: "",
+const initial: AuthContextType = {
     isAuth: false,
     isPublic: false
 }
 
-const AuthContext = createContext<AuthContext | null>(initial)
+interface IProvider {
+    children?: JSX.Element | JSX.Element[];
+}
 
-const AuthProvider: FC<any> = ({children}) => {
+export const AuthContext = createContext<AuthContextType>(initial)
+
+const AuthProvider = ({children}: IProvider) => {
     const router = useRouter();
+    const dispatch = useAppDispatch()
     const [getTokens] = useGetTokens()
-    const [value, setValue] = useState("")
     const [isAuth, setIsAuth] = useState<boolean>(false)
     const [isPublic, setIsPublic] = useState<boolean>(false)
 
     useEffect(() => {
         checkAuth(router.asPath)
+
+        // if (isAuth && router.asPath.split('/')[1] === "") {
+        //     router.push('/lists')
+        // }
     }, [])
 
     const checkAuth = async (url: string) => {
@@ -40,40 +49,40 @@ const AuthProvider: FC<any> = ({children}) => {
         setIsPublic(isPublicPath)
 
         let {at, rt} = AuthService.getLocalTokens();
-        let isAuthCheck = (at && rt)
+        let isExistsTokens = (at && rt)
+        let isAuthCheck = false
 
-        if (isAuthCheck) {
-            const checkAt = AuthService.isExpirationAccessToken()
+        if (isExistsTokens) {
+            const checkAt = AuthService.isGodAccessToken()
 
             if (!checkAt) {
-                const checkRt = AuthService.isExpirationRefreshToken()
+                const checkRt = AuthService.isGodRefreshToken()
 
                 if (checkRt) {
                     //get refresh token
                     const {data} = await getTokens()
 
-                    if (data?.refresh) {
-                        console.log(data?.refresh)
-                        setIsAuth(true)
+                    if (data?.refresh.access_token) {
+                        isAuthCheck = true
                     }
-                } else {
-                    setIsAuth(false)
                 }
             } else {
-                setIsAuth(true)
+                isAuthCheck = true
             }
         }
 
-        if (!isPublicPath && !isAuthCheck) {
+        if (isAuthCheck){
+            // router.push('/lists')
+            dispatch(setAuth(true))
+            setIsPublic(true)
+            return
+
+        } else if (!isAuthCheck && !isPublicPath) {
             router.push('/auth')
             setTimeout(() => {
                 setIsPublic(true)
             }, 500)
-        } else {
-            setTimeout(() => {
-                setIsPublic(true)
-                setIsAuth(true)
-            }, 500)
+            return
         }
     }
 
@@ -89,12 +98,20 @@ const AuthProvider: FC<any> = ({children}) => {
 
     }
 
+    const updateStateAuth = (valueAuth: boolean) => {
+        setIsAuth(valueAuth)
+        // router.push('/')
+    }
+
     return (
-        <AuthContext.Provider value={{value, isAuth, isPublic}}>
+        <AuthContext.Provider value={{isAuth, updateStateAuth, isPublic}}>
             {isPublic ? children : isPublic && isAuth && children}
         </AuthContext.Provider>
     )
 }
 
-const useAuth = () => useContext(AuthContext);
-export {AuthProvider as default, useAuth};
+export function useAuth() {
+    return useContext(AuthContext)
+}
+
+export default AuthProvider
