@@ -18,17 +18,23 @@ import {InputTextarea} from "primereact/inputtextarea";
 import {Dialog} from "primereact/dialog";
 import {Skeleton} from 'primereact/skeleton';
 import {
-    IList, ParamsSubCreatedList, ParamsSubRemoveList, SubCreatedList, SubRemoveList
+    IList, ParamsProductsWIshList,
+    ParamsSubCreatedList,
+    ParamsSubRemoveList, ResponseProducts,
+    SubCreatedList,
+    SubRemoveList
 } from "../services/graphql/types";
 import {
+    GET_PRODUCTS_BY_UID_LIST,
     SUB_CREATED_LIST,
     SUB_LIST,
-    useGetListsCurrentUser, useRemoveList
+    useGetListsCurrentUser, useRemoveList, useUpdateWishList
 } from "../services/graphql";
 import {IoIosGift} from "react-icons/io";
 import styled from 'styled-components';
 import style from '../styles/editList.module.scss'
 import FormAddNewWishList from "../components/forms/FormAddNewWishList";
+import {useQuery} from "@apollo/client";
 
 const TitleItemWishList = styled.h1`
   font-size: 1rem !important;
@@ -190,18 +196,30 @@ const EditList: NextPage = () => {
         data: dataWishLists
     } = useGetListsCurrentUser();
 
+    const updateWishList = useUpdateWishList();
+
+    // const [updateWishList, { data: updatedWishList, loading: loadingUpdateWishList, error: errorUpdatedWishList }] =
+    //     useMutation<ParamsUpdateWishList, ResponseUpdateWishList>(UPDATE_LIST, {
+    //         refetchQueries: [
+    //             {query: GET_LISTS_CURRENT_USER},
+    //             'WishListsCurrentUser'
+    //         ],
+    //         awaitRefetchQueries: true
+    // });
+
     const [visible, setVisible] = useState<boolean>(false);
     const [showDialog, setShowDialog] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-    const [dataList, setDataList] = useState(dataListTemp)
     const [selectedProducts, setSelectedProducts] = useState<any[]>([])
-    const [value2, setValue2] = useState('');
-
-    const [nameList, setNameList] = useState<string>()
-    const [descriptionList, setDescriptionList] = useState<string>()
-
+    const [currentWishList, setCurrentWishList] = useState<IList>(null)
     const refToast = useRef<null | any>(null);
-    const refSelectListItem = useRef<null | any>(null);
+    const {loading: loadingProductsWL, error: errorWL, data: dataWL, subscribeToMore: subscribeProducts} =
+        useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {
+            variables: {
+                uidWishList: currentWishList ? currentWishList?.uid : ""
+            }
+        })
+    const [products, setProducts] = useState(dataWL?.productsWishList)
 
     useEffect(() => {
         subscribeToMore<SubCreatedList, ParamsSubCreatedList>({
@@ -247,7 +265,6 @@ const EditList: NextPage = () => {
     };
 
     function confirm(event: MouseEvent<HTMLElement>) {
-        console.log(event.currentTarget)
         confirmPopup({
             target: event.currentTarget,
             message: 'Удалить список?',
@@ -264,19 +281,27 @@ const EditList: NextPage = () => {
     const itemWishListTemplate = (data: IList) => {
         return (
             <div id="item"
-                 className="flex align-items-center p-2 w-full justify-content-between hover:text-primary hover:bg-black-alpha-10">
+                 className="flex align-items-center p-2 w-full justify-content-between hover:text-primary
+                 hover:bg-black-alpha-10" onClick={(e) => {
+                console.log('click item list', data)
+                setCurrentWishList(data)
+            }}>
                 <ConfirmPopup/>
-                <div id="item-title" className="product-detail">
+                <div id="item-title" className="product-detail cursor-pointer">
                     <TitleItemWishList>{data.name}</TitleItemWishList>
                     <p className=' m-0 mt-2 mb-1'>{data?.description}</p>
                     <div className={style.indicatorGiftsList}>получено: <span
                         className="font-medium">4</span>/10<IoIosGift color="#A855F7"/></div>
                 </div>
-                <div className="flex flex-column align-items-end">
-                    <MultiCheckbox/>
+                <div className="flex flex-column align-items-end" onClick={(e) => e.stopPropagation()}>
+                    <MultiCheckbox value={data.access} onChange={async (value) => {
+                        // updateWishList({variables: {data: {access: value, uid: data.uid}}})
+                        await updateWishList({data: {access: value, uid: data.uid, uidUser: data.uidUser}})
+                    }}/>
                     <br/>
                     <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
-                            className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem h-1rem ${style.btnRemoveList}`}
+                            className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem
+                             h-1rem ${style.btnRemoveList}`}
                             aria-label="Удалить" onClick={(e) => {
                         confirm.bind({
                             accept: async () => {
@@ -284,7 +309,7 @@ const EditList: NextPage = () => {
                                     data.uid
                                 )
 
-                                console.log('accept')
+                                console.log('accept', removedList)
                             }, reject
                         })(e)
                     }}/>
@@ -361,12 +386,12 @@ const EditList: NextPage = () => {
     }
 
     const handleRowEditComplete = (e) => {
-        let _dataList = [...dataList];
+        let _dataList = [...products];
         let {newData, index} = e;
 
         _dataList[index] = newData;
 
-        setDataList(_dataList);
+        setProducts(_dataList);
     }
 
     const hideDeleteProductDialog = () => {
@@ -374,8 +399,8 @@ const EditList: NextPage = () => {
     }
 
     const handleDeleteSelectedProducts = () => {
-        const products = dataList.filter(val => !selectedProducts.includes(val));
-        setDataList(products);
+        const filteredProducts = products.filter(val => !selectedProducts.includes(val));
+        setProducts(filteredProducts);
         setShowDeleteDialog(false);
         setSelectedProducts([]);
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Желания удалены!', life: 3000});
@@ -440,6 +465,14 @@ const EditList: NextPage = () => {
         </div>
     )
 
+    const loadingTemplate = () => {
+        return (
+            <div className="flex align-items-center" style={{ height: '50px', flexGrow: '1', overflow: 'hidden' }} >
+                <Skeleton width={'60%'} height="1rem" />
+            </div>
+        )
+    }
+
     return (
         <>
             <Head>
@@ -466,25 +499,35 @@ const EditList: NextPage = () => {
                             <div className="flex flex-column align-self-baseline p-5 w-full h-full">
                                 <div className="grid p-fluid">
                                         <span className="p-float-label w-full">
-                                            <InputText id="name-list" className="font-medium" value={value2}
-                                                       onChange={(e) => setValue2(e.target.value)}/>
+                                            <InputText id="name-list" className="font-medium p-inputtext-sm" value={currentWishList?.name}
+                                                       onChange={(e) =>
+                                                           setCurrentWishList({...currentWishList, name: e.target.value})
+                                                       }/>
                                             <label htmlFor="name-list">Имя списка</label>
                                         </span>
                                 </div>
-                                <div className="mt-4 mb-4" style={{height: '78%'}}>
+                                <div className="overflow-hidden"
+                                     // style={{height: '78%'}}
+                                     style={{ height: 'calc(100vh - 210px)' }}
+                                >
                                     {/*{*/}
                                     {/*    SkeletonProductsList*/}
                                     {/*}*/}
-
+                                    {
+                                        dataWL?.productsWishList.length
+                                    }
+                                    {
+                                        products?.length
+                                    }
                                     <DataTable editMode="row"
                                                dataKey="id"
                                                resizableColumns
-                                               value={dataList}
+                                               value={products} paginator rows={10} first={0}
                                                selection={selectedProducts}
                                                onSelectionChange={handleSelectionChange}
                                                onRowEditComplete={handleRowEditComplete}
-                                               scrollable scrollHeight="flex" className={style.tableProducts}
-                                               size="normal" responsiveLayout="stack">
+                                               scrollable scrollHeight="flex" responsiveLayout="scroll"
+                                               className={style.tableProducts} size="small">
                                         <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
                                                 style={{flex: '0 0 2.5rem'}} exportable={false}/>
                                         <Column field="img" style={{flex: '0 0 5.8rem'}}
@@ -500,8 +543,7 @@ const EditList: NextPage = () => {
                                     </DataTable>
                                 </div>
                                 <div className="flex align-items-center justify-content-between flex-column bottom-0">
-                                    <Toolbar className="w-full p-2" left={leftToolbarTemplate}
-                                             right={rightToolbarTemplate}/>
+                                    <Toolbar className="w-full p-2" left={leftToolbarTemplate} right={rightToolbarTemplate}/>
                                 </div>
                             </div>
                             <ProductDialog visible={showDialog} onShow={handleAddProduct} onHide={() => {
