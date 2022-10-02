@@ -37,6 +37,7 @@ import FormAddNewWishList from "../components/forms/FormAddNewWishList";
 import {useQuery} from "@apollo/client";
 
 const TitleItemWishList = styled.h1`
+  margin: 0;
   font-size: 1rem !important;
   font-weight: 700 !important;
 `;
@@ -211,15 +212,20 @@ const EditList: NextPage = () => {
     const [showDialog, setShowDialog] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [selectedProducts, setSelectedProducts] = useState<any[]>([])
-    const [currentWishList, setCurrentWishList] = useState<IList>(null)
+    const [currentWishList, setCurrentWishList] = useState<IList | null>(null)
     const refToast = useRef<null | any>(null);
-    const {loading: loadingProductsWL, error: errorWL, data: dataWL, subscribeToMore: subscribeProducts} =
+    const {
+        loading: loadingProductsWL,
+        error: errorWL,
+        data: dataWL,
+        subscribeToMore: subscribeProducts,
+        refetch: refetchProducts
+    } =
         useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {
             variables: {
                 uidWishList: currentWishList ? currentWishList?.uid : ""
             }
         })
-    const [products, setProducts] = useState(dataWL?.productsWishList)
 
     useEffect(() => {
         subscribeToMore<SubCreatedList, ParamsSubCreatedList>({
@@ -280,12 +286,9 @@ const EditList: NextPage = () => {
 
     const itemWishListTemplate = (data: IList) => {
         return (
-            <div id="item"
-                 className="flex align-items-center p-2 w-full justify-content-between hover:text-primary
-                 hover:bg-black-alpha-10" onClick={(e) => {
-                console.log('click item list', data)
-                setCurrentWishList(data)
-            }}>
+            <div id="item" className={`flex align-items-center p-2 w-full justify-content-between hover:text-primary
+             border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.uid === data.uid && 'text-primary bg-primary-100'}`}
+                 onClick={(e) => {setCurrentWishList(data)}}>
                 <ConfirmPopup/>
                 <div id="item-title" className="product-detail cursor-pointer">
                     <TitleItemWishList>{data.name}</TitleItemWishList>
@@ -386,12 +389,13 @@ const EditList: NextPage = () => {
     }
 
     const handleRowEditComplete = (e) => {
-        let _dataList = [...products];
+        let _dataList = [...dataWL?.productsWishList];
         let {newData, index} = e;
 
         _dataList[index] = newData;
 
-        setProducts(_dataList);
+        refetchProducts({uidWishList: currentWishList.uid})
+        // setProducts(_dataList);
     }
 
     const hideDeleteProductDialog = () => {
@@ -399,8 +403,9 @@ const EditList: NextPage = () => {
     }
 
     const handleDeleteSelectedProducts = () => {
-        const filteredProducts = products.filter(val => !selectedProducts.includes(val));
-        setProducts(filteredProducts);
+        const filteredProducts = dataWL?.productsWishList.filter(val => !selectedProducts.includes(val));
+        refetchProducts({uidWishList: currentWishList.uid})
+        // setProducts(filteredProducts);
         setShowDeleteDialog(false);
         setSelectedProducts([]);
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Желания удалены!', life: 3000});
@@ -467,8 +472,8 @@ const EditList: NextPage = () => {
 
     const loadingTemplate = () => {
         return (
-            <div className="flex align-items-center" style={{ height: '50px', flexGrow: '1', overflow: 'hidden' }} >
-                <Skeleton width={'60%'} height="1rem" />
+            <div className="flex align-items-center" style={{height: '50px', flexGrow: '1', overflow: 'hidden'}}>
+                <Skeleton width={'60%'} height="1rem"/>
             </div>
         )
     }
@@ -499,54 +504,53 @@ const EditList: NextPage = () => {
                             <div className="flex flex-column align-self-baseline p-5 w-full h-full">
                                 <div className="grid p-fluid">
                                         <span className="p-float-label w-full">
-                                            <InputText id="name-list" className="font-medium p-inputtext-sm" value={currentWishList?.name}
+                                            <InputText id="name-list" className="font-medium p-inputtext-sm"
+                                                       value={currentWishList?.name}
                                                        onChange={(e) =>
-                                                           setCurrentWishList({...currentWishList, name: e.target.value})
+                                                           setCurrentWishList({
+                                                               ...currentWishList,
+                                                               name: e.target.value
+                                                           })
                                                        }/>
                                             <label htmlFor="name-list">Имя списка</label>
                                         </span>
                                 </div>
-                                <div className="overflow-hidden"
-                                     // style={{height: '78%'}}
-                                     style={{ height: 'calc(100vh - 210px)' }}
-                                >
-                                    {/*{*/}
-                                    {/*    SkeletonProductsList*/}
-                                    {/*}*/}
+                                <div className="overflow-hidden" style={{height: 'calc(100vh - 210px)'}}>
                                     {
-                                        dataWL?.productsWishList.length
+                                        loadingProductsWL ?
+                                            SkeletonProductsList :
+                                            <DataTable editMode="row"
+                                                       dataKey="id"
+                                                       resizableColumns
+                                                       value={dataWL?.productsWishList} paginator rows={10} first={0}
+                                                       selection={selectedProducts}
+                                                       onSelectionChange={handleSelectionChange}
+                                                       onRowEditComplete={handleRowEditComplete}
+                                                       scrollable scrollHeight="flex" responsiveLayout="scroll"
+                                                       className={style.tableProducts} size="small">
+                                                <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
+                                                        style={{flex: '0 0 2.5rem'}} exportable={false}/>
+                                                <Column field="img" style={{flex: '0 0 5.8rem'}}
+                                                        body={imageBodyTemplate}/>
+                                                <Column field="name" bodyStyle={{fontWeight: 500}} editor={nameEditor}
+                                                        header="Имя" sortable/>
+                                                <Column field="description" header="Описание" editor={descriptionEditor}
+                                                        style={{flex: '0 0 20rem'}}/>
+                                                <Column field="labels" header="Метки" body={labelBodyTemplate}
+                                                        editor={labelsEditor} style={{flex: '0 0 35rem'}}/>
+                                                <Column rowEditor headerStyle={{width: '1rem'}}
+                                                        style={{flex: '0 0 7rem'}}
+                                                        bodyStyle={{textAlign: 'center'}}/>
+                                            </DataTable>
                                     }
-                                    {
-                                        products?.length
-                                    }
-                                    <DataTable editMode="row"
-                                               dataKey="id"
-                                               resizableColumns
-                                               value={products} paginator rows={10} first={0}
-                                               selection={selectedProducts}
-                                               onSelectionChange={handleSelectionChange}
-                                               onRowEditComplete={handleRowEditComplete}
-                                               scrollable scrollHeight="flex" responsiveLayout="scroll"
-                                               className={style.tableProducts} size="small">
-                                        <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
-                                                style={{flex: '0 0 2.5rem'}} exportable={false}/>
-                                        <Column field="img" style={{flex: '0 0 5.8rem'}}
-                                                body={imageBodyTemplate}/>
-                                        <Column field="name" bodyStyle={{fontWeight: 500}} editor={nameEditor}
-                                                header="Имя" sortable/>
-                                        <Column field="description" header="Описание" editor={descriptionEditor}
-                                                style={{flex: '0 0 20rem'}}/>
-                                        <Column field="labels" header="Метки" body={labelBodyTemplate}
-                                                editor={labelsEditor} style={{flex: '0 0 35rem'}}/>
-                                        <Column rowEditor headerStyle={{width: '1rem'}} style={{flex: '0 0 7rem'}}
-                                                bodyStyle={{textAlign: 'center'}}/>
-                                    </DataTable>
                                 </div>
                                 <div className="flex align-items-center justify-content-between flex-column bottom-0">
-                                    <Toolbar className="w-full p-2" left={leftToolbarTemplate} right={rightToolbarTemplate}/>
+                                    <Toolbar className="w-full p-2" left={leftToolbarTemplate}
+                                             right={rightToolbarTemplate}/>
                                 </div>
                             </div>
-                            <ProductDialog visible={showDialog} onShow={handleAddProduct} onHide={() => {
+                            <ProductDialog currentUIDWishList={currentWishList?.uid} visible={showDialog}
+                                           onShow={handleAddProduct} onHide={() => {
                                 setShowDialog(false)
                             }}/>
                         </SplitterPanel>

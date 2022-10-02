@@ -1,9 +1,9 @@
 import React, {FC, useState} from 'react';
 import {MultiStateCheckbox} from 'primereact/multistatecheckbox';
 
-enum ACCESS_TYPE {
-    PUBLIC= "public",
-    PRIVATE = "private"
+export enum ACCESS_TYPE {
+    PUBLIC= "PUBLIC",
+    PRIVATE = "PRIVATE"
 }
 
 interface IAccess {
@@ -16,22 +16,24 @@ const options: IAccess[] = [
     {value: ACCESS_TYPE.PRIVATE, icon: 'pi pi-lock'}
 ];
 
-interface IMultiCheckbox {
+interface IMultiCheckbox extends Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'onChange' | 'ref'>{
+    value?: ACCESS_TYPE
     onChange: (data: ACCESS_TYPE) => void
 }
 
-const MultiCheckbox: FC<IMultiCheckbox> = ({onChange}) => {
-    const [value, setValue] = useState<ACCESS_TYPE>(ACCESS_TYPE.PUBLIC);
+const MultiCheckbox: FC<IMultiCheckbox> = ({onChange, value}) => {
+    const [access, setAccess] = useState<ACCESS_TYPE>(value && value || ACCESS_TYPE.PUBLIC);
 
     return (
         <div className="field-checkbox m-0 flex-row-reverse">
-            <MultiStateCheckbox className="ml-2" value={value} options={options} optionValue="value"
+            <MultiStateCheckbox className="ml-2" value={access} options={options} optionValue="value"
                                 onChange={(e) => {
+                                    e.stopPropagation()
                                     const curVal = e.value === null ? ACCESS_TYPE.PUBLIC : e.value
                                     onChange(curVal)
-                                    setValue(curVal)
+                                    setAccess(curVal)
                                 }}/>
-            <label className="text-xs">{value}</label>
+            <label className="text-xs">{access}</label>
         </div>
     )
 }

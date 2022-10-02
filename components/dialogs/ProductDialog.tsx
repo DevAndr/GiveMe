@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {ChangeEventHandler, FC, useEffect, useState} from "react";
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
 import {RadioButton} from "primereact/radiobutton";
@@ -7,36 +7,57 @@ import {classNames} from "primereact/utils";
 import {InputText} from "primereact/inputtext";
 import {InputNumber} from "primereact/inputnumber";
 import {Chips, ChipsChangeParams} from "primereact/chips";
+import {useMutation} from "@apollo/client";
+import {IProduct, ParamsCreateProduct, RsponseProduct} from "../../services/graphql/types";
+import {CREATE_PRODUCT_TO_LIST, GET_PRODUCTS_BY_UID_LIST} from "../../services/graphql";
 
 interface IProductDialog {
     visible: boolean
+    currentUIDWishList?: string
     onHide: Function
+    onShow: Function
 }
 
-interface IProduct {
-    link: string
-    img: string
-    name: string
-    description: string
-    labels?: string[]
-}
-
-const ProductDialog: FC<IProductDialog> = ({visible, onHide}) => {
-    const [isSHow, setIsSHow] = useState(visible)
+const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}) => {
+    const [createProduct] = useMutation<RsponseProduct, ParamsCreateProduct>(CREATE_PRODUCT_TO_LIST);
     const [submitted, setSubmitted] = useState(true)
-    const [labels, setLabels] = useState<any[]>([])
+    const [labels, setLabels] = useState<string[]>([])
     const [data, setData] = useState<IProduct>()
+    const [linkProduct, setLinkProduct] = useState<string>()
+    const [nameProduct, setNameProduct] = useState<string>()
+    const [descriptionProduct, setDescriptionProduct] = useState<string>()
 
-    useEffect(() => {
-        setIsSHow(visible)
-    }, [visible])
 
-    const handleSave = () => {
-        setIsSHow(false)
+    const handleSave = async () => {
+        if (linkProduct && nameProduct && currentUIDWishList) {
+
+            const {data: dataProduct} = await createProduct({
+                variables: {
+                    data: {
+                        uidWishList: currentUIDWishList,
+                        name: nameProduct,
+                        link: linkProduct,
+                        description: descriptionProduct,
+                        labels: labels
+                    }
+                },
+                refetchQueries: [
+                    {query: GET_PRODUCTS_BY_UID_LIST},
+                    'ProductsWishList'
+                ],
+            })
+
+            console.log(dataProduct)
+            onHide()
+            setLinkProduct("")
+            setDescriptionProduct("")
+            setNameProduct("")
+            setLabels([])
+        }
     }
 
     const handleCancel = () => {
-        setIsSHow(false)
+        onHide()
     }
 
     const footerContainer = () => {
@@ -48,18 +69,27 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide}) => {
 
     const hideDialog = () => {
         setSubmitted(false);
-        setIsSHow(false);
         onHide()
     }
 
     const handleChangeChip = (e: ChipsChangeParams) => {
-        console.log('handleChangeChip', e.value)
-
         setLabels(e.value)
     }
 
+    const handleChangeLinkProduct: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setLinkProduct(prevState => e.target.value)
+    }
+
+    const handleChangeNameProduct: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setNameProduct(prevState => e.target.value)
+    }
+
+    const handleChangeDescriptionProduct: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+        setDescriptionProduct(prevState => e.target.value)
+    }
+
     return (
-        <Dialog visible={isSHow} header={"Добавить желание"} className="p-fluid" modal style={{width: '450px'}}
+        <Dialog visible={visible} header={"Добавить желание"} className="p-fluid" modal style={{width: '450px'}}
                 footer={footerContainer} onHide={hideDialog}>
             <div className="field">
                 <label htmlFor="input-url" className="text-sm">Внимание! Ссылка на Ozon или Wildberries*</label>
@@ -68,20 +98,22 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide}) => {
                                         <span className="p-inputgroup-addon">
                                             <i className="pi pi-link"></i>
                                         </span>
-                        <InputText placeholder="Ссылка на товар"/>
+                        <InputText placeholder="Ссылка на товар" value={linkProduct}
+                                   onChange={handleChangeLinkProduct}/>
                         <Button icon="pi pi-clone"/>
                     </div>
                 </div>
 
             </div>
             <div className="field">
-                <label htmlFor="name">Имя подарка</label>
-                <InputText id="name" required autoFocus/>
+                <label htmlFor="name">Название</label>
+                <InputText id="name" required autoFocus value={nameProduct} onChange={handleChangeNameProduct}/>
 
             </div>
             <div className="field">
                 <label htmlFor="description">Описание</label>
-                <InputTextarea id="description" autoResize required rows={3} cols={20}/>
+                <InputTextarea id="description" autoResize required rows={3} cols={20} value={descriptionProduct}
+                               onChange={handleChangeDescriptionProduct}/>
             </div>
             <div className="field">
                 <label className="mb-3">Метки</label>

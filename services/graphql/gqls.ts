@@ -71,6 +71,13 @@ const REMOVE_LIST = gql`
         }
     }`;
 
+const REFRESH_TOKEN = gql`
+    mutation Refresh {
+        refresh {
+            access_token
+            refresh_token
+        }
+    }`;
 
 const GET_USER_BY_UID = gql`
     query User($uid: String!) {
@@ -78,6 +85,28 @@ const GET_USER_BY_UID = gql`
             uid
             email
             name
+        }
+    }`;
+
+const GET_PRODUCTS_BY_UID_LIST = gql`
+    query ProductsWishList($uidWishList: String!) {
+        productsWishList(uidWishList: $uidWishList) {
+            name
+            description
+            price
+            royalties
+            delivery
+            marketPlace
+            link
+            img
+            status
+            uidWishList
+            uid
+            labels
+            uidReceiver
+            descriptionReceiver
+            likes
+            disLikes
         }
     }`;
 
@@ -98,6 +127,7 @@ const GET_LISTS_CURRENT_USER = gql`
             name
             description
             uidUser
+            access
         }
     }`;
 
@@ -121,6 +151,38 @@ const SUB_LIST = gql`
         }
     }`;
 
+const UPDATE_LIST = gql`
+    mutation UpdateList($data: InputUpdateList) {
+        updateList(data: $data) {
+            uid
+            name
+            description
+            uidUser
+            access
+        }
+    }
+`
+
+export default {
+    Mutation: {
+        updateAuthData: (_, {access_token}, {cache}) => {
+            const query = gql`
+                query GetCurrentAuthData {
+                    currentAuthData @client {
+                        access_token
+                    }
+                }
+            `;
+            const previous = cache.readQuery({query});
+            const data = {
+                access_token
+            };
+            cache.writeQuery({query, data});
+            return null;
+        }
+    }
+};
+
 export {
     GET_USERS,
     LOG_IN,
@@ -134,7 +196,10 @@ export {
     GET_LISTS_CURRENT_USER,
     SUB_CREATED_LIST,
     REMOVE_LIST,
-    SUB_LIST
+    SUB_LIST,
+    UPDATE_LIST,
+    GET_PRODUCTS_BY_UID_LIST,
+    REFRESH_TOKEN
 }
 
 // export const getCurrentCredential = graphql(CURRENT_CRIDENTIAL, {
