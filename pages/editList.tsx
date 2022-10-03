@@ -340,14 +340,18 @@ const EditList: NextPage = () => {
 
     const rightToolbarTemplate = () => {
         return (
-            <>
+            <div className="flex gap-2">
                 <Button label="Копировать ссылку" icon="pi pi-clone p-button-sm" className="p-button p-button-sm"
                         onClick={handleCopyUrl}/>
-            </>
+                <Button label="Демонстрация" icon="pi pi-eye p-button-sm" className="p-button p-button-sm"/>
+            </div>
         )
     }
 
     const handleCopyUrl = () => {
+        const uidUser = ''
+        const urlViewList = `/viewList/${currentWishList?.uidUser}/${currentWishList?.uid}`
+        console.log(urlViewList)
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Скопировано', life: 3000});
     }
 
@@ -533,17 +537,15 @@ const EditList: NextPage = () => {
                                                        scrollable scrollHeight="flex" responsiveLayout="scroll"
                                                        className={style.tableProducts} size="small">
                                                 <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
-                                                        style={{flex: '0 0 2.5rem'}} exportable={false}/>
-                                                <Column field="img" style={{flex: '0 0 5.8rem'}}
-                                                        body={imageBodyTemplate}/>
+                                                        exportable={false} style={{flex: '3rem 0 0'}}/>
+                                                <Column field="img" body={imageBodyTemplate} style={{flex: '0 0 8rem'}}/>
                                                 <Column field="name" bodyStyle={{fontWeight: 500}} editor={nameEditor}
-                                                        header="Имя" sortable/>
+                                                        header="Имя" sortable />
                                                 <Column field="description" header="Описание" editor={descriptionEditor}
-                                                        style={{flex: '0 0 20rem'}}/>
+                                                       />
                                                 <Column field="labels" header="Метки" body={labelBodyTemplate}
-                                                        editor={labelsEditor} style={{flex: '0 0 35rem'}}/>
+                                                        editor={labelsEditor}  />
                                                 <Column rowEditor headerStyle={{width: '1rem'}}
-                                                        style={{flex: '0 0 7rem'}}
                                                         bodyStyle={{textAlign: 'center'}}/>
                                             </DataTable>
                                     }
