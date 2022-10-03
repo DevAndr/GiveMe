@@ -163,6 +163,15 @@ const UPDATE_LIST = gql`
     }
 `
 
+const REMOVE_PRODUCTS = gql`
+    mutation RemoveProducts($products: [String]!) {
+        removeProducts(products: $products) {
+            uid
+            uidWishList
+        }
+    }
+`
+
 export default {
     Mutation: {
         updateAuthData: (_, {access_token}, {cache}) => {
@@ -199,7 +208,8 @@ export {
     SUB_LIST,
     UPDATE_LIST,
     GET_PRODUCTS_BY_UID_LIST,
-    REFRESH_TOKEN
+    REFRESH_TOKEN,
+    REMOVE_PRODUCTS
 }
 
 // export const getCurrentCredential = graphql(CURRENT_CRIDENTIAL, {

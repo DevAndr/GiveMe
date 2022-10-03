@@ -28,13 +28,14 @@ import {
     GET_PRODUCTS_BY_UID_LIST,
     SUB_CREATED_LIST,
     SUB_LIST,
-    useGetListsCurrentUser, useRemoveList, useUpdateWishList
+    useGetListsCurrentUser, useRemoveList, useRemoveProducts, useUpdateWishList
 } from "../services/graphql";
 import {IoIosGift} from "react-icons/io";
 import styled from 'styled-components';
 import style from '../styles/editList.module.scss'
 import FormAddNewWishList from "../components/forms/FormAddNewWishList";
 import {useQuery} from "@apollo/client";
+import {Empty} from "../components/info";
 
 const TitleItemWishList = styled.h1`
   margin: 0;
@@ -199,6 +200,8 @@ const EditList: NextPage = () => {
 
     const updateWishList = useUpdateWishList();
 
+    const removeProducts = useRemoveProducts()
+
     // const [updateWishList, { data: updatedWishList, loading: loadingUpdateWishList, error: errorUpdatedWishList }] =
     //     useMutation<ParamsUpdateWishList, ResponseUpdateWishList>(UPDATE_LIST, {
     //         refetchQueries: [
@@ -218,10 +221,8 @@ const EditList: NextPage = () => {
         loading: loadingProductsWL,
         error: errorWL,
         data: dataWL,
-        subscribeToMore: subscribeProducts,
-        refetch: refetchProducts
-    } =
-        useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {
+        // refetch: refetchProducts
+    } = useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {
             variables: {
                 uidWishList: currentWishList ? currentWishList?.uid : ""
             }
@@ -330,7 +331,8 @@ const EditList: NextPage = () => {
             <>
                 <Button label="Добавить" icon="pi pi-plus" className="p-button mr-2 p-button-sm"
                         onClick={handleAddProduct}/>
-                <Button label="Удалить" icon="pi pi-trash" className="p-button-danger p-button-sm"
+                <Button label={`Удалить ${selectedProducts.length > 0 ? `(${selectedProducts.length})` : ''}`}
+                        icon="pi pi-trash" className="p-button-danger p-button-sm"
                         onClick={handleShowDeleteDialog} disabled={!selectedProducts || !selectedProducts.length}/>
             </>
         )
@@ -402,20 +404,22 @@ const EditList: NextPage = () => {
         setShowDeleteDialog(false)
     }
 
-    const handleDeleteSelectedProducts = () => {
-        const filteredProducts = dataWL?.productsWishList.filter(val => !selectedProducts.includes(val));
-        refetchProducts({uidWishList: currentWishList.uid})
-        // setProducts(filteredProducts);
+    const handleDeleteSelectedProducts = async () => {
+        const {errors} = await removeProducts(currentWishList?.uid, selectedProducts.map(sp => sp.uid))
         setShowDeleteDialog(false);
         setSelectedProducts([]);
+
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Желания удалены!', life: 3000});
+
+        if (errors)
+            refToast.current.show({severity: 'error', summary: 'Внимание', detail: 'Не удалось удалить желания ', life: 3000});
     }
 
     const deleteProductsDialogFooter = (
         <>
-            <Button label="No" icon="pi pi-times" className="p-button-outlined p-button-sm"
+            <Button label="Нет" icon="pi pi-times" className="p-button-outlined p-button-sm"
                     onClick={hideDeleteProductDialog}/>
-            <Button label="Yes" icon="pi pi-check" className="p-button p-button-sm"
+            <Button label="Да" icon="pi pi-check" className="p-button p-button-sm"
                     onClick={handleDeleteSelectedProducts}/>
         </>
     );
@@ -520,8 +524,8 @@ const EditList: NextPage = () => {
                                         loadingProductsWL ?
                                             SkeletonProductsList :
                                             <DataTable editMode="row"
-                                                       dataKey="id"
-                                                       resizableColumns
+                                                       dataKey="uid"
+                                                       resizableColumns emptyMessage={<Empty/>}
                                                        value={dataWL?.productsWishList} paginator rows={10} first={0}
                                                        selection={selectedProducts}
                                                        onSelectionChange={handleSelectionChange}

@@ -124,6 +124,14 @@ export interface ResponseProducts {
     productsWishList: any[]
 }
 
+export interface ResponseRemovedProducts {
+    removeProducts: any[]
+}
+
 export interface ParamsProductsWIshList {
     uidWishList: string
+}
+
+export interface ParamsRemoveProducts {
+    products: string[]
 }
