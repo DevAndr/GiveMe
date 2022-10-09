@@ -9,8 +9,8 @@ import {addProductToBasket} from "../../redux/reducers/basketshop.slice";
 import {Dropdown} from "primereact/dropdown";
 import {ProductService} from "../../services/product.service";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
-import {Tag} from "primereact/tag";
 import {Chip} from "primereact/chip";
+import {Tooltip} from "primereact/tooltip";
 
 interface IWishList {
     isOwner?: boolean
@@ -114,8 +114,7 @@ const WishList: FC<IWishList> = ({isOwner}) => {
                         <span className={style.productPrice}>{data.price}<BiRuble/></span>
                         {
                             data.inventoryStatus === 'OUTOFSTOCK' ?
-                                // <div><IoIosGift/> Подарил Орку</div>
-                                <Chip label={'Подарил Орку'} icon={<IoIosGift/>} className="m-0 text-xs"/> :
+                                <Chip id="receiver" label={'Подарил Орку'} icon={<IoIosGift/>} className="m-0 text-xs"/> :
                                 <Button icon={<IoIosGift/>} label="Подарить" iconPos="right"
                                         disabled={data.inventoryStatus === 'OUTOFSTOCK'} onClick={() => {
                                     console.log(data)
@@ -170,6 +169,14 @@ const WishList: FC<IWishList> = ({isOwner}) => {
                 <DataView value={products} layout={layout} header={header} className={style.dataViewListProducts}
                           itemTemplate={itemTemplate} paginator rows={9}
                           sortOrder={sortOrder} sortField={sortField}/>
+                <Tooltip target="#receiver" position="bottom">
+                    <div className="p-0 m-0 ">
+                        <p className="text-xs">
+                            Комментарий:
+                        </p>
+                        На здоровье ds d fg vtgkk vretgvm
+                    </div>
+                </Tooltip>
             </div>
         </div>
     )
