@@ -4,7 +4,7 @@ import MainLayout from "../../../components/layouts/MainLayout";
 import React, {useEffect, useState} from "react";
 import WishList from "../../../components/wish-list/WishList";
 import {useQuery} from "@apollo/client";
-import {GET_LISTBY_ID_FOR_USER, GET_USER_BY_UID} from "../../../services/graphql";
+import {GET_LIST_BY_ID_FOR_USER, GET_USER_BY_UID} from "../../../services/graphql";
 import {setHideBasket} from "../../../redux/reducers/basketshop.slice";
 import BasketShopDialog from "../../../components/dialogs/BasketShopDialog";
 import {useAppDispatch, useAppSelector} from "../../../redux/hooks";
@@ -29,7 +29,7 @@ const ViewList: NextPage<IViewList> = ({uidList, uidUser, data}) => {
         loading: loadingWishList,
         error: errorWishList,
         data: dataWishList
-    } = useQuery(GET_LISTBY_ID_FOR_USER, {variables: {uidUser, uidList}});
+    } = useQuery(GET_LIST_BY_ID_FOR_USER, {variables: {uidUser, uidList}});
 
     useEffect(() => {
         // client.query({query: GET_USER_BY_UID, variables: {uid: uidUser}}).then(r => {
@@ -69,7 +69,7 @@ const ViewList: NextPage<IViewList> = ({uidList, uidUser, data}) => {
         if (loadingCurrentUser)
             return <div>Loaging...</div>
 
-        if (dataCurrentUser) {
+        if (dataCurrentUser?.user) {
             const {name, email} = dataCurrentUser.user
             console.log()
             return <div className="flex align-items-baseline">
