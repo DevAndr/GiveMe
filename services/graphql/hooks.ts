@@ -1,11 +1,20 @@
 import {ApolloCache, useMutation, useQuery} from "@apollo/client";
 import {
     AuthData,
-    IList, ParamsProductsWIshList, ParamsRefreshToken,
-    ParamsRemoveList, ParamsRemoveProducts,
-    ParamsSignUpAuth, ParamsUpdateWishList,
+    IList,
+    ParamsProductsWIshList,
+    ParamsRefreshToken,
+    ParamsRemoveList,
+    ParamsRemoveProducts,
+    ParamsSignUpAuth, ParamsUpdateProduct,
+    ParamsUpdateWishList,
     ResponseList,
-    ResponseListCurrentUser, ResponseProducts, ResponseRefreshToken, ResponseRemovedProducts, ResponseUpdateWishList,
+    ResponseListCurrentUser,
+    ResponseProducts,
+    ResponseRefreshToken,
+    ResponseRemovedProducts,
+    ResponseUpdateProduct,
+    ResponseUpdateWishList,
     RsponseAuth
 } from "./types";
 import {
@@ -13,7 +22,7 @@ import {
     GET_PRODUCTS_BY_UID_LIST,
     REFRESH_TOKEN,
     REMOVE_LIST, REMOVE_PRODUCTS,
-    SIGN_UP,
+    SIGN_UP, UPDATE_EDITOR_PRODUCT,
     UPDATE_LIST
 } from "./gqls";
 
@@ -98,6 +107,42 @@ export const useRemoveProducts = () => {
                     variables: {uidWishList},
                     data: {
                         productsWishList: data?.productsWishList?.filter(product => !params.includes(product.uid))
+                    },
+                });
+            }
+        })
+    }
+}
+
+export const useUpdateEditorProducts = () => {
+    const [updateProducts] = useMutation<ResponseUpdateProduct, ParamsUpdateProduct>(UPDATE_EDITOR_PRODUCT)
+
+    return (uidWishList: string, product: any) => {
+
+        console.log(uidWishList, product)
+
+        return updateProducts({
+            variables: {
+                data: {uid: product.uid, uidWishList: product.uidWishList, labels: product.labels,
+                    description: product.description, name: product.name}
+            },
+            update: async (cache: ApolloCache<any>, result, options) => {
+                const data = await cache.readQuery<ResponseProducts, ParamsProductsWIshList>({
+                    variables: {uidWishList},
+                    query: GET_PRODUCTS_BY_UID_LIST,
+                });
+
+                await cache.writeQuery({
+                    query: GET_PRODUCTS_BY_UID_LIST,
+                    variables: {uidWishList},
+                    data: {
+                        productsWishList: data?.productsWishList?.map(p => {
+                            if (p.uid.includes(product.uid)) {
+                                return {...p, ...product}
+                            }
+
+                            return p
+                        })
                     },
                 });
             }

@@ -163,6 +163,18 @@ const UPDATE_LIST = gql`
     }
 `
 
+const UPDATE_EDITOR_PRODUCT = gql`
+    mutation UpdateProduct($data: InputUpdateEditorProduct) {
+        updateProduct(data: $data) {
+            uid
+            uidWishList
+            name
+            description
+            labels
+        }
+    }
+`
+
 const REMOVE_PRODUCTS = gql`
     mutation RemoveProducts($products: [String]!) {
         removeProducts(products: $products) {
@@ -209,7 +221,8 @@ export {
     UPDATE_LIST,
     GET_PRODUCTS_BY_UID_LIST,
     REFRESH_TOKEN,
-    REMOVE_PRODUCTS
+    REMOVE_PRODUCTS,
+    UPDATE_EDITOR_PRODUCT
 }
 
 // export const getCurrentCredential = graphql(CURRENT_CRIDENTIAL, {

@@ -1,4 +1,5 @@
 import {ACCESS_TYPE} from "../../components/multi-chekbox";
+import {MarketType} from "../../components/marketPlace";
 
 export interface ITokens {
     access_token: string;
@@ -39,12 +40,16 @@ export interface ICreateProductData {
     labels: string[]
 }
 
+export type UpdateEditorProductType = Omit<ICreateProductData, "link"> & {
+    uid: string
+}
+
 export interface IProduct extends ICreateProductData {
     img?: string
 }
 
 export interface ParamsCreateProduct {
-    data: ICreateProductData
+    data: ICreateProductData & {marketPlace?: MarketType}
 }
 
 export interface RsponseProduct {
@@ -134,4 +139,12 @@ export interface ParamsProductsWIshList {
 
 export interface ParamsRemoveProducts {
     products: string[]
+}
+
+export interface ResponseUpdateProduct {
+    updateProduct: any
+}
+
+export interface ParamsUpdateProduct {
+    data: UpdateEditorProductType
 }
