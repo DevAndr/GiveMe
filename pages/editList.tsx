@@ -28,7 +28,7 @@ import {
     GET_PRODUCTS_BY_UID_LIST,
     SUB_CREATED_LIST,
     SUB_LIST,
-    useGetListsCurrentUser, useRemoveList, useRemoveProducts, useUpdateWishList
+    useGetListsCurrentUser, useRemoveList, useRemoveProducts, useUpdateEditorProducts, useUpdateWishList
 } from "../services/graphql";
 import {IoIosGift} from "react-icons/io";
 import styled from 'styled-components';
@@ -36,158 +36,13 @@ import style from '../styles/editList.module.scss'
 import FormAddNewWishList from "../components/forms/FormAddNewWishList";
 import {useQuery} from "@apollo/client";
 import {Empty} from "../components/info";
+import MarketPlace from "../components/marketPlace";
 
 const TitleItemWishList = styled.h1`
   margin: 0;
   font-size: 1rem !important;
   font-weight: 700 !important;
 `;
-
-const dataTable = {
-    data: [
-        {
-            id: 1000,
-            name: "Сладости",
-            count: 3
-        },
-        {
-            id: 1001,
-            name: "Шмотки",
-            count: 12
-        },
-        {
-            id: 1003,
-            name: "fsdfsadf",
-            count: 22
-        },
-    ]
-}
-
-const dataListTemp =
-    [
-        {
-            id: 1000,
-            name: "dddd",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1000,
-            name: "hgfhkhjk",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1000,
-            name: "jkhjkk Ммммм",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1001,
-            name: "Для учебы",
-            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
-            description: "Готовлюсь к 1 сентября)",
-            labels: [
-                "Hot", "Cool", "Yep", "Yep", "Happy"
-            ],
-            count: 12
-        },
-        {
-            id: 1001,
-            name: "Для учебы",
-            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
-            description: "Готовлюсь к 1 сентября)",
-            labels: [
-                "Hot", "Cool", "Yep", "Yep", "Happy"
-            ],
-            count: 12
-        },
-        {
-            id: 1003,
-            name: "Вазелин",
-            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
-            description: "На всякий случай",
-            labels: [
-                "Хочу"
-            ],
-            count: 22
-        },
-        {
-            id: 1003,
-            name: "Вазелин",
-            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
-            description: "На всякий случай",
-            labels: [
-                "Хочу"
-            ],
-            count: 22
-        },
-        {
-            id: 1000,
-            name: "ghjghj",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1000,
-            name: "gjghfjgfhk fghk",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1000,
-            name: "hjkhjkhjk",
-            img: 'https://images.wbstatic.net/big/new/30150000/30154022-1.jpg',
-            description: "Вот бы сейчас....",
-            count: 3
-        },
-        {
-            id: 1001,
-            name: "Для учебы",
-            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
-            description: "Готовлюсь к 1 сентября)",
-            labels: [
-                "Hot", "Cool", "Yep", "Yep", "Happy"
-            ],
-            count: 12
-        },
-        {
-            id: 1001,
-            name: "Для учебы",
-            img: 'https://images.wbstatic.net/big/new/13650000/13650421-1.jpg',
-            description: "Готовлюсь к 1 сентября)",
-            labels: [
-                "Hot", "Cool", "Yep", "Yep", "Happy"
-            ],
-            count: 12
-        },
-        {
-            id: 1003,
-            name: "Вазелин",
-            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
-            description: "На всякий случай",
-            labels: [
-                "Хочу"
-            ],
-            count: 22
-        },
-        {
-            id: 1003,
-            name: "Вазелин",
-            img: 'https://images.wbstatic.net/big/new/42200000/42202571-1.jpg',
-            description: "На всякий случай",
-            labels: [
-                "Хочу"
-            ],
-            count: 22
-        }
-    ]
 
 const EditList: NextPage = () => {
     const removeList = useRemoveList();
@@ -201,6 +56,8 @@ const EditList: NextPage = () => {
     const updateWishList = useUpdateWishList();
 
     const removeProducts = useRemoveProducts()
+
+    const updateProduct = useUpdateEditorProducts()
 
     // const [updateWishList, { data: updatedWishList, loading: loadingUpdateWishList, error: errorUpdatedWishList }] =
     //     useMutation<ParamsUpdateWishList, ResponseUpdateWishList>(UPDATE_LIST, {
@@ -223,20 +80,21 @@ const EditList: NextPage = () => {
         data: dataWL,
         // refetch: refetchProducts
     } = useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {
-            variables: {
-                uidWishList: currentWishList ? currentWishList?.uid : ""
-            }
-        })
+        variables: {
+            uidWishList: currentWishList ? currentWishList?.uid : ""
+        },
+        pollInterval: 1000
+    })
 
     useEffect(() => {
         subscribeToMore<SubCreatedList, ParamsSubCreatedList>({
             document: SUB_CREATED_LIST, variables: {
-                uidUser: 'e9866c02-3029-46ab-997e-1f99d2668248'
+                uidUser: '7b780467-9055-4b81-9879-46f4413228ff'
             },
             updateQuery: (prev, {subscriptionData}) => {
                 if (!subscriptionData.data) return prev;
 
-                console.log(subscriptionData.data)
+                console.log('subscribeToMore', subscriptionData.data)
 
                 const newList = subscriptionData.data.listCreated;
 
@@ -289,7 +147,9 @@ const EditList: NextPage = () => {
         return (
             <div id="item" className={`flex align-items-center p-2 w-full justify-content-between hover:text-primary
              border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.uid === data.uid && 'text-primary bg-primary-100'}`}
-                 onClick={(e) => {setCurrentWishList(data)}}>
+                 onClick={(e) => {
+                     setCurrentWishList(data)
+                 }}>
                 <ConfirmPopup/>
                 <div id="item-title" className="product-detail cursor-pointer">
                     <TitleItemWishList>{data.name}</TitleItemWishList>
@@ -299,7 +159,6 @@ const EditList: NextPage = () => {
                 </div>
                 <div className="flex flex-column align-items-end" onClick={(e) => e.stopPropagation()}>
                     <MultiCheckbox value={data.access} onChange={async (value) => {
-                        // updateWishList({variables: {data: {access: value, uid: data.uid}}})
                         await updateWishList({data: {access: value, uid: data.uid, uidUser: data.uidUser}})
                     }}/>
                     <br/>
@@ -338,27 +197,41 @@ const EditList: NextPage = () => {
         )
     }
 
+    const getLinkToWishList = (): string => {
+        const urlViewList = `/viewList/${currentWishList?.uidUser}/${currentWishList?.uid}`
+        return urlViewList
+    }
+
     const rightToolbarTemplate = () => {
         return (
             <div className="flex gap-2">
-                <Button label="Копировать ссылку" icon="pi pi-clone p-button-sm" className="p-button p-button-sm"
-                        onClick={handleCopyUrl}/>
-                <Button label="Демонстрация" icon="pi pi-eye p-button-sm" className="p-button p-button-sm"/>
+                <Button label="Копировать ссылку" icon="pi pi-clone p-button-sm"
+                        className="p-button p-button-sm" onClick={handleCopyUrl}/>
+                <Button label="Демонстрация" icon="pi pi-eye p-button-sm"
+                        className="p-button p-button-sm" onClick={handleViewWishList}/>
             </div>
         )
     }
 
     const handleCopyUrl = () => {
-        const uidUser = ''
-        const urlViewList = `/viewList/${currentWishList?.uidUser}/${currentWishList?.uid}`
+        const urlViewList = getLinkToWishList()
         console.log(urlViewList)
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Скопировано', life: 3000});
+    }
+
+    const handleViewWishList = () => {
+        const urlViewList = getLinkToWishList()
+        console.log(urlViewList)
     }
 
     const imageBodyTemplate = (rowData: any) => {
         return <img src={`${rowData.img}`}
                     onError={(e: any) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
                     alt={rowData.image} className="w-4rem"/>
+    }
+
+    const marketTypeView = (rowData: any) => {
+        return <MarketPlace type={rowData.marketPlace}/>
     }
 
     const labelBodyTemplate = (rowData: any) => {
@@ -377,7 +250,7 @@ const EditList: NextPage = () => {
     }
 
     const inputTextEditor = (props, field) => {
-        return <InputText type="text" value={props.rowData[field]}
+        return <InputText className="w-full" type="text" value={props.rowData[field]}
                           onChange={(e) => props.editorCallback(e.target.value)}/>;
     }
 
@@ -386,7 +259,8 @@ const EditList: NextPage = () => {
     }
 
     const descriptionEditor = (options) => {
-        return <InputTextarea value={options.value} onChange={(e) => options.editorCallback(e.target.value)} rows={5}
+        return <InputTextarea className="w-full" value={options.value}
+                              onChange={(e) => options.editorCallback(e.target.value)} rows={5}
                               cols={30}/>
     }
 
@@ -394,14 +268,11 @@ const EditList: NextPage = () => {
         return <Chips value={options.value} onChange={(e) => options.editorCallback(e.target.value)}/>
     }
 
-    const handleRowEditComplete = (e) => {
-        let _dataList = [...dataWL?.productsWishList];
-        let {newData, index} = e;
+    const handleRowEditComplete = async (e) => {
+        let {newData, index} = e
+        await updateProduct(newData.uidWishList, newData)
 
-        _dataList[index] = newData;
-
-        refetchProducts({uidWishList: currentWishList.uid})
-        // setProducts(_dataList);
+        // refetchProducts({uidWishList: currentWishList.uid})
     }
 
     const hideDeleteProductDialog = () => {
@@ -416,7 +287,12 @@ const EditList: NextPage = () => {
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Желания удалены!', life: 3000});
 
         if (errors)
-            refToast.current.show({severity: 'error', summary: 'Внимание', detail: 'Не удалось удалить желания ', life: 3000});
+            refToast.current.show({
+                severity: 'error',
+                summary: 'Внимание',
+                detail: 'Не удалось удалить желания ',
+                life: 3000
+            });
     }
 
     const deleteProductsDialogFooter = (
@@ -510,19 +386,6 @@ const EditList: NextPage = () => {
                         </SplitterPanel>
                         <SplitterPanel className="flex" size={80} minSize={60}>
                             <div className="flex flex-column align-self-baseline p-5 w-full h-full">
-                                <div className="grid p-fluid">
-                                        <span className="p-float-label w-full">
-                                            <InputText id="name-list" className="font-medium p-inputtext-sm"
-                                                       value={currentWishList?.name}
-                                                       onChange={(e) =>
-                                                           setCurrentWishList({
-                                                               ...currentWishList,
-                                                               name: e.target.value
-                                                           })
-                                                       }/>
-                                            <label htmlFor="name-list">Имя списка</label>
-                                        </span>
-                                </div>
                                 <div className="overflow-hidden" style={{height: 'calc(100vh - 210px)'}}>
                                     {
                                         loadingProductsWL ?
@@ -538,13 +401,16 @@ const EditList: NextPage = () => {
                                                        className={style.tableProducts} size="small">
                                                 <Column selectionMode="multiple" headerStyle={{width: '.1rem'}}
                                                         exportable={false} style={{flex: '3rem 0 0'}}/>
-                                                <Column field="img" body={imageBodyTemplate} style={{flex: '0 0 8rem'}}/>
+                                                <Column field="img" body={imageBodyTemplate}
+                                                        style={{flex: '0 0 8rem'}}/>
                                                 <Column field="name" bodyStyle={{fontWeight: 500}} editor={nameEditor}
-                                                        header="Имя" sortable />
-                                                <Column field="description" header="Описание" editor={descriptionEditor}
-                                                       />
+                                                        header="Имя" sortable style={{flex: '0 0 10rem'}}/>
+                                                <Column field="description" header="Описание"
+                                                        editor={descriptionEditor}/>
+                                                <Column field="marketPlace" header="Магазин" body={marketTypeView}
+                                                        style={{flex: '0 0 8rem'}} headerStyle={{width: '.1rem'}}/>
                                                 <Column field="labels" header="Метки" body={labelBodyTemplate}
-                                                        editor={labelsEditor}  />
+                                                        editor={labelsEditor}/>
                                                 <Column rowEditor headerStyle={{width: '1rem'}}
                                                         bodyStyle={{textAlign: 'center'}}/>
                                             </DataTable>
@@ -553,6 +419,29 @@ const EditList: NextPage = () => {
                                 <div className="flex align-items-center justify-content-between flex-column bottom-0">
                                     <Toolbar className="w-full p-2" left={leftToolbarTemplate}
                                              right={rightToolbarTemplate}/>
+                                </div>
+                                <div className="grid p-fluid pt-3">
+                                    <div className="col">
+                                        <span className="p-float-label w-full">
+                                            <InputText id="name-list" className="font-medium p-inputtext-sm"
+                                                       value={currentWishList?.name}
+                                                       onChange={(e) =>
+                                                           setCurrentWishList({
+                                                               ...currentWishList,
+                                                               name: e.target.value
+                                                           })
+                                                       }/>
+                                            <label htmlFor="name-list">Имя списка</label>
+                                        </span>
+                                        <div className="w-full pt-2">
+                                            <InputTextarea autoResize placeholder="Описание"/>
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div className="col" style={{placeSelf: "end"}}>
+                                            <Button className="p-button p-button-sm" label="Сохранить"/>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <ProductDialog currentUIDWishList={currentWishList?.uid} visible={showDialog}
