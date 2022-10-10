@@ -69,6 +69,7 @@ export interface IList {
     name: string
     description?: string
     access?: ACCESS_TYPE
+    products?: []
 }
 
 export interface ParamsCreateList {

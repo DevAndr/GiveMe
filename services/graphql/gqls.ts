@@ -128,6 +128,9 @@ const GET_LISTS_CURRENT_USER = gql`
             description
             uidUser
             access
+            products {
+                status
+            }
         }
     }`;
 
