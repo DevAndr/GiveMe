@@ -1,7 +1,7 @@
 import {NextPage} from "next";
 import Head from "next/head";
 import MainLayout from "../components/layouts/MainLayout";
-import React, {useRef, useState, MouseEvent, useEffect} from "react";
+import React, {MouseEvent, useEffect, useRef, useState} from "react";
 import {Splitter, SplitterPanel} from "primereact/splitter";
 import {DataScroller} from "primereact/datascroller";
 import {Button} from "primereact/button";
@@ -18,9 +18,11 @@ import {InputTextarea} from "primereact/inputtextarea";
 import {Dialog} from "primereact/dialog";
 import {Skeleton} from 'primereact/skeleton';
 import {
-    IList, ParamsProductsWIshList,
+    IList,
+    ParamsProductsWIshList,
     ParamsSubCreatedList,
-    ParamsSubRemoveList, ResponseProducts,
+    ParamsSubRemoveList,
+    ResponseProducts,
     SubCreatedList,
     SubRemoveList
 } from "../services/graphql/types";
@@ -28,21 +30,61 @@ import {
     GET_PRODUCTS_BY_UID_LIST,
     SUB_CREATED_LIST,
     SUB_LIST,
-    useGetListsCurrentUser, useRemoveList, useRemoveProducts, useUpdateEditorProducts, useUpdateWishList
+    useGetListsCurrentUser,
+    useRemoveList,
+    useRemoveProducts,
+    useUpdateEditorProducts,
+    useUpdateWishList
 } from "../services/graphql";
 import {IoIosGift} from "react-icons/io";
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import style from '../styles/editList.module.scss'
 import FormAddNewWishList from "../components/forms/FormAddNewWishList";
 import {useQuery} from "@apollo/client";
 import {Empty} from "../components/info";
 import MarketPlace from "../components/marketPlace";
+import StatusBadgeProduct, {STATUS_PRODUCT} from "../components/badge/StatusBadgeProduct";
 
 const TitleItemWishList = styled.h1`
   margin: 0;
   font-size: 1rem !important;
   font-weight: 700 !important;
 `;
+
+interface IDescriptionItemWishList {
+    isEmpty: any
+}
+
+const DescriptionItemWishList = styled.div<IDescriptionItemWishList>`
+  ${(props) => {
+    if (!props.isEmpty)
+      return css`
+        margin-bottom: 1rem;
+      `
+
+    return css`
+      margin: 0;
+      margin-top: 1.5rem;
+      margin-bottom: .5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5rem;
+      max-height: 3rem;
+    `
+  }}
+`;
+
+const TitleWishList = styled.h1`
+  margin: 0;
+  padding: 0;
+  padding-bottom: 1rem;
+  position: absolute;
+  top: .5rem;
+  z-index: 9999;
+  max-width: 400px;
+`
 
 const EditList: NextPage = () => {
     const removeList = useRemoveList();
@@ -144,6 +186,7 @@ const EditList: NextPage = () => {
     }
 
     const itemWishListTemplate = (data: IList) => {
+        let countCompleteProduct = data.products?.reduce((prev, cur) => cur.status === "COMPLETED" ? prev + 1 : prev, 0)
         return (
             <div id="item" className={`flex align-items-center p-2 w-full justify-content-between hover:text-primary
              border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.uid === data.uid && 'text-primary bg-primary-100'}`}
@@ -153,29 +196,40 @@ const EditList: NextPage = () => {
                 <ConfirmPopup/>
                 <div id="item-title" className="product-detail cursor-pointer">
                     <TitleItemWishList>{data.name}</TitleItemWishList>
-                    <p className=' m-0 mt-2 mb-1'>{data?.description}</p>
-                    <div className={style.indicatorGiftsList}>получено: <span
-                        className="font-medium">4</span>/10<IoIosGift color="#A855F7"/></div>
+                    <DescriptionItemWishList isEmpty={data.description}>{data.description}</DescriptionItemWishList>
+                    <div className={style.indicatorGiftsList}>подарено:
+                        <div>
+                            <span className={`${countCompleteProduct && 'font-medium'}`}>
+                                {countCompleteProduct}</span>
+                            <span className="font-medium">/{data?.products?.length}</span>
+                        </div>
+                        <IoIosGift color="#A855F7"/></div>
                 </div>
                 <div className="flex flex-column align-items-end" onClick={(e) => e.stopPropagation()}>
                     <MultiCheckbox value={data.access} onChange={async (value) => {
                         await updateWishList({data: {access: value, uid: data.uid, uidUser: data.uidUser}})
                     }}/>
                     <br/>
-                    <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
-                            className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem
-                             h-1rem ${style.btnRemoveList}`}
-                            aria-label="Удалить" onClick={(e) => {
-                        confirm.bind({
-                            accept: async () => {
-                                const {data: removedList} = await removeList(
-                                    data.uid
-                                )
+                    <div className="gap-3 flex">
+                        <Button icon="pi pi-pencil" tooltip="Редактировать" tooltipOptions={{position: "right"}}
+                                className={`p-button-rounded p-button-help p-button-outlined border-round ${style.btnSmall}`}
+                                aria-label="Редактировать"/>
 
-                                console.log('accept', removedList)
-                            }, reject
-                        })(e)
-                    }}/>
+                        <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
+                                className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem
+                             h-1rem ${style.btnSmall} ${style.delete}`}
+                                aria-label="Удалить" onClick={(e) => {
+                            confirm.bind({
+                                accept: async () => {
+                                    const {data: removedList} = await removeList(
+                                        data.uid
+                                    )
+
+                                    console.log('accept', removedList)
+                                }, reject
+                            })(e)
+                        }}/>
+                    </div>
                 </div>
             </div>
         );
@@ -230,8 +284,12 @@ const EditList: NextPage = () => {
                     alt={rowData.image} className="w-4rem"/>
     }
 
-    const marketTypeView = (rowData: any) => {
+    const marketTypeTemplate = (rowData: any) => {
         return <MarketPlace type={rowData.marketPlace}/>
+    }
+
+    const statusBodyTemplate = (rowData: any) => {
+        return <StatusBadgeProduct status={rowData?.status}/>
     }
 
     const labelBodyTemplate = (rowData: any) => {
@@ -365,7 +423,7 @@ const EditList: NextPage = () => {
     return (
         <>
             <Head>
-                <title>Give Me: Управление списком</title>
+                <title>Give Me: Управление списком{currentWishList && ` - ${currentWishList?.name}`}</title>
                 <meta name="description" content="Generated by create next app"/>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
@@ -386,6 +444,7 @@ const EditList: NextPage = () => {
                         </SplitterPanel>
                         <SplitterPanel className="flex" size={80} minSize={60}>
                             <div className="flex flex-column align-self-baseline p-5 w-full h-full">
+                                <TitleWishList>{currentWishList?.name}</TitleWishList>
                                 <div className="overflow-hidden" style={{height: 'calc(100vh - 210px)'}}>
                                     {
                                         loadingProductsWL ?
@@ -407,7 +466,9 @@ const EditList: NextPage = () => {
                                                         header="Имя" sortable style={{flex: '0 0 10rem'}}/>
                                                 <Column field="description" header="Описание"
                                                         editor={descriptionEditor}/>
-                                                <Column field="marketPlace" header="Магазин" body={marketTypeView}
+                                                <Column field="status" header="Статус" body={statusBodyTemplate}
+                                                        style={{flex: '0 0 6.5rem'}} headerStyle={{width: '.1rem'}}/>
+                                                <Column field="marketPlace" header="Магазин" body={marketTypeTemplate}
                                                         style={{flex: '0 0 8rem'}} headerStyle={{width: '.1rem'}}/>
                                                 <Column field="labels" header="Метки" body={labelBodyTemplate}
                                                         editor={labelsEditor}/>
@@ -420,19 +481,8 @@ const EditList: NextPage = () => {
                                     <Toolbar className="w-full p-2" left={leftToolbarTemplate}
                                              right={rightToolbarTemplate}/>
                                 </div>
-                                <div className="grid p-fluid pt-3">
+                                <div className="grid p-fluid pt-4">
                                     <div className="col">
-                                        <span className="p-float-label w-full">
-                                            <InputText id="name-list" className="font-medium p-inputtext-sm"
-                                                       value={currentWishList?.name}
-                                                       onChange={(e) =>
-                                                           setCurrentWishList({
-                                                               ...currentWishList,
-                                                               name: e.target.value
-                                                           })
-                                                       }/>
-                                            <label htmlFor="name-list">Имя списка</label>
-                                        </span>
                                         <div className="w-full pt-2">
                                             <InputTextarea autoResize placeholder="Описание"/>
                                         </div>

@@ -33,13 +33,22 @@
   }
 }
 
-.btnRemoveList {
-  padding: 2rem;
-  color: red;
+.btnSmall {
+  padding: .7rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
 
-  & span:hover {
-    color: rgba(255, 255, 255, 0.42);
-    background: var(--primary-color);
+  &:hover {
+    background: var(--primary-color) !important;
+    span {
+      color: rgba(255, 255, 255, 0.42) !important;
+    }
+  }
+}
+
+.btnSmall.delete {
+  &:hover {
+    background: var(--red-300) !important;
   }
 }
 
