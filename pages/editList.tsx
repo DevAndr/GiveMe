@@ -69,9 +69,7 @@ export const DescriptionItemWishList = styled.div<IDescriptionItemWishList>`
       `
 
     return css`
-      margin: 0;
-      margin-top: 1.5rem;
-      margin-bottom: .5rem;
+      margin: .5rem 0;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -93,7 +91,6 @@ export const TitleWishList = styled.h1`
 `
 
 const EditList: NextPage = () => {
-    const removeList = useRemoveList();
     const {
         subscribeToMore,
         loading: loadingLists,
@@ -101,20 +98,8 @@ const EditList: NextPage = () => {
         data: dataWishLists
     } = useGetListsCurrentUser();
 
-    const updateWishList = useUpdateWishList();
-
     const removeProducts = useRemoveProducts()
-
     const updateProduct = useUpdateEditorProducts()
-
-    // const [updateWishList, { data: updatedWishList, loading: loadingUpdateWishList, error: errorUpdatedWishList }] =
-    //     useMutation<ParamsUpdateWishList, ResponseUpdateWishList>(UPDATE_LIST, {
-    //         refetchQueries: [
-    //             {query: GET_LISTS_CURRENT_USER},
-    //             'WishListsCurrentUser'
-    //         ],
-    //         awaitRefetchQueries: true
-    // });
 
     const [visible, setVisible] = useState<boolean>(false);
     const [showDialog, setShowDialog] = useState(false)
@@ -172,7 +157,7 @@ const EditList: NextPage = () => {
     useEffect(() => {
         console.log('set first list')
         if (dataWishLists?.wishListsCurrentUser.length) {
-            setCurrentWishList(dataWishLists.wishListsCurrentUser.at(0))
+            setCurrentWishList(dataWishLists?.wishListsCurrentUser?.at(0))
         }
     }, [dataWishLists?.wishListsCurrentUser])
 
