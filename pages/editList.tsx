@@ -44,8 +44,14 @@ import {useQuery} from "@apollo/client";
 import {Empty} from "../components/info";
 import MarketPlace from "../components/marketPlace";
 import StatusBadgeProduct, {STATUS_PRODUCT} from "../components/badge/StatusBadgeProduct";
+import {AiOutlineInfoCircle} from "react-icons/ai";
+import WIshListItem from "../components/wish-list/WIshListItem";
 
-const TitleItemWishList = styled.h1`
+export interface IEditable {
+    idEdit: boolean
+}
+
+export const TitleItemWishList = styled.h1`
   margin: 0;
   font-size: 1rem !important;
   font-weight: 700 !important;
@@ -55,7 +61,7 @@ interface IDescriptionItemWishList {
     isEmpty: any
 }
 
-const DescriptionItemWishList = styled.div<IDescriptionItemWishList>`
+export const DescriptionItemWishList = styled.div<IDescriptionItemWishList>`
   ${(props) => {
     if (!props.isEmpty)
       return css`
@@ -76,7 +82,7 @@ const DescriptionItemWishList = styled.div<IDescriptionItemWishList>`
   }}
 `;
 
-const TitleWishList = styled.h1`
+export const TitleWishList = styled.h1`
   margin: 0;
   padding: 0;
   padding-bottom: 1rem;
@@ -163,6 +169,13 @@ const EditList: NextPage = () => {
         });
     }, [])
 
+    useEffect(() => {
+        console.log('set first list')
+        if (dataWishLists?.wishListsCurrentUser.length) {
+            setCurrentWishList(dataWishLists.wishListsCurrentUser.at(0))
+        }
+    }, [dataWishLists?.wishListsCurrentUser])
+
     const accept = () => {
         refToast?.current.show({severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000});
     };
@@ -186,53 +199,9 @@ const EditList: NextPage = () => {
     }
 
     const itemWishListTemplate = (data: IList) => {
-        let countCompleteProduct = data.products?.reduce((prev, cur) => cur.status === "COMPLETED" ? prev + 1 : prev, 0)
-        return (
-            <div id="item" className={`flex align-items-center p-2 w-full justify-content-between hover:text-primary
-             border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.uid === data.uid && 'text-primary bg-primary-100'}`}
-                 onClick={(e) => {
-                     setCurrentWishList(data)
-                 }}>
-                <ConfirmPopup/>
-                <div id="item-title" className="product-detail cursor-pointer">
-                    <TitleItemWishList>{data.name}</TitleItemWishList>
-                    <DescriptionItemWishList isEmpty={data.description}>{data.description}</DescriptionItemWishList>
-                    <div className={style.indicatorGiftsList}>подарено:
-                        <div>
-                            <span className={`${countCompleteProduct && 'font-medium'}`}>
-                                {countCompleteProduct}</span>
-                            <span className="font-medium">/{data?.products?.length}</span>
-                        </div>
-                        <IoIosGift color="#A855F7"/></div>
-                </div>
-                <div className="flex flex-column align-items-end" onClick={(e) => e.stopPropagation()}>
-                    <MultiCheckbox value={data.access} onChange={async (value) => {
-                        await updateWishList({data: {access: value, uid: data.uid, uidUser: data.uidUser}})
-                    }}/>
-                    <br/>
-                    <div className="gap-3 flex">
-                        <Button icon="pi pi-pencil" tooltip="Редактировать" tooltipOptions={{position: "right"}}
-                                className={`p-button-rounded p-button-help p-button-outlined border-round ${style.btnSmall}`}
-                                aria-label="Редактировать"/>
-
-                        <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
-                                className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem
-                             h-1rem ${style.btnSmall} ${style.delete}`}
-                                aria-label="Удалить" onClick={(e) => {
-                            confirm.bind({
-                                accept: async () => {
-                                    const {data: removedList} = await removeList(
-                                        data.uid
-                                    )
-
-                                    console.log('accept', removedList)
-                                }, reject
-                            })(e)
-                        }}/>
-                    </div>
-                </div>
-            </div>
-        );
+        return <WIshListItem data={data} onSetCurrentWishList={(wishList) => {
+            setCurrentWishList(wishList)
+        }} confirm={confirm}/>
     }
 
     const handleShowDeleteDialog = () => {
@@ -419,6 +388,8 @@ const EditList: NextPage = () => {
             </div>
         )
     }
+
+    console.log('render')
 
     return (
         <>
