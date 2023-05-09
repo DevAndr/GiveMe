@@ -1,4 +1,4 @@
-import {getCookie } from 'cookies-next';
+import {getCookie} from 'cookies-next';
 import {decodeJwt} from "jose";
 
 interface ILocalTokens {
@@ -12,7 +12,8 @@ type isExpirationToken = (token: Token) => boolean
 
 const isExpiration: isExpirationToken = (token) => {
     if (token) {
-        const timeRemaining = decodeJwt(token)?.exp * 1000
+        const decode = decodeJwt(token)
+        const timeRemaining = decode?.exp ? decode.exp * 1000 : 0
         return timeRemaining < Date.now()
     }
 
@@ -32,20 +33,21 @@ class AuthService {
         return true
     }
 
-    isExpirationAccessToken(): boolean {
+    isGodAccessToken(): boolean {
         const at = this.getCookieApp('access_token')
-        if (typeof at === "boolean")
-            return true
 
-        return isExpiration(at)
+        if (typeof at === "boolean")
+            return false
+
+        return !isExpiration(at)
     }
 
-    isExpirationRefreshToken(): boolean {
+    isGodRefreshToken(): boolean {
         const rt = this.getCookieApp('refresh_token')
         if (typeof rt === "boolean")
-            return true
+            return false
 
-        return isExpiration(rt)
+        return !isExpiration(rt)
     }
 
     getLocalTokens() {

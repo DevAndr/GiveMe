@@ -49,7 +49,7 @@ export interface IProduct extends ICreateProductData {
 }
 
 export interface ParamsCreateProduct {
-    data: ICreateProductData & {marketPlace?: MarketType}
+    data: ICreateProductData & { marketPlace?: MarketType }
 }
 
 export interface RsponseProduct {
@@ -114,6 +114,14 @@ export interface ParamsRefreshToken {
     }
 }
 
+export interface ParamsAuthWithTwitch {
+    code: string
+}
+
+export interface ResponseAuthWitch {
+    data: ITokens
+}
+
 export interface ResponseRefreshToken {
     refresh: ITokens
 }
@@ -149,3 +157,4 @@ export interface ResponseUpdateProduct {
 export interface ParamsUpdateProduct {
     data: UpdateEditorProductType
 }
+

@@ -1,13 +1,13 @@
 import {ApolloCache, useMutation, useQuery} from "@apollo/client";
 import {
     AuthData,
-    IList,
+    IList, ITokens, ParamsAuthWithTwitch,
     ParamsProductsWIshList,
     ParamsRefreshToken,
     ParamsRemoveList,
     ParamsRemoveProducts,
     ParamsSignUpAuth, ParamsUpdateProduct,
-    ParamsUpdateWishList,
+    ParamsUpdateWishList, ResponseAuthWitch,
     ResponseList,
     ResponseListCurrentUser,
     ResponseProducts,
@@ -18,6 +18,7 @@ import {
     RsponseAuth
 } from "./types";
 import {
+    AUTH_WITH_TWITCH,
     GET_LISTS_CURRENT_USER,
     GET_PRODUCTS_BY_UID_LIST,
     REFRESH_TOKEN,
@@ -149,6 +150,8 @@ export const useUpdateEditorProducts = () => {
         })
     }
 }
+
+export const useAuthWithTwitch = () => useMutation<ResponseAuthWitch, ParamsAuthWithTwitch>(AUTH_WITH_TWITCH)
 
 // export const useLogIn = () => {
 //     const [logInAuth] = useMutation<RsponseAuth, ParamsSignUpAuth>(SIGN_UP);

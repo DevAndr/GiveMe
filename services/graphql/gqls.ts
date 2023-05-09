@@ -187,6 +187,15 @@ const REMOVE_PRODUCTS = gql`
     }
 `
 
+const AUTH_WITH_TWITCH = gql`
+    mutation Twitch($code: String!) {
+        twitch(code: $code) {
+            access_token
+            refresh_token
+        }
+    }
+`
+
 export default {
     Mutation: {
         updateAuthData: (_, {access_token}, {cache}) => {
@@ -210,6 +219,7 @@ export default {
 export {
     GET_USERS,
     LOG_IN,
+    AUTH_WITH_TWITCH,
     SIGN_UP,
     IS_AUTH,
     CURRENT_USER,
@@ -227,9 +237,3 @@ export {
     REMOVE_PRODUCTS,
     UPDATE_EDITOR_PRODUCT
 }
-
-// export const getCurrentCredential = graphql(CURRENT_CRIDENTIAL, {
-//     name: 'getCurrentCredential', options: {
-//         fetchPolicy: 'cache-only'
-//     }
-// });
