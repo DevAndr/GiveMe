@@ -1,7 +1,7 @@
-import {FC} from "react";
-import MainLayout from "../components/layouts/MainLayout";
+import MainLayout from "../../components/layouts/MainLayout";
+import logoTwitch from "../../public/images/twitch-logo.svg"
 import {NextPage} from "next";
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useFormik} from 'formik';
 import {InputText} from 'primereact/inputtext';
 import {Button} from 'primereact/button';
@@ -11,13 +11,19 @@ import {Checkbox} from 'primereact/checkbox';
 import {Dialog} from 'primereact/dialog';
 import {Divider} from 'primereact/divider';
 import {classNames} from 'primereact/utils';
-import { useRouter } from "next/router";
-import {useMutation, useQuery } from "@apollo/client";
-import {GET_USERS, LOG_IN, SIGN_UP} from "../services/graphql";
-import {ParamsAuth, ParamsSignUpAuth, RsponseAuth} from "../services/graphql/types";
-import {signIn, useSession} from "next-auth/react";
+import {useRouter} from "next/router";
+import {useMutation, useQuery} from "@apollo/client";
+import {GET_USERS, LOG_IN, SIGN_UP} from "../../services/graphql";
+import {ParamsAuth, ParamsSignUpAuth, RsponseAuth} from "../../services/graphql/types";
 import * as Yup from 'yup';
 import YupPassword from 'yup-password'
+import {useAuth} from "../../context/authContext";
+import {useAppDispatch} from "../../redux/hooks";
+import {setAuth} from "../../redux/reducers/auth.slice";
+import {Chip} from "primereact/chip";
+import Image from 'next/image';
+import {useNavigate} from "react-router";
+
 YupPassword(Yup)
 
 interface IBaseDataForm {
@@ -26,7 +32,7 @@ interface IBaseDataForm {
     password?: string
 }
 
-export interface IDataForm extends IBaseDataForm{
+export interface IDataForm extends IBaseDataForm {
     accept?: boolean
     dateOfBirth?: number
 }
@@ -63,6 +69,9 @@ const LogInSchema = Yup.object().shape({
 
 const AuthPage: NextPage = ({}) => {
     const router = useRouter()
+    const dispatch = useAppDispatch()
+    const {updateStateAuth} = useAuth()
+
     const [showMessage, setShowMessage] = useState(false);
     const [formData, setFormData] = useState<IDataForm>({});
     const [typeView, setTypeView] = useState<TypeAuthView>(TypeAuthView.SIGN_IN)
@@ -119,26 +128,34 @@ const AuthPage: NextPage = ({}) => {
                 }
             }
         })
+
+        if (data?.logIn.access_token) {
+            dispatch(setAuth(true))
+            router.push('/lists')
+        }
     }
 
     const handleSignUp = async () => {
         console.log(formData, formik)
-        // const {data} = await signUpAuth({
-        //     variables: {
-        //         data: {
-        //             name: "Kaka",
-        //             email: "biba@gmail.com",
-        //             password: "qwerty"
-        //         }
-        //     }
-        // })
+        const {data} = await signUpAuth({
+            variables: {
+                data: {
+                    name: "Kaka",
+                    email: "biba@gmail.com",
+                    password: "qwerty"
+                }
+            }
+        })
+
+        dispatch(setAuth(true))
     }
 
-    const dialogFooter = <div className="flex justify-content-center"><Button label="OK" className="p-button-text"
-                                                                              autoFocus
-                                                                              onClick={() => setShowMessage(false)}/>
-    </div>;
-    const passwordHeader = <h6>Выберите пароль</h6>;
+    const dialogFooter = (<div className="flex justify-content-center">
+        <Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)}/>
+    </div>)
+
+    const passwordHeader = (<h6>Выберите пароль</h6>);
+
     const passwordFooter = (<>
         <Divider/>
         <p className="mt-2">Разделитель</p>
@@ -152,8 +169,8 @@ const AuthPage: NextPage = ({}) => {
 
     const ViewSignIn = () => {
         return (
-            <div className="card w-20">
-                <h1 className="text-center">Авторизация</h1>
+            <div className="card w-20rem">
+                <h1 className="text-center heading1">Авторизация</h1>
                 <form onSubmit={formik.handleSubmit} className="p-fluid">
                     <div className="field pt-2">
                             <span className="p-float-label p-input-icon-right">
@@ -162,7 +179,9 @@ const AuthPage: NextPage = ({}) => {
                                            onChange={formik.handleChange}
                                            className={classNames({'p-invalid': isFormFieldValid('email')})}/>
                                 <label htmlFor="email"
-                                       className={classNames({'p-error': isFormFieldValid('email')})}>Email</label>
+                                       className={classNames({'p-error': isFormFieldValid('email')})}>
+                                    Email
+                                </label>
                             </span>
                         {getFormErrorMessage('email')}
                     </div>
@@ -173,7 +192,9 @@ const AuthPage: NextPage = ({}) => {
                                           onChange={formik.handleChange} toggleMask feedback
                                           className={classNames({'p-invalid': isFormFieldValid('password')})}/>
                                 <label htmlFor="password"
-                                       className={classNames({'p-error': isFormFieldValid('password')})}>Пароль</label>
+                                       className={classNames({'p-error': isFormFieldValid('password')})}>
+                                    Пароль
+                                </label>
                             </span>
                         {getFormErrorMessage('password')}
                     </div>
@@ -191,7 +212,7 @@ const AuthPage: NextPage = ({}) => {
     const ViewSignUP = () => {
         return (
             <div className="card">
-                <h1 className="text-center">Регистрация</h1>
+                <h1 className="text-center heading1">Регистрация</h1>
                 <form onSubmit={formik.handleSubmit} className="p-fluid">
                     <div className="field pt-2">
                             <span className="p-float-label">
@@ -211,7 +232,8 @@ const AuthPage: NextPage = ({}) => {
                                            onChange={formik.handleChange}
                                            className={classNames({'p-invalid': isFormFieldValid('email')})}/>
                                 <label htmlFor="email"
-                                       className={classNames({'p-error': isFormFieldValid('email')})}>Email*</label>
+                                       className={classNames({'p-error': isFormFieldValid('email')})}>
+                                    Email*</label>
                             </span>
                         {getFormErrorMessage('email')}
                     </div>
@@ -223,7 +245,8 @@ const AuthPage: NextPage = ({}) => {
                                           className={classNames({'p-invalid': isFormFieldValid('password')})}
                                           header={passwordHeader} footer={passwordFooter}/>
                                 <label htmlFor="password"
-                                       className={classNames({'p-error': isFormFieldValid('password')})}>Пароль*</label>
+                                       className={classNames({'p-error': isFormFieldValid('password')})}>
+                                    Пароль*</label>
                             </span>
                         {getFormErrorMessage('password')}
                     </div>
@@ -242,8 +265,8 @@ const AuthPage: NextPage = ({}) => {
                         <Checkbox inputId="accept" name="accept" checked={formik.values.accept}
                                   onChange={formik.handleChange}
                                   className={classNames({'p-invalid': isFormFieldValid('accept')})}/>
-                        <label htmlFor="accept" className={classNames({'p-error': isFormFieldValid('accept')})}>Я
-                            согласен с условиями и положениями*</label>
+                        <label htmlFor="accept" className={classNames({'p-error': isFormFieldValid('accept')})}>
+                            Я согласен-(на) с условиями и положениями*</label>
                     </div>
 
                     <Button type="submit" label="Зарегистрироваться" className="mt-2" onClick={handleSignUp}/>
@@ -256,39 +279,60 @@ const AuthPage: NextPage = ({}) => {
         )
     }
 
+    const ViewOAuth2Variants = () => {
+        return <div className="flex flex-column align-items-center">
+            <p className="text-color-secondary">Войти с помощью</p>
+            <div className="flex gap-2">
+                <Chip label="google" icon="pi pi-google"/>
+                <Chip template={<a
+                    href={`${process.env.BACKEND_HOST}/auth/twitch/oauth`}>
+                    <Image src={logoTwitch} width={16}
+                           height={16}
+                           alt="auth by twitch accaount"/>
+                    <span className="p-chip-text ml-2">Twitch</span>
+                </a>}/>
+            </div>
+        </div>
+    }
+
     return (
         <MainLayout isHideHeader={true} className="min-h-screen">
-                <div className="min-h-screen flex justify-content-center">
-                    <div className="flex fixed" style={{top: 40, right: 40}}>
-                        <Button icon="pi pi-times" className="p-button-rounded p-button-secondary p-button-outlined w-2rem h-2rem"
-                                aria-label="Cancel" onClick={handleClosePage}/>
-                    </div>
-                    <div className="align-self-center min-h-full">
+            <div className="min-h-screen flex justify-content-center">
+                <div className="flex fixed" style={{top: 40, right: 40}}>
+                    <Button icon="pi pi-times"
+                            className="p-button-rounded p-button-secondary p-button-outlined w-2rem h-2rem"
+                            aria-label="Cancel" onClick={handleClosePage}/>
+                </div>
+                <div className="align-self-center min-h-full">
+                    {
+                        typeView === TypeAuthView.SIGN_UP ?
+                            <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="center"
+                                    footer={dialogFooter} showHeader={false} breakpoints={{'960px': '80vw'}}
+                                    style={{width: '30vw'}}>
+                                <div className="flex align-items-center flex-column pt-6 px-3">
+                                    <i className="pi pi-check-circle"
+                                       style={{fontSize: '5rem', color: 'var(--green-500)'}}/>
+                                    <h2>Регистрация завершена!</h2>
+                                    <p style={{lineHeight: 1.5, textIndent: '1rem'}}>
+                                        <b>{formData.name}</b>, Ваша учетная запись зарегистрирована.
+                                        Пожалуйста, проверьте <b>{formData.email}</b> для активации аккаунта.
+                                    </p>
+                                </div>
+                            </Dialog> : <></>
+                    }
+
+                    <div className="flex justify-content-center flex-column">
                         {
-                            typeView === TypeAuthView.SIGN_UP ?
-                                <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="center"
-                                        footer={dialogFooter} showHeader={false} breakpoints={{'960px': '80vw'}}
-                                        style={{width: '30vw'}}>
-                                    <div className="flex align-items-center flex-column pt-6 px-3">
-                                        <i className="pi pi-check-circle"
-                                           style={{fontSize: '5rem', color: 'var(--green-500)'}}/>
-                                        <h2>Регистрация завершена!</h2>
-                                        <p style={{lineHeight: 1.5, textIndent: '1rem'}}>
-                                            <b>{formData.name}</b>, Ваша учетная запись зарегистрирована.
-                                            Пожалуйста, проверьте <b>{formData.email}</b> для активации аккаунта.
-                                        </p>
-                                    </div>
-                                </Dialog> : <></>
+                            typeView === TypeAuthView.SIGN_IN ?
+                                ViewSignIn() : ViewSignUP()
+                        }
+                        {
+                            ViewOAuth2Variants()
                         }
 
-                        <div className="flex justify-content-center">
-                            {
-                                typeView === TypeAuthView.SIGN_IN ?
-                                    ViewSignIn() : ViewSignUP()
-                            }
-                        </div>
                     </div>
                 </div>
+            </div>
         </MainLayout>
     )
 }

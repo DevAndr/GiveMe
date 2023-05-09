@@ -6,19 +6,17 @@ import {useEffect, useState} from "react";
 import {useBreakpoint} from "../hooks/breakpoint";
 import {Image} from 'primereact/image';
 import {Card} from 'primereact/card';
-import style from "../styles/home.module.scss"
+import "../styles/Home.module.scss"
 import StepsForUse from "../components/steps/StepsForUse";
 import Link from "next/link";
 import AuthService from "../services/auth.service";
 import {useRouter} from "next/router";
 import {CURRENT_USER, IS_AUTH, REFRESH_TOKEN} from "../services/graphql";
 import {gql, useMutation, useQuery} from "@apollo/client";
-import client from "../services/graphql/client";
 import {ParamsRefreshToken, ResponseRefreshToken} from "../services/graphql/types";
 
 const Home: NextPage = () => {
     const router = useRouter()
-    const breakpoints: any = useBreakpoint();
     // const {loading, error, data: checkAuthData} = useQuery(IS_AUTH);
     const {loading: loadingCurrentUser, error: errorCurrentUser, data: dataCurrentUser} = useQuery(CURRENT_USER);
     const [getTokens] = useMutation<ResponseRefreshToken, ParamsRefreshToken>(REFRESH_TOKEN);
@@ -68,9 +66,9 @@ const Home: NextPage = () => {
             </Head>
             <MainLayout isHideHeader={false} isHideMenu={true}>
                 <div className="flex justify-content-center">
-                    <div className={style.ContainerPage}>
-                        <section className={style.ContainerColumn}>
-                            <div className={`${style.RowColumn} px-4 align-self-center`}>
+                    <div className="containerPage">
+                        <section className="containerColumn">
+                            <div className="RowColumn px-4 align-self-center">
                                 <div>
                                     {
                                         dataCurrentUser?.currentUser && dataCurrentUser?.currentUser.email
@@ -100,7 +98,7 @@ const Home: NextPage = () => {
                                 </div>
                             </div>
 
-                            <div className={`${style.RowColumn} px-4 align-self-center`}>
+                            <div className="RowColumn px-4 align-self-center">
 
                                 <Card title="Advanced Card" subTitle="Subtitle" style={{width: '25em'}} header={header}>
                                     <p className="m-0" style={{lineHeight: '1.5'}}>
@@ -113,7 +111,7 @@ const Home: NextPage = () => {
                             </div>
                         </section>
 
-                        <section className={`${style.ContainerColumn} ${style.BlockSection} justify-content-center`}>
+                        <section className="containerColumn BlockSection justify-content-center">
                             <div>
                                 <h2 className="text-5xl m-0 font-medium text-center p-4">Наши преимущества</h2>
 
@@ -122,7 +120,7 @@ const Home: NextPage = () => {
                             </div>
                         </section>
 
-                        <section id="how-this-job" className={`${style.ContainerColumn} ${style.BlockSection}`}>
+                        <section id="how-this-job" className="containerColumn BlockSection">
                             <div>
                                 <h5 className="text-5xl m-0 font-medium text-center p-4">Как получать подарки уже
                                     сейчас?</h5>
