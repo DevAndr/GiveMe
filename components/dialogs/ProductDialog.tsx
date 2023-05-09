@@ -1,15 +1,13 @@
 import React, {ChangeEventHandler, FC, useEffect, useState} from "react";
 import {Dialog} from "primereact/dialog";
 import {Button} from "primereact/button";
-import {RadioButton} from "primereact/radiobutton";
 import {InputTextarea} from "primereact/inputtextarea";
-import {classNames} from "primereact/utils";
 import {InputText} from "primereact/inputtext";
-import {InputNumber} from "primereact/inputnumber";
 import {Chips, ChipsChangeParams} from "primereact/chips";
 import {useMutation} from "@apollo/client";
 import {IProduct, ParamsCreateProduct, RsponseProduct} from "../../services/graphql/types";
 import {CREATE_PRODUCT_TO_LIST, GET_PRODUCTS_BY_UID_LIST} from "../../services/graphql";
+import {MarketType} from "../marketPlace";
 
 interface IProductDialog {
     visible: boolean
@@ -22,6 +20,7 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
     const [createProduct] = useMutation<RsponseProduct, ParamsCreateProduct>(CREATE_PRODUCT_TO_LIST);
     const [submitted, setSubmitted] = useState(true)
     const [labels, setLabels] = useState<string[]>([])
+    const [typeMarketPlace, setTypeMarketPlace] = useState<MarketType | undefined>()
     const [data, setData] = useState<IProduct>()
     const [linkProduct, setLinkProduct] = useState<string>()
     const [nameProduct, setNameProduct] = useState<string>()
@@ -29,7 +28,7 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
 
 
     const handleSave = async () => {
-        if (linkProduct && nameProduct && currentUIDWishList) {
+        if (linkProduct && nameProduct && typeMarketPlace && currentUIDWishList) {
 
             const {data: dataProduct} = await createProduct({
                 variables: {
@@ -37,12 +36,13 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
                         uidWishList: currentUIDWishList,
                         name: nameProduct,
                         link: linkProduct,
+                        marketPlace: typeMarketPlace,
                         description: descriptionProduct,
                         labels: labels
                     }
                 },
                 refetchQueries: [
-                    {query: GET_PRODUCTS_BY_UID_LIST},
+                    {query: GET_PRODUCTS_BY_UID_LIST, variables: {uidWishList: currentUIDWishList}},
                     'ProductsWishList'
                 ],
             })
@@ -52,6 +52,7 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
             setLinkProduct("")
             setDescriptionProduct("")
             setNameProduct("")
+            setTypeMarketPlace(undefined)
             setLabels([])
         }
     }
@@ -77,7 +78,22 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
     }
 
     const handleChangeLinkProduct: ChangeEventHandler<HTMLInputElement> = (e) => {
-        setLinkProduct(prevState => e.target.value)
+        let value: string = e.target.value
+        if (value) {
+            if (value.includes("ozon"))
+                setTypeMarketPlace("OZON")
+            else if (value.includes("wildberries"))
+                setTypeMarketPlace("WB")
+            else
+                setTypeMarketPlace(undefined)
+        }
+
+        setLinkProduct(value)
+    }
+
+    const handleClearUrl = () => {
+        if (linkProduct)
+            setLinkProduct("")
     }
 
     const handleChangeNameProduct: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -92,22 +108,31 @@ const ProductDialog: FC<IProductDialog> = ({visible, onHide, currentUIDWishList}
         <Dialog visible={visible} header={"Добавить желание"} className="p-fluid" modal style={{width: '450px'}}
                 footer={footerContainer} onHide={hideDialog}>
             <div className="field">
-                <label htmlFor="input-url" className="text-sm">Внимание! Ссылка на Ozon или Wildberries*</label>
+                {
+                    typeMarketPlace ? <label htmlFor="input-url" className="text-sm">
+                        Ссылка из&nbsp;
+                        <span className="text-primary font-medium text-lg">
+                            {typeMarketPlace === "OZON" ? 'ozon' : 'wildberries'}
+                        </span>
+                    </label> : <label htmlFor="input-url" className="text-sm">
+                        <span className="text-red-400 font-bold">Внимание!</span>
+                        &nbsp;Ссылка на Ozon или Wildberries*</label>
+                }
                 <div id="input-url" className="mt-0 w-full">
                     <div className="p-inputgroup">
                                         <span className="p-inputgroup-addon">
-                                            <i className="pi pi-link"></i>
+                                            <i className="pi pi-link"/>
                                         </span>
-                        <InputText placeholder="Ссылка на товар" value={linkProduct}
+                        <InputText placeholder="Ссылка на товар" value={linkProduct} autoFocus
                                    onChange={handleChangeLinkProduct}/>
-                        <Button icon="pi pi-clone"/>
+                        <Button icon="pi pi-times" onClick={handleClearUrl}/>
                     </div>
                 </div>
 
             </div>
             <div className="field">
                 <label htmlFor="name">Название</label>
-                <InputText id="name" required autoFocus value={nameProduct} onChange={handleChangeNameProduct}/>
+                <InputText id="name" required value={nameProduct} onChange={handleChangeNameProduct}/>
 
             </div>
             <div className="field">

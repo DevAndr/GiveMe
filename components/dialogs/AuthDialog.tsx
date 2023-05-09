@@ -8,7 +8,7 @@ import {classNames} from "primereact/utils";
 import {Password} from "primereact/password";
 import {Calendar} from "primereact/calendar";
 import {Checkbox} from "primereact/checkbox";
-import {IDataForm, IErrorForm, TypeAuthView} from "../../pages/auth";
+import {IDataForm, IErrorForm, TypeAuthView} from "../../pages/auth/index";
 import {Dialog} from "primereact/dialog";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import { setVisibleAuthDialog } from "../../redux/reducers/auth.slice";
