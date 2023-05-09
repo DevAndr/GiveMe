@@ -16,37 +16,34 @@ interface IStepUser {
 const steps: IStepUser[] = [
     {
         id: 1,
-        name: 'Ordered',
+        name: 'Заполни список желаний',
         icon: 'pi pi-shopping-cart',
         colorIcon: '#6366F1',
         bgColor: '#c5b5ff',
         img: 'game-controller.jpg',
-        description: `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error
-                    repudiandae numquam deserunt
-                    quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
-                    neque quas!`
+        description: ` Выбери что бы ты хотел получить в подарок. А мы соберем из этого списка твою персональную витрину подарков`
     },
     {
         id: 2,
-        name: 'Processing',
+        name: 'Размести ссылку',
         icon: 'pi pi-cog',
         colorIcon: '#6366F1',
         bgColor: '#ac9aff',
-        description: `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error
-                    repudiandae numquam deserunt
-                    quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
-                    neque quas!`
+        description: `Размести ссылку на персональную витрину на своем сайте, блоге или любой стриминговой
+                                платформе.
+                                Также ты можешь установить банер, чтобы твои подписчики узнали о том что теперь тебе можно
+                                дарить подарки
+                                и алерты на свой стрим, чтобы получать оповещение о подаренных подарках`
     },
     {
         id: 3,
-        name: 'Shipped',
+        name: 'Получи подарок и расскажи о нем!',
         icon: 'pi pi-shopping-cart',
         colorIcon: '#6366F1',
         bgColor: '#9580ff',
-        description: `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error
-                    repudiandae numquam deserunt
-                    quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
-                    neque quas!`
+        description: `В личном кабинете ты узнаешь, когда и как ты получишь подарок. Когда он окажется у тебя,
+                                не забудь рассказать о подарке и отметить нас @WishMeIt в Instagram или в ВКонтакте — мы
+                                порадуемся с тобой`
     },
     {
         id: 4,
@@ -82,10 +79,7 @@ const StepsForUse = () => {
                 {item.img && <img src={`images/product/${item.img}`}
                                     onError={(e:SyntheticEvent<HTMLImageElement>) => e.currentTarget.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
                                     alt={item.name} width={200} className="shadow-1"/>}
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error
-                    repudiandae numquam deserunt
-                    quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate
-                    neque quas!</p>
+                <p>{item.description}</p>
             </Card>
         );
     };

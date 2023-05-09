@@ -73,7 +73,7 @@ const NavBarRight = (props: INavBarRight) => {
 
     return (
         <Sidebar modal={false} className="p-sidebar-sm" visible={visibleLeft} onHide={handleHide} showCloseIcon={false}>
-            <h1 style={{fontWeight: 'normal'}}>Sidebar with custom icons</h1>
+            <h1 style={{fontWeight: 'normal'}}>Панель управления</h1>
 
             <div className="card">
                 <Menu className="w-full" model={menuItems}/>
