@@ -1,0 +1,7 @@
+.Container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 calc(var(--multiplePx) * 4);
+  max-width: var(--maxWidth);
+  min-height: 100%;
+}
