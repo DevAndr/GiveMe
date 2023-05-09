@@ -262,7 +262,7 @@ const AuthPage: NextPage = ({}) => {
                     </div>
 
                     <div className="field-checkbox">
-                        <Checkbox inputId="accept" name="accept" checked={formik.values.accept}
+                        <Checkbox inputId="accept" name="accept" checked={!!formik.values.accept}
                                   onChange={formik.handleChange}
                                   className={classNames({'p-invalid': isFormFieldValid('accept')})}/>
                         <label htmlFor="accept" className={classNames({'p-error': isFormFieldValid('accept')})}>
