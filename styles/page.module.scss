@@ -1,16 +1,32 @@
+@import "../breakpoints/include-media";
+@import "variables.module";
+
 .container {
-  padding: 0 2rem;
+  margin: 0 auto;
+  padding: calc($unit * 14);
+
+  @include media('<=XS') {
+    padding: calc($unit * 4);
+  }
+
+  @include media('>XS', '<=S') {
+    padding: calc($unit * 8);
+  }
+
+  @include media('>S', '<=M') {
+    padding: calc($unit * 10);
+  }
+
+  @include media('>M', '<=L') {
+    padding: calc($unit * 12);
+  }
+
+  @include media('>L', '<=XL') {
+    padding: calc($unit * 14);
+  }
 }
 
-.main {
-  min-height: 100vh;
-  padding: 4rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+
 
 .footer {
   display: flex;

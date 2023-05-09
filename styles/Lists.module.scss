@@ -198,19 +198,42 @@
 
 .statusProduct {
   position: relative;
-  right: -25px;
-  top: 0px;
+  right: -35px;
+  top: -5px;
   transform: rotate(45deg);
+}
+
+@-moz-keyframes spin {
+  from { color: white; }
+  to { color: #e680ff; }
+}
+@-webkit-keyframes spin {
+  from { color: white; }
+  to { color: #e680ff; }
+}
+@keyframes spin {
+  from { color: white; }
+  to { color: #b6ff66; font-weight: 700}
 }
 
 .statusProduct.done {
   color: white;
   font-variant: all-petite-caps;
   font-weight: 400;
+
+  &:hover {
+    &:before {
+      content: "✓";
+      -webkit-animation:spin 1s linear infinite;
+      -moz-animation:spin 1s linear infinite;
+      animation:spin 1s ease-out;
+    }
+  }
 }
 
+
 .productGridItem.done {
-  background: linear-gradient(-135deg, transparent 90px, #ffffff 0) right, linear-gradient(293deg, transparent 90px, #876aed 0) left;
+  background: linear-gradient(-135deg, transparent 65px, #ffffff 0) right, linear-gradient(289deg, transparent 90px, #876aed 0) left;
   background-size: 101%;
 
 }

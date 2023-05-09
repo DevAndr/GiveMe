@@ -4,30 +4,29 @@ $min-width-phone: 320px;
 
 .toolbar {
   z-index: 1102;
-  background-color: white;
-  @include media('<=phone') {
+
+  @include media('<=XS') {
     min-width: $min-width-phone;
     .buttonDirect {
       color: red;
     }
   }
 
-  @include media('>phone', '<=425px') {
+  @include media('>XS', '<=425px') {
 
   }
 
-  @include media('>425px', '<=tablet') {
+  @include media('>425px', '<=S') {
 
   }
 
-  @include media('>tablet', '<=desktop') {
+  @include media('>S', '<=M') {
 
   }
 
-  @include media('>desktop', '>=ultra') {
+  @include media('>L', '>=XL') {
 
   }
-
 }
 
 
