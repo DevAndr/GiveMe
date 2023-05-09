@@ -1,11 +1,13 @@
 import {combineReducers, configureStore, applyMiddleware} from "@reduxjs/toolkit";
 import toolbarReducer from './reducers/toolbar.slice'
 import authReducer from './reducers/auth.slice'
+import basketShopReducer from './reducers/basketshop.slice'
 
 
 const rootReducer = combineReducers({
     toolbar: toolbarReducer,
     auth: authReducer,
+    basketShop: basketShopReducer
 });
 
 export const store = configureStore({

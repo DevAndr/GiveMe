@@ -1,7 +1,8 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface IToolbarState {
     hide: boolean
+    backgroundColor?: string
 }
 
 const initialState: IToolbarState = {
@@ -14,9 +15,12 @@ export const toolbarSlice = createSlice({
     reducers: {
         setHide: (state, action) => {
             state.hide = action.payload
+        },
+        setBackgroundColor: (state, action: PayloadAction<string>) => {
+            state.backgroundColor = action.payload
         }
     }
 })
 
-export const {setHide} = toolbarSlice.actions
+export const {setHide, setBackgroundColor} = toolbarSlice.actions
 export default toolbarSlice.reducer

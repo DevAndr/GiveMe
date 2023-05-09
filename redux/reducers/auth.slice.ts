@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 interface IAuthState {
     visibleAuthDialog: boolean
@@ -16,9 +16,12 @@ export const authSlice = createSlice({
     reducers: {
         setVisibleAuthDialog: (state, action) => {
             state.visibleAuthDialog = action.payload
+        },
+        setAuth: (state, action: PayloadAction<boolean>) => {
+            state.isAuth = action.payload
         }
     }
 })
 
-export const {setVisibleAuthDialog} = authSlice.actions
+export const {setVisibleAuthDialog, setAuth} = authSlice.actions
 export default authSlice.reducer
