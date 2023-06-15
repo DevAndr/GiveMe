@@ -6,8 +6,8 @@ import {Toolbar as TB} from 'primereact/toolbar';
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {setVisibleAuthDialog} from '../../redux/reducers/auth.slice';
 import {setHide} from "../../redux/reducers/toolbar.slice";
-import {setHideBasket} from "../../redux/reducers/basketshop.slice";
 import {Badge} from "primereact/badge";
+import {show} from "../../redux/reducers/bascket.slice";
 
 interface INavBar {
     onClickMenu: MouseEventHandler
@@ -65,7 +65,7 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
     }
 
     const handleShowBasketHop = () => {
-        dispatch(setHideBasket(!showBasket))
+        dispatch(show(!showBasket))
     }
 
     const rightContents = () => {
@@ -108,7 +108,7 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
         }
 
 
-        return <div>{components}</div>
+        return (<>{components}</>)
     }
 
     if (hide)

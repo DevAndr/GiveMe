@@ -58,6 +58,10 @@ class AuthService {
             rt
         }
     }
+
+    refreshTokens() {
+
+    }
 }
 
 export default new AuthService

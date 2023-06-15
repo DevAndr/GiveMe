@@ -1,4 +1,5 @@
 import MainLayout from "../../components/layouts/MainLayout";
+import styles from '../../styles/auth.module.scss';
 import logoTwitch from "../../public/images/twitch-logo.svg"
 import {NextPage} from "next";
 import React, {useContext, useEffect, useState} from 'react';
@@ -119,19 +120,23 @@ const AuthPage: NextPage = ({}) => {
     }
 
     const handleLogIn = async () => {
-        console.log(formData, formik)
-        const {data} = await logInAuth({
-            variables: {
-                data: {
-                    email: "biba@gmail.com",
-                    password: "qwerty"
-                }
-            }
-        })
+        console.log('handleLogIn', formData, formik.values)
+        const {email, password} = formik.values
 
-        if (data?.logIn.access_token) {
-            dispatch(setAuth(true))
-            router.push('/lists')
+        if (email && password) {
+            const {data} = await logInAuth({
+                variables: {
+                    data: {
+                        email,
+                        password
+                    }
+                }
+            })
+
+            if (data?.logIn.access_token) {
+                dispatch(setAuth(true))
+                router.push('/lists')
+            }
         }
     }
 
@@ -185,7 +190,6 @@ const AuthPage: NextPage = ({}) => {
                             </span>
                         {getFormErrorMessage('email')}
                     </div>
-
                     <div className="field pt-2">
                             <span className="p-float-label">
                                 <Password id="password" name="password" value={formik.values.password}
@@ -280,15 +284,15 @@ const AuthPage: NextPage = ({}) => {
     }
 
     const ViewOAuth2Variants = () => {
-        return <div className="flex flex-column align-items-center">
+        return <div className={styles.variantAuth}>
             <p className="text-color-secondary">Войти с помощью</p>
             <div className="flex gap-2">
-                <Chip label="google" icon="pi pi-google"/>
+                <Chip label="google" icon="pi pi-google" className="cursor-pointer"/>
                 <Chip template={<a
-                    href={`${process.env.BACKEND_HOST}/auth/twitch/oauth`}>
+                    href={`${process.env.BACKEND_HOST}/auth/twitch/oauth`} className={styles.twitchLink}>
                     <Image src={logoTwitch} width={16}
                            height={16}
-                           alt="auth by twitch accaount"/>
+                           alt="auth by twitch account"/>
                     <span className="p-chip-text ml-2">Twitch</span>
                 </a>}/>
             </div>

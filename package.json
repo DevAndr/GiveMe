@@ -21,6 +21,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^10.11.5",
     "graphql": "^16.6.0",
+    "graphql-request": "^6.1.0",
     "graphql-ws": "^5.12.1",
     "http-proxy": "^1.18.1",
     "include-media": "^2.0.0",
@@ -43,6 +44,10 @@
     "yup-password": "^0.2.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^4.0.1",
+    "@graphql-codegen/typescript": "^4.0.0",
+    "@graphql-codegen/typescript-operations": "^4.0.0",
+    "@graphql-codegen/typescript-react-query": "^4.1.0",
     "@types/node": "18.0.5",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",

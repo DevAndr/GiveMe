@@ -16,8 +16,8 @@ import {decodeJwt} from "jose";
 import {REFRESH_TOKEN} from "./gqls";
 import {ParamsRefreshToken, ResponseRefreshToken} from "./types";
 
-const HOST_GRAPQL = process.env.HOST_GRAPQL
-const url = HOST_GRAPQL ? HOST_GRAPQL : 'http://localhost:3030/graphql'
+const HOST_GRAPHQL = process.env.HOST_GRAPQL
+const url = HOST_GRAPHQL ? HOST_GRAPHQL : 'http://localhost:3030/graphql'
 
 const credentialLinkHttp = createHttpLink({
     uri: url,
@@ -30,14 +30,16 @@ function isRefreshRequest(operation: GraphQLRequest) {
 
 const returnTokenDependingOnOperation = (operation: GraphQLRequest) => {
     const tokens = AuthService.getLocalTokens();
-
+    // console.log('returnTokenDependingOnOperation', tokens)
     if (isRefreshRequest(operation))
         return tokens.rt || '';
-    else return tokens.at || '';
+    else
+        return tokens.at || '';
 }
 
 const authLink = setContext((operation, {headers}) => {
     const token = returnTokenDependingOnOperation(operation);
+    // console.log('operation', operation, token)
 
     return {
         headers: {
@@ -51,7 +53,8 @@ const authLink = setContext((operation, {headers}) => {
 const wsLink = typeof window !== "undefined" ? new GraphQLWsLink(
     createClient({
         url: "ws://localhost:3030/graphql",
-        options: {
+        options
+    : {
             reconnect: true,
             lazy: true,
         }
@@ -61,11 +64,15 @@ const wsLink = typeof window !== "undefined" ? new GraphQLWsLink(
 const errorLink = onError(({graphQLErrors, networkError, forward, operation}) => {
     if (graphQLErrors) {
         graphQLErrors.forEach(async ({message, locations, path, extensions}) => {
-                // if (extensions.code === "UNAUTHENTICATED") {
+                if (extensions.code === "UNAUTHENTICATED") {
+                    // const accessToken = await refreshToken();
+
+
+                    console.log('update tokens')
                 //     if (operation.operationName === 'refresh') return;
                 //
                 //
-                // }
+                }
 
                 // const observable = new Observable<FetchResult<Record<string, any>>>(
                 //     (observer) => {
@@ -95,7 +102,7 @@ const errorLink = onError(({graphQLErrors, networkError, forward, operation}) =>
 
                 // const accessToken = await refreshToken();
 
-                console.log(`[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`)
+                console.log(`[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`, extensions)
             }
         );
     }
