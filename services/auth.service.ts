@@ -51,8 +51,8 @@ class AuthService {
     }
 
     getLocalTokens() {
-        const at = this.getCookieApp('access_token')
-        const rt = this.getCookieApp('refresh_token')
+        const at = this.getCookieApp('access_token') as string
+        const rt = this.getCookieApp('refresh_token') as string
         return {
             at,
             rt
