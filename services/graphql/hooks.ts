@@ -59,7 +59,7 @@ export const useProductsWishList = (uidWishList: string) => {
             return useQuery<ResponseListCurrentUser>(GET_PRODUCTS_BY_UID_LIST, {variables: {uidWishList}})
 }
 
-export const useGetTokens = () => useMutation<ResponseRefreshToken, ParamsRefreshToken>(REFRESH_TOKEN);
+export const useGetTokens = () => useMutation<ResponseRefreshToken, {}>(REFRESH_TOKEN);
 
 export const useUpdateWishList = () => {
     const [updatedWishList] = useMutation<ParamsUpdateWishList, ResponseUpdateWishList>(UPDATE_LIST)

@@ -1,0 +1,10 @@
+schema: http://localhost:3000/api/graphql
+documents: './services/graphql/**/*.graphql'
+generates:
+  ./services/graphql/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: graphql-request
