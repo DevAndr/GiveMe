@@ -1,0 +1,11 @@
+.formNewWishList {
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .field {
+      width: 100%
+    }
+  }
+}
