@@ -4,7 +4,8 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    color: var(--text-color)
+    color: var(--text-color);
+    font-size: 16px;
 }
 
 a {
@@ -14,6 +15,33 @@ a {
 
 * {
     box-sizing: border-box;
+}
+
+:root {
+    --white-color: #ffff;
+    --maxWidth: 2560px;
+    --multiplePx: 4px;
+    --multipleRem: 4rem;
+    --multiple: 4px;
+
+    --height-appbar: 70px;
+
+    --danger-color: #ef4747;
+    --info-color: #4769ef;
+}
+
+/* override */
+.p-toolbar {
+    /*background: #1c1c38 !important;*/
+    /*border-color: transparent;*/
+    border-bottom: 1px solid #dadada;
+    border-radius: 0 !important;
+}
+
+.sliderSplitter {
+    color: #876aed;
+    height: 100%;
+    width: 100%;
 }
 
 .sliderSplitter div.p-splitter-gutter {
@@ -30,16 +58,6 @@ a {
     transition: background-color 0.2s linear;
 }
 
-:root {
-    --white-color: #ffff;
-}
-
-.p-toolbar {
-    /*background: #1c1c38 !important;*/
-    /*border-color: transparent;*/
-    border-bottom: 1px solid #dadada;
-    border-radius: 0 !important;
-}
 
 .heading1 {
     font-size: 3rem;
