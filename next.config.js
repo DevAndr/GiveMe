@@ -9,6 +9,7 @@ module.exports = withSass({
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
