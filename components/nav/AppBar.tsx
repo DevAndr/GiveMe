@@ -1,6 +1,6 @@
 import {Button} from 'primereact/button';
 import {FC, MouseEventHandler, useState} from "react";
-import style from "../../styles/Toolbar.module.scss"
+import style from "../../styles/AppBar.module.scss"
 import {useBreakpoint} from "../../hooks/breakpoint";
 import {Toolbar as TB} from 'primereact/toolbar';
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
@@ -8,14 +8,15 @@ import {setVisibleAuthDialog} from '../../redux/reducers/auth.slice';
 import {setHide} from "../../redux/reducers/toolbar.slice";
 import {Badge} from "primereact/badge";
 import {show} from "../../redux/reducers/bascket.slice";
+import Logo from "../logo/Logo";
 
-interface INavBar {
+interface IAppBar {
     onClickMenu: MouseEventHandler
     isHideLeftMenu?: boolean
     isPresentView?: boolean
 }
 
-const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
+const AppBar: FC<IAppBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
     const breakpoint: any = useBreakpoint();
     const dispatch = useAppDispatch()
     const {backgroundColor} = useAppSelector(state => state.toolbar)
@@ -49,7 +50,7 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
     ];
 
     const leftContents = () => {
-        return isHideLeftMenu ? <></> :
+        return isHideLeftMenu ? <><Logo/></> :
             <>
                 <Button aria-label='Меню' icon="pi pi-bars" onClick={onClickMenu}/>
             </>
@@ -115,10 +116,11 @@ const Toolbar: FC<INavBar> = ({onClickMenu, isHideLeftMenu, isPresentView}) => {
         return (<></>)
 
     return (
-        <nav className={`${style.toolbar} sticky max-w-full top-0`}>
-            <TB className="p-2" style={{backgroundColor, border: backgroundColor === '#fff' ? "" : 'none'}} start={leftContents} end={rightContents}/>
-        </nav>
+        <header className={style.appbar}>
+            <TB style={{backgroundColor, border: backgroundColor === '#fff' ? "" : 'none'}}
+                start={leftContents} end={rightContents}/>
+        </header>
     )
 }
 
-export default Toolbar
+export default AppBar

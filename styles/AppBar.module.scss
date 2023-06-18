@@ -2,8 +2,15 @@
 
 $min-width-phone: 320px;
 
-.toolbar {
+.appbar {
+  height: var(--height-appbar);
+  position: fixed;
+  width: 100%;
   z-index: 1102;
+
+  .p-toolbar{
+    height: 70px !important;
+  }
 
   @include media('<=XS') {
     min-width: $min-width-phone;
