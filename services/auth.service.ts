@@ -1,5 +1,6 @@
 import {getCookie} from 'cookies-next';
 import {decodeJwt} from "jose";
+import localStorageService from "./LocalStorageService";
 
 interface ILocalTokens {
     at?: string | null | undefined
@@ -21,6 +22,7 @@ const isExpiration: isExpirationToken = (token) => {
 }
 
 class AuthService {
+    private FIELD_LAST_VISIT_PATH: string = 'lastVisitPath'
 
     getCookieApp(name: string) {
         return getCookie(name)
@@ -61,6 +63,22 @@ class AuthService {
 
     refreshTokens() {
 
+    }
+
+    getCurrentTypeAuth() {
+        //     jwt or oauth2 twitch, google
+    }
+
+    getLastVisitPath() {
+        return localStorageService.get(this.FIELD_LAST_VISIT_PATH)
+    }
+
+    setLastVisitPath(path: string) {
+        localStorageService.add(this.FIELD_LAST_VISIT_PATH, path)
+    }
+
+    removeLastVisitPath() {
+        localStorageService.remove(this.FIELD_LAST_VISIT_PATH)
     }
 }
 
