@@ -5,6 +5,7 @@ import {Button} from "primereact/button";
 import {useMutation} from "@apollo/client";
 import {ParamsCreateList, ResponseList} from "../../services/graphql/types";
 import {CREATE_LIST} from "../../services/graphql";
+import style from './FormAddNewWishList.module.scss'
 
 interface FormAddNewWishListProps {
 
@@ -14,7 +15,6 @@ const FormAddNewWishList: FC<FormAddNewWishListProps> = () => {
     const [createList] = useMutation<ResponseList, ParamsCreateList>(CREATE_LIST);
     const [nameList, setNameList] = useState<string>("")
     const [descriptionList, setDescriptionList] = useState<string>("")
-
 
     const handleChangeNameList: ChangeEventHandler<HTMLInputElement> = (e) => {
         setNameList(prev => e.target.value)
@@ -41,23 +41,20 @@ const FormAddNewWishList: FC<FormAddNewWishListProps> = () => {
         }
     }
 
-    return (<div className="m-2 pl-4 pr-4">
-        <h3 className={''}>Новый список</h3>
-        <div className="card">
-            <div className="p-fluid grid">
-                <div className="field" style={{width: '-webkit-fill-available'}}>
-                    <InputText type="text" className="p-inputtext-sm block p-2"
-                               placeholder="Имя списка" value={nameList}
-                               onChange={handleChangeNameList}/>
-                </div>
-                <div className="field" style={{width: '-webkit-fill-available'}}>
-                    <InputTextarea className="p-2" rows={3} cols={30} autoResize
-                                   placeholder="Описание" value={descriptionList}
-                                   onChange={handleChangeDescList}/>
-                </div>
-                <div className="field" style={{width: '-webkit-fill-available'}}>
-                    <Button label="Добавить" icon="pi pi-plus" onClick={handleAddList}/>
-                </div>
+    return (<div className={style.formNewWishList}>
+        <h3>Новый список</h3>
+        <div className={style.form}>
+            <div className={style.field}>
+                <InputText className="w-full" type="text" placeholder="Имя списка" value={nameList}
+                           onChange={handleChangeNameList}/>
+            </div>
+            <div className={style.field}>
+                <InputTextarea className="w-full" rows={3} cols={30} autoResize
+                               placeholder="Описание" value={descriptionList}
+                               onChange={handleChangeDescList}/>
+            </div>
+            <div className={style.field}>
+                <Button className="w-full" label="Добавить" icon="pi pi-plus" onClick={handleAddList}/>
             </div>
         </div>
     </div>)
