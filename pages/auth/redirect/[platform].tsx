@@ -27,7 +27,7 @@ const Redirect: FC = () => {
         return <></>;
 
     return (
-        <MainLayout isHideHeader={true} isHideFooter={true} className="min-h-screen justify-content-center">
+        <MainLayout isHideHeader={true} isHideFooter={true} className="min-h-screen justify-content-center" meta={{title: 'Give Me'}}>
             <div className="flex flex-column justify-content-center">
                 <h1>Авторизация</h1>
                 <Loader strokeWidth="4"/>

@@ -300,7 +300,7 @@ const AuthPage: NextPage = ({}) => {
     }
 
     return (
-        <MainLayout isHideHeader={true} className="min-h-screen">
+        <MainLayout isHideHeader={true} className="min-h-screen" meta={{title: 'Give Me - Авторизация'}}>
             <div className="min-h-screen flex justify-content-center">
                 <div className="flex fixed" style={{top: 40, right: 40}}>
                     <Button icon="pi pi-times"
