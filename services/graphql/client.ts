@@ -149,7 +149,7 @@ const getRefreshToken = async () => {
         console.log('getRefreshToken error', e)
         removeCookies('access_token')
         removeCookies('refresh_token')
-        throw e;
+        // throw e;
     }
 }
 
