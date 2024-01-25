@@ -172,7 +172,7 @@ const Home: NextPage = () => {
                         <h2 className="text-6xl m-0 font-medium text-left">Разобраться — просто</h2>
                     </div>
                     <div className="mt-4 h-10rem flex flex-column-reverse align-items-center">
-                        <Link href="/auth/auth">
+                        <Link href="/auth">
                             <Button size="large" label="Начать пользоваться" className="m-2"/>
                         </Link>
                     </div>

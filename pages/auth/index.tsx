@@ -333,7 +333,6 @@ const AuthPage: NextPage = ({}) => {
                         {
                             ViewOAuth2Variants()
                         }
-
                     </div>
                 </div>
             </div>
