@@ -2,9 +2,9 @@
 
 # dependencies
 /node_modules
-/.idea
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -24,7 +24,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env*.local
@@ -34,10 +33,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-
-yarn.lock
-package-lock.json
-/dev/
-
-
-/.idea
+next-env.d.ts
