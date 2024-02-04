@@ -3,69 +3,68 @@
 import Image from "next/image";
 import Link from "next/link";
 import {useEffect, useRef, useState} from "react";
-import {router} from "next/client";
+// import {router} from "next/client";
 
 export default function Home() {
-    const sectionRef = useRef<null | HTMLElement>(null)
-
-    // const dispatch = useAppDispatch()
-    // const router = useRouter()
-    // const breakpoints: any = useBreakpoint();
-    const observerRef = useRef<IntersectionObserver | null>(null);
-    // const {loading, error, data: checkAuthData} = useQuery(IS_AUTH);
-    // const {loading: loadingCurrentUser, error: errorCurrentUser, data: dataCurrentUser} = useQuery(CURRENT_USER);
-    const [isAuth, setIsAuth] = useState<boolean>()
-    const [currentUser, setCurrentUser] = useState<any>()
-
-    // console.log(breakpoints)
-
-    useEffect(() => {
-        // fetching()
-
-        // const localTokens = AuthService.getLocalTokens()
-        // if (localTokens.at && localTokens.rt && checkAuthData?.checkAuth?.isAuth) {
-        //     setIsAuth(true)
-        // } else {
-        //     setIsAuth(false)
-        // }
-        //
-        // setCurrentUser(dataCurrentUser?.currentUser)
-
-
-        observerRef.current = new IntersectionObserver(([entry]) => {
-            // if (entry.isIntersecting) {
-            //     const colorBG = entry.target.getAttribute('data-color')
-            //     console.log(colorBG, sectionRef.current?.getAttribute('data-color'))
-            //
-            //     if (colorBG)
-            //         dispatch(setBackgroundColor(colorBG))
-            // } else {
-            //     dispatch(setBackgroundColor('#fff'))
-            // }
-        })
-
-        return () => observerRef.current?.disconnect()
-    }, [])
-
-    useEffect(() => {
-        if (sectionRef.current)
-            observerRef.current?.observe(sectionRef.current)
-    }, [sectionRef]);
+    // const sectionRef = useRef<null | HTMLElement>(null)
+    //
+    // // const dispatch = useAppDispatch()
+    // // const router = useRouter()
+    // // const breakpoints: any = useBreakpoint();
+    // const observerRef = useRef<IntersectionObserver | null>(null);
+    // // const {loading, error, data: checkAuthData} = useQuery(IS_AUTH);
+    // // const {loading: loadingCurrentUser, error: errorCurrentUser, data: dataCurrentUser} = useQuery(CURRENT_USER);
+    // const [isAuth, setIsAuth] = useState<boolean>()
+    // const [currentUser, setCurrentUser] = useState<any>()
+    //
+    // // console.log(breakpoints)
+    //
+    // useEffect(() => {
+    //     // fetching()
+    //
+    //     // const localTokens = AuthService.getLocalTokens()
+    //     // if (localTokens.at && localTokens.rt && checkAuthData?.checkAuth?.isAuth) {
+    //     //     setIsAuth(true)
+    //     // } else {
+    //     //     setIsAuth(false)
+    //     // }
+    //     //
+    //     // setCurrentUser(dataCurrentUser?.currentUser)
+    //
+    //     observerRef.current = new IntersectionObserver(([entry]) => {
+    //         // if (entry.isIntersecting) {
+    //         //     const colorBG = entry.target.getAttribute('data-color')
+    //         //     console.log(colorBG, sectionRef.current?.getAttribute('data-color'))
+    //         //
+    //         //     if (colorBG)
+    //         //         dispatch(setBackgroundColor(colorBG))
+    //         // } else {
+    //         //     dispatch(setBackgroundColor('#fff'))
+    //         // }
+    //     })
+    //
+    //     return () => observerRef.current?.disconnect()
+    // }, [])
+    //
+    // useEffect(() => {
+    //     if (sectionRef.current)
+    //         observerRef.current?.observe(sectionRef.current)
+    // }, [sectionRef]);
 
     async function fetching() {
         // const localTokens = AuthService.getLocalTokens()
     }
 
     const handleCheckAuth = async () => {
-        if (isAuth) {
-            router.push('/editList')
-        } else {
-            router.push('/auth')
-        }
+        // if (isAuth) {
+        //     // router.push('/editList')
+        // } else {
+        //     // router.push('/auth')
+        // }
     }
 
     return (
-        <div className="p-8">
+        <div className="p-4">
             <h1>Demo page</h1>
             {/*<section data-color={'#1c1c38'} ref={sectionRef} className={`${style.Section} ${style.PresentSection}`}>*/}
             {/*    <div className={`${stylePage.container}`}>*/}

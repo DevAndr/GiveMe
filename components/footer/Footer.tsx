@@ -6,7 +6,7 @@ interface FooterProps {
 
 const Footer: FC<FooterProps> = ({children}) => {
     return (
-        <footer className='p-4'>
+        <footer className='p-3'>
             {children ? children : <>
                 <p>Footer</p>
             </>}

@@ -1,13 +1,9 @@
 import type {Metadata} from "next";
-import {Inter} from "next/font/google";
-import "./globals.css";
-// import "primereact/resources/themes/lara-dark-indigo/theme.css"
-import "./styles/theme.css";
+import "primereact/resources/themes/soho-light/theme.css"
+import "./styles/globals.css";
 
 import {ReactNode} from "react";
 import Providers from "@/providers";
-
-const inter = Inter({subsets: ["latin"]});
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -18,7 +14,7 @@ export default function RootLayout({children}: Readonly<{ children: ReactNode }>
     return (
         <Providers>
             <html lang="en">
-            <body className={inter.className}>
+            <body>
                 {children}
             </body>
             </html>

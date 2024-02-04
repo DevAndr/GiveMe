@@ -3,12 +3,6 @@ import {fileURLToPath} from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 
-// import withSass from '@zeit/next-sass';
-//
-// module.exports = withSass({
-//     cssModules: true
-// })
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,

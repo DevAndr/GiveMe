@@ -10,7 +10,7 @@ interface ProvidersProps {
 
 const Providers: FC<ProvidersProps> = ({children}) => {
     return (
-        <PrimeReactProvider>
+        <PrimeReactProvider value={{ripple: true}}>
             {children}
         </PrimeReactProvider>
     )

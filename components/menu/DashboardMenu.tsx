@@ -6,8 +6,7 @@ interface DashboardMenuProps {
 }
 
 let items = [
-    {label: 'Мои списки желаний', icon: 'pi pi-fw pi-plus'},
-    {label: 'Добавить желание', icon: 'pi pi-fw pi-plus'},
+    {label: 'Списки желаний', icon: 'pi pi-fw pi-plus'},
     {label: 'Уведомления', icon: 'pi pi-fw pi-plus'},
     {label: 'Интеграции', icon: 'pi pi-fw pi-plus'},
     {label: 'Настройки', icon: 'pi pi-fw pi-trash'}

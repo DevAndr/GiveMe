@@ -10,7 +10,7 @@ const Logo: FC<LogoProps> = () => {
     return (
         <Link href={'/'} className='flex gap-2 align-items-center'>
             <i className="pi pi-gift"></i>
-            <h3>Give Me</h3>
+            <h6>Give Me</h6>
         </Link>
     );
 }

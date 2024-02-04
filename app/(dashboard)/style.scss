@@ -1,10 +1,15 @@
 .dashboardLayout {
-  .content {
-    @apply gap-2;
+  .main {
+    display: flex;
 
     .navigation {
       @apply p-4;
-      min-width: 120px;
+
+      min-width: 160px;
+    }
+
+    .content {
+     @apply p-4;
     }
   }
 }
