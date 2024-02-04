@@ -1,4 +1,8 @@
 import React, {FC, ReactNode} from 'react';
+import './style.scss';
+import AppBar from "@/components/appBar/AppBar";
+import Footer from "@/components/footer/Footer";
+import DashboardMenu from "@/components/menu/DashboardMenu";
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -6,20 +10,22 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: FC<DashboardLayoutProps> = ({children}) => {
     return (
-        <>
-            {
-                // <header></header> optional
-            }
-            <nav></nav>
-            <main className='flex min-h-screen flex-col items-center justify-center'>
-                {
-                    children
-                }
+        <div className='dashboardLayout'>
+            <header>
+                <AppBar/>
+            </header>
+            <main className='flex min-h-screen flex-row flex-col p-4 content'>
+                <nav className='min-h-screen navigation'>
+                  <DashboardMenu/>
+                </nav>
+                <div className='flex-auto flex justify-content-center'>
+                    {
+                        children
+                    }
+                </div>
             </main>
-            {
-                // <footer></footer> optional
-            }
-        </>
+            <Footer/>
+        </div>
     )
 }
 
