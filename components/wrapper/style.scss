@@ -1,0 +1,22 @@
+.content {
+
+}
+
+.content.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content.fullScreen {
+  width: 100vw;
+  height: 100svh;
+
+  @extend .center
+}
+
+.content.fullScreenInTop {
+  @extend .fullScreen;
+
+  align-items: initial;
+}
