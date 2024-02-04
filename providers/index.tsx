@@ -10,11 +10,9 @@ interface ProvidersProps {
 
 const Providers: FC<ProvidersProps> = ({children}) => {
     return (
-        <>
-            <PrimeReactProvider>
-                {children}
-            </PrimeReactProvider>
-        </>
+        <PrimeReactProvider>
+            {children}
+        </PrimeReactProvider>
     )
 }
 
