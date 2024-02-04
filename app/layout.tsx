@@ -1,6 +1,9 @@
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import "./globals.css";
+// import "primereact/resources/themes/lara-dark-indigo/theme.css"
+import "./styles/theme.css";
+
 import {ReactNode} from "react";
 import Providers from "@/providers";
 
