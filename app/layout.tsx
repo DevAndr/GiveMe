@@ -1,7 +1,6 @@
 import type {Metadata} from "next";
-import "primereact/resources/themes/soho-light/theme.css"
+import "primereact/resources/themes/soho-dark/theme.css";
 import "./styles/globals.css";
-
 import {ReactNode} from "react";
 import Providers from "@/providers";
 

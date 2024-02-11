@@ -27,7 +27,7 @@ const menuItems: IMenu[] = [
                 icon: "pi pi-book"
             },
             {
-                label: "Для секс игр",
+                label: "Для игр",
                 icon: "pi pi-book"
             }
         ]

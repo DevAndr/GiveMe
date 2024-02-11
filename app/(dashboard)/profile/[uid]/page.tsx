@@ -37,7 +37,7 @@ const Page: FC<PageProps> = ({params}) => {
                 библиотеками,
                 такими как MobX, Redux и GraphQL.
             </div>
-            <Button>Add</Button>
+            <Button label="Click" icon="pi pi-check" />
         </div>
     );
 };

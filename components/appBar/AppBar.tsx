@@ -26,13 +26,13 @@ const AppBar: FC<AppBarProps> = ({type, isAuthenticated}) => {
         setShow(prevState => !prevState);
     };
 
-    const leftContents = () => (<div>
+    const leftContents = () => (<>
         {
             show ? <Button aria-label="Меню" icon="pi pi-times" onClick={onClickMenu}/> :
                 <Button aria-label="Меню" icon="pi pi-bars" onClick={onClickMenu}/>
         }
         <Logo/>
-    </div>);
+    </>);
 
     return (
         <>
