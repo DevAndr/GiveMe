@@ -25,11 +25,6 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({children,}) => {
                 <Content typeView={'fullScreenInTop'}>
                     {children}
                 </Content>
-                {/*<div className='content'>*/}
-                {/*    {*/}
-                {/*        children*/}
-                {/*    }*/}
-                {/*</div>*/}
             </main>
             <Footer/>
         </div>

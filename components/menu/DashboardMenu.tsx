@@ -14,7 +14,7 @@ let items = [
 
 const DashboardMenu: FC<DashboardMenuProps> = () => {
     return (
-        <Menu model={items}/>
+        <Menu model={items} className='w-auto'/>
     );
 }
 

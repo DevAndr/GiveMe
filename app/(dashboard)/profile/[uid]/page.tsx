@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import {Button} from 'primereact/button';
-import {ListBox} from 'primereact/listbox';
+import './style.scss'
 
 interface PageProps {
     params: {
@@ -11,19 +11,9 @@ interface PageProps {
 const Page: FC<PageProps> = ({params}) => {
 
     return (
-        <div>
-            <h1>Profile page {params.uid}</h1>
-
-            <div className="card flex justify-content-center">
-                <ListBox options={[
-                    {name: 'New York', code: 'NY'},
-                    {name: 'Rome', code: 'RM'},
-                    {name: 'London', code: 'LDN'},
-                    {name: 'Istanbul', code: 'IST'},
-                    {name: 'Paris', code: 'PRS'}
-                ]} optionLabel="name" className="w-full md:w-14rem"/>
-            </div>
-
+        <div className='page'>
+            <h1 className='pageTitle'>{params.uid}</h1>
+            <small className='statusUser'>Статус пользователя</small>
             <div>
                 React (иногда React.js или ReactJS) — JavaScript-библиотека[5] с открытым исходным кодом для разработки
                 пользовательских интерфейсов.
@@ -37,7 +27,26 @@ const Page: FC<PageProps> = ({params}) => {
                 библиотеками,
                 такими как MobX, Redux и GraphQL.
             </div>
-            <Button label="Click" icon="pi pi-check" />
+
+            <div className="flex flex-column gap-4">
+                <div style={{marginTop: '2rem'}} className="flex gap-4">
+                    <Button label="Click" icon="pi pi-check"/>
+                    <Button text label="Click" icon="pi pi-heart"/>
+                    <Button text raised label="Click 1" icon="pi pi-heart"/>
+                    <Button outlined label="Click 2" icon="pi pi-heart"/>
+
+                    <Button type="button" label="Messages" icon="pi pi-users" outlined badge="2"
+                            badgeClassName="p-badge-danger"/>
+                </div>
+
+                <div>
+                    <span className="p-buttonset">
+                        <Button label="Save" icon="pi pi-check"/>
+                        <Button label="Delete" icon="pi pi-trash"/>
+                        <Button label="Cancel" icon="pi pi-times"/>
+                    </span>
+                </div>
+            </div>
         </div>
     );
 };
