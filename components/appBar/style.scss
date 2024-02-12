@@ -1,0 +1,23 @@
+@import "breakpoints/include-media";
+
+.appBar {
+  .leftElements {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    .menuBtn {
+      width: 2.5rem;
+      height: 2.5rem;
+
+      @include media('>S') {
+        display: none;
+      }
+    }
+  }
+
+  .rightElements {
+
+  }
+}

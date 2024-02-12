@@ -7,6 +7,7 @@ $unit: 1rem;
     font-size: $size;
     font-weight: var(--bold);
     line-height: $size;
+    margin: 0;
     padding: calc(1rem + calc(7 - $i) * .25rem) 0;
   }
 }
