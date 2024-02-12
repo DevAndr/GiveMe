@@ -7,6 +7,7 @@
 /*@import '../../node_modules/primeflex/primeflex.css';*/
 @import "variables.scss";
 @import "captions.scss";
+@import "base-page.scss";
 
 
 html,
@@ -15,9 +16,9 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    /*color: var(--text-color);*/
     font-size: 16px;
     background-color: var(--foreground-color);
+    text-wrap: balance;
 }
 
 @layer tailwind-utilities {
