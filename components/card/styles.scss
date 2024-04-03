@@ -1,10 +1,12 @@
 .card {
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.1);
+
   .header {
 
   }
 
   .body {
-
+    padding: 1rem;
   }
 
   .footer {
@@ -12,6 +14,44 @@
   }
 }
 
-.card.wish{
+.card.wish {
+  .p-card-body, .p-card-content {
+    padding: 0;
+  }
 
+  .header {
+    .wrap-header {
+      position: relative;
+    }
+
+    .img {
+      width: 100%;
+      object-fit: cover;
+      border-radius: .5rem .5rem 0 0;
+    }
+
+    .btn-add {
+      top: .5rem;
+      right: .5rem;
+      position: absolute;
+      box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .body {
+    .title {
+      padding: 0;
+      margin-bottom: 1rem;
+    }
+
+    .description {
+
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: end;
+    }
+  }
 }
