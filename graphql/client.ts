@@ -7,7 +7,7 @@ import {
 } from '@apollo/client';
 import {onError} from "@apollo/client/link/error";
 import {setContext} from "@apollo/client/link/context";
-import AuthService from "../auth.service";
+import AuthService from "../services/auth.service";
 import {GraphQLWsLink} from "@apollo/client/link/subscriptions";
 import {createClient} from 'graphql-ws';
 import {getMainDefinition} from "@apollo/client/utilities";
@@ -16,11 +16,11 @@ import {decodeJwt} from "jose";
 import {REFRESH_TOKEN} from "./gqls";
 import {ParamsRefreshToken, ResponseRefreshToken} from "./types";
 import {useGetTokens} from "./hooks";
-import {removeCookies} from "cookies-next";
+import {deleteCookie} from "cookies-next";
 import {GraphQLError} from 'graphql/error';
 
-const HOST_GRAPHQL = process.env.HOST_GRAPQL
-const url = HOST_GRAPHQL ? HOST_GRAPHQL : 'http://localhost:3030/graphql'
+const HOST_GRAPHQL = process.env.HOST_GRAPQL;
+const url = HOST_GRAPHQL ? HOST_GRAPHQL : 'http://localhost:3030/graphql';
 
 const credentialLinkHttp = createHttpLink({
     uri: url,
@@ -32,14 +32,14 @@ function isRefreshRequest(operation: GraphQLRequest) {
 }
 
 const returnTokenDependingOnOperation = (operation: GraphQLRequest): string => {
-    console.log('returnTokenDependingOnOperation', operation.operationName)
+    console.log('returnTokenDependingOnOperation', operation.operationName);
     const tokens = AuthService.getLocalTokens();
     // console.log('returnTokenDependingOnOperation', tokens)
     if (isRefreshRequest(operation))
         return tokens.rt || '';
 
     return tokens.at || '';
-}
+};
 
 const authLink = setContext((operation, {headers}) => {
     const token = returnTokenDependingOnOperation(operation);
@@ -50,20 +50,16 @@ const authLink = setContext((operation, {headers}) => {
             ...headers,
             authorization: token ? `Bearer ${token}` : "",
         }
-    }
+    };
 });
 
 const wsLink = typeof window !== "undefined" ? new GraphQLWsLink(
         createClient({
             url: "ws://localhost:3030/graphql",
-            options
-    : {
-        reconnect: true,
-        lazy: true,
-    }
-})
-) :
-null;
+            lazy: true,
+        })
+    ) :
+    null;
 
 const errorLink = onError(({graphQLErrors, networkError, forward, operation}) => {
     if (graphQLErrors) {
@@ -72,7 +68,7 @@ const errorLink = onError(({graphQLErrors, networkError, forward, operation}) =>
                     if (operation.operationName === 'Refresh') return;
 
                     const updateTokens = await getRefreshToken();
-                    forward(operation)
+                    forward(operation);
 
                     // const observable = new Observable<FetchResult<Record<string, any>>>(
                     //     (observer) => {
@@ -100,15 +96,15 @@ const errorLink = onError(({graphQLErrors, networkError, forward, operation}) =>
                     // );
                     //
                     // return observable
-                   // await getRefreshToken()
+                    // await getRefreshToken()
                 }
 
                 if (extensions.code === "FORBIDDEN") {
                     //redirect to login page
-                    window.location.replace('/auth')
+                    window.location.replace('/auth');
                 }
 
-                console.log(`[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`, extensions)
+                console.log(`[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`, extensions);
             }
         );
     }
@@ -142,15 +138,15 @@ const getRefreshToken = async () => {
     try {
         const refreshResolverResponse = await client.mutate<ResponseRefreshToken, {}>({
             mutation: REFRESH_TOKEN
-        })
+        });
 
         return refreshResolverResponse.data?.refresh;
     } catch (e) {
-        console.log('getRefreshToken error', e)
-        removeCookies('access_token')
-        removeCookies('refresh_token')
+        console.log('getRefreshToken error', e);
+        deleteCookie('access_token');
+        deleteCookie('refresh_token');
         // throw e;
     }
-}
+};
 
-export default client
+export default client;
