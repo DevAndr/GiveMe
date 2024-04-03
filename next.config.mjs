@@ -11,6 +11,9 @@ const nextConfig = {
     sassOptions: {
         includePaths: [path.join(__filename, 'styles')],
     },
+    images: {
+        domains: ['ae01.alicdn.com', 'cgmood.com', 'cdn.shopify.com']
+    },
     env: {
         BACKEND_HOST: process.env.BACKEND_HOST,
         HOST_GRAPHQL: process.env.BACKEND_HOST,
