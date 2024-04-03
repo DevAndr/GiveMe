@@ -1,0 +1,42 @@
+.empty-msg {
+  gap: .5rem;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+.data-view {
+  margin-top: 1rem;
+}
+
+.list {
+  @apply grid grid-cols-1 gap-4;
+  @screen sm {
+    @apply grid-cols-2;
+  }
+
+  @screen md {
+    @apply grid-cols-3;
+  }
+  @screen lg {
+    @apply grid-cols-4;
+  }
+
+  @screen xl {
+    @apply grid-cols-5;
+  }
+
+  .item {
+
+  }
+}
+
+.list.wish {
+
+}

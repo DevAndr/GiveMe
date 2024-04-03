@@ -1,0 +1,15 @@
+.public-layout {
+  display: flex;
+  margin: 0 auto;
+  min-height: 100svh;
+  flex-direction: column;
+  padding: 1rem;
+
+  header {
+
+  }
+
+  main {
+      flex: 1;
+  }
+}
