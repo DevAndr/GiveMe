@@ -99,9 +99,6 @@ const WishListPublic: FC<WishListViewProps> = () => {
 
     return (
         <ul className='list wish'>
-            {/*<DataScroller value={data} buffer={0.4} rows={10} header={headerList('Избранное')}*/}
-            {/*              itemTemplate={(item) => <WishCard data={item}/>} emptyMessage={emptyMessage}/>*/}
-
             {
                 data.map(wish => <li className='item'><WishCard data={wish}/></li>)
             }
