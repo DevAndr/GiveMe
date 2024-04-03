@@ -9,6 +9,13 @@ import WishCard from "@/components/card/WishCard";
 
 const data: ItemWIshList[] = [
     {
+        id: 0,
+        name: 'Item 0',
+        description: 'Description 0',
+        price: 999,
+        image: 'https://images.hepsiburada.net/assets/ProductDescription/201807/b54072f9-7314-449b-ac9c-739ea3ed9117.jpg'
+    },
+    {
         id: 1,
         name: 'Item 1',
         description: 'Description 1',

@@ -12,7 +12,7 @@ const nextConfig = {
         includePaths: [path.join(__filename, 'styles')],
     },
     images: {
-        domains: ['ae01.alicdn.com', 'cgmood.com', 'cdn.shopify.com']
+        domains: ['ae01.alicdn.com', 'cgmood.com', 'cdn.shopify.com', 'images.hepsiburada.net']
     },
     env: {
         BACKEND_HOST: process.env.BACKEND_HOST,
