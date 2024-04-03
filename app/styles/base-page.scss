@@ -1,5 +1,44 @@
 .page {
+  margin: 0 auto;
+  padding: 0 4rem;
+
+  @media screen and (max-width: 680px) {
+    padding: 0;
+  }
+
   .pageTitle {
-    
+    @media screen and (max-width: 680px) {
+      font-size: 2rem;
+    }
+  }
+}
+
+.page.landing {
+  padding: 2rem;
+
+  .section {
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .present-section {
+
+  }
+
+  .img-landing {
+    border-radius: 1.5rem;
+  }
+
+  .platforms {
+    gap: 4rem;
+    display: flex;
+    align-items: center;
+
+    .company {
+      object-fit: contain;
+    }
   }
 }
