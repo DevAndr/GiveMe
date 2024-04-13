@@ -5,17 +5,15 @@ import {Button} from 'primereact/button';
 import Link from 'next/link';
 import StepsForUse from "@/components/step/StepsForUse";
 import Image from 'next/image';
+import {CURRENT_USER} from '@/graphql';
+import {useQuery} from '@apollo/client';
+import {useAuth} from '@/providers/auth/AuthProvider';
 // import {router} from "next/client";
 
 export default function Home() {
     const sectionRef = useRef<null | HTMLElement>(null);
-    //
-    // // const dispatch = useAppDispatch()
-    // // const router = useRouter()
-    // // const breakpoints: any = useBreakpoint();
-    // const observerRef = useRef<IntersectionObserver | null>(null);
-    // // const {loading, error, data: checkAuthData} = useQuery(IS_AUTH);
-    // // const {loading: loadingCurrentUser, error: errorCurrentUser, data: dataCurrentUser} = useQuery(CURRENT_USER);
+    const {isAuth} = useAuth()
+    const {loading: loadingCurrentUser, error: errorCurrentUser, data: dataCurrentUser} = useQuery(CURRENT_USER);
     // const [isAuth, setIsAuth] = useState<boolean>()
     // const [currentUser, setCurrentUser] = useState<any>()
     //
@@ -53,9 +51,6 @@ export default function Home() {
     //         observerRef.current?.observe(sectionRef.current)
     // }, [sectionRef]);
 
-    async function fetching() {
-        // const localTokens = AuthService.getLocalTokens()
-    }
 
     const handleCheckAuth = async () => {
         // if (isAuth) {
@@ -67,17 +62,17 @@ export default function Home() {
 
     return (
         <div className="page landing">
-            <section data-color={'#1c1c38'} ref={sectionRef} className="section present-section">
+            <section data-color={'#1c1c38'} ref={sectionRef} className="section present-section mb-20">
                 <div className="container">
                     <div className="flex justify-content-center gap-6">
                         <div className="">
-                            <p className="text-6xl m-0 font-medium text-left">Добро пожаловать</p>
+                            <p className="text-6xl m-0 font-medium text-left text-primary">Добро пожаловать</p>
                             <p className="font-medium text-xl">Это лучший срвис для осуществления желаний аноноимно
                                 и безопасно для стримеров</p>
-                            <p className="text-5xl m-0 font-semibold">Получай и дари</p>
-                            <p className="font-semibold font-bold text-6xl m-0">ПОДАРКИ</p>
-                            <p>Получай подарки и не бойся, что спалишь свой адрес</p>
-                            <p>Мы защитим Вас от сталкеров</p>
+                            <p className="text-5xl m-0 font-semibold mb-2 text-primary">Получай и дари</p>
+                            <p className="font-semibold font-bold text-6xl m-0 mb-2 text-primary">ПОДАРКИ</p>
+                            <p className="font-semibold">Получай подарки, а мы позаботимся о твоей анонимностью</p>
+                            <p className="font-semibold">Мы защитим Вас от сталкеров</p>
                             <div>
                             </div>
                             <div className="mt-6">
@@ -125,7 +120,7 @@ export default function Home() {
                     </div>
                 </div>
             </section>
-            <section className='section present-section'>
+            <section className="section present-section mb-20">
                 <div className="container">
                     <h3 className="text-6xl m-0 font-medium text-center p-4 text-black-alpha-90">Наши
                         преимущества</h3>
@@ -137,26 +132,27 @@ export default function Home() {
                     </p>
                 </div>
             </section>
-            <section className='section present-section' id="how-this-job">
+            <section className="section present-section mb-20" id="how-this-job">
                 <div className="container">
                     <h3 className="text-6xl m-0 font-medium text-center text-black-alpha-90 p-4">Как получать
                         подарки уже сейчас?</h3>
                     <StepsForUse/>
                 </div>
             </section>
-            <section className="section present-section">
+            <section className="section present-section mb-20">
                 <div className="container">
                     <h3 className="text-6xl m-0 font-medium text-left">Поддержка популярных платформ</h3>
                     <p>
-                      У нас можно получать подарки из крупных маркетплейсов: Wildberries и Ozon. В будущем будет Aliexpress, Яндекс Маркет
+                        У нас можно получать подарки из крупных маркетплейсов: Wildberries и Ozon. В будущем будет
+                        Aliexpress, Яндекс Маркет
                     </p>
-                    <div className='platforms'>
-                        <Image className='company' src={'/images/wb.png'} alt={'Wildberries'} width={240} height={96}/>
-                        <Image className='company' src={'/images/ozon.svg'} alt={'Ozon'} width={76} height={76}/>
+                    <div className="platforms">
+                        <Image className="company" src={'/images/wb.png'} alt={'Wildberries'} width={240} height={96}/>
+                        <Image className="company" src={'/images/ozon.svg'} alt={'Ozon'} width={76} height={76}/>
                     </div>
                 </div>
             </section>
-            <section className="section present-section">
+            <section className="section present-section mb-20">
                 <div className="container">
                     <h3 className="text-6xl m-0 font-medium text-left">Выгодно тем кто дарит</h3>
                     <p style={{width: 320, margin: 0}}>
@@ -166,7 +162,7 @@ export default function Home() {
 
                 </div>
             </section>
-            <section className="section">
+            <section className="section mb-20">
                 <div className="container">
                     <div className="flex justify-content-center gap-2">
                         <h3 className="text-6xl m-0 font-medium text-left">Разобраться — просто</h3>

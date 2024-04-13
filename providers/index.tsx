@@ -5,6 +5,7 @@ import "primeicons/primeicons.css"; //icons
 import {PrimeReactProvider} from "primereact/api";
 import client from '@/graphql/client';
 import {ApolloProvider} from '@apollo/client';
+import AuthProvider from '@/providers/auth/AuthProvider';
 
 interface ProvidersProps {
     children: ReactNode;
@@ -12,11 +13,13 @@ interface ProvidersProps {
 
 const Providers: FC<ProvidersProps> = ({children}) => {
     return (
-        <ApolloProvider client={client}>
-            <PrimeReactProvider value={{ripple: true}}>
-                {children}
-            </PrimeReactProvider>
-        </ApolloProvider>
+        <AuthProvider>
+            <ApolloProvider client={client}>
+                <PrimeReactProvider value={{ripple: true}}>
+                    {children}
+                </PrimeReactProvider>
+            </ApolloProvider>
+        </AuthProvider>
     );
 };
 
