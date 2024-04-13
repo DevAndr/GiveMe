@@ -20,8 +20,11 @@ const CURRENT_USER = gql`
     query CurrentUser {
         currentUser {
             uid
-            email
             name
+            email
+            role
+            createAt
+            updateAt
         }
     }`;
 

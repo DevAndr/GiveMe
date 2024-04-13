@@ -18,6 +18,7 @@ import {ParamsRefreshToken, ResponseRefreshToken} from "./types";
 import {useGetTokens} from "./hooks";
 import {deleteCookie} from "cookies-next";
 import {GraphQLError} from 'graphql/error';
+import LocalStorageService from '@/services/LocalStorageService';
 
 const HOST_GRAPHQL = process.env.HOST_GRAPQL;
 const url = HOST_GRAPHQL ? HOST_GRAPHQL : 'http://localhost:3030/graphql';
@@ -28,79 +29,72 @@ const credentialLinkHttp = createHttpLink({
 });
 
 function isRefreshRequest(operation: GraphQLRequest) {
-    return operation.operationName === 'Refresh';
+    return operation.operationName === 'refresh';
 }
 
 const returnTokenDependingOnOperation = (operation: GraphQLRequest): string => {
     console.log('returnTokenDependingOnOperation', operation.operationName);
     const tokens = AuthService.getLocalTokens();
-    // console.log('returnTokenDependingOnOperation', tokens)
-    if (isRefreshRequest(operation))
-        return tokens.rt || '';
+    const at = LocalStorageService.get('access_token');
+    const rt = LocalStorageService.get('refresh_token');
 
-    return tokens.at || '';
+    if (isRefreshRequest(operation)) {
+        console.log('CHEK refresh', operation.operationName);
+        if (!rt)
+            window.location.replace('/auth');
+
+        return rt || '';
+    }
+
+    return at || '';
 };
 
 const authLink = setContext((operation, {headers}) => {
-    const token = returnTokenDependingOnOperation(operation);
-    // console.log('operation', operation, token)
+            const at = LocalStorageService.get('access_token');
+            const rt = LocalStorageService.get('refresh_token');
+            let token = null;
 
-    return {
-        headers: {
-            ...headers,
-            authorization: token ? `Bearer ${token}` : "",
+            if (operation.operationName === 'refresh' || operation.operationName === 'Refresh') {
+                token = rt;
+                if (!token)
+                    window.location.replace('/auth');
+            } else token = at;
+
+            return {
+                headers: {
+                    ...headers,
+                    authorization: token ? `Bearer ${token}` : "",
+                }
+            };
         }
-    };
-});
+    )
+;
 
 const wsLink = typeof window !== "undefined" ? new GraphQLWsLink(
-        createClient({
-            url: "ws://localhost:3030/graphql",
-            lazy: true,
-        })
-    ) :
-    null;
+    createClient({
+        url: "ws://localhost:3030/graphql",
+        lazy: true,
+    })
+) : null;
 
 const errorLink = onError(({graphQLErrors, networkError, forward, operation}) => {
     if (graphQLErrors) {
         graphQLErrors.forEach(async ({message, locations, path, extensions}) => {
                 if (extensions.code === "UNAUTHENTICATED") {
-                    if (operation.operationName === 'Refresh') return;
+                    if (operation.operationName === 'Refresh') {
+                        return;
+                    }
 
-                    const updateTokens = await getRefreshToken();
+                    const rt = LocalStorageService.get('refresh_token');
+
+                    if (rt) {
+                        await getRefreshToken();
+                    }
+
                     forward(operation);
-
-                    // const observable = new Observable<FetchResult<Record<string, any>>>(
-                    //     (observer) => {
-                    //         (async () => {
-                    //             try {
-                    //                 const updateTokens = await getRefreshToken();
-                    //                 console.log(updateTokens)
-                    //
-                    //                 if (!updateTokens?.access_token) {
-                    //                     throw new GraphQLError('Empty AccessToken');
-                    //                 }
-                    //
-                    //                 const subscriber = {
-                    //                     next: observer.next.bind(observer),
-                    //                     error: observer.error.bind(observer),
-                    //                     complete: observer.complete.bind(observer),
-                    //                 };
-                    //
-                    //                 forward(operation).subscribe(subscriber);
-                    //             } catch (err) {
-                    //                 observer.error(err);
-                    //             }
-                    //         })();
-                    //     }
-                    // );
-                    //
-                    // return observable
-                    // await getRefreshToken()
                 }
 
                 if (extensions.code === "FORBIDDEN") {
-                    //redirect to login page
                     window.location.replace('/auth');
                 }
 
@@ -123,10 +117,8 @@ const splitLink = typeof window !== "undefined" && wsLink != null ? split(
     },
     wsLink,
     authLink.concat(errorLink)
-        .concat(authLink)
         .concat(credentialLinkHttp)
 ) : authLink.concat(errorLink)
-    .concat(authLink)
     .concat(credentialLinkHttp);
 
 const client = new ApolloClient({
@@ -140,12 +132,17 @@ const getRefreshToken = async () => {
             mutation: REFRESH_TOKEN
         });
 
+        LocalStorageService.add('access_token', refreshResolverResponse.data?.data?.refresh?.access_token);
+        LocalStorageService.add('refresh_token', refreshResolverResponse.data?.data?.refresh?.refresh_token);
+
         return refreshResolverResponse.data?.refresh;
     } catch (e) {
         console.log('getRefreshToken error', e);
         deleteCookie('access_token');
         deleteCookie('refresh_token');
-        // throw e;
+        LocalStorageService.remove('access_token');
+        LocalStorageService.remove('refresh_token');
+        throw e;
     }
 };
 
