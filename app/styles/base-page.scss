@@ -1,6 +1,7 @@
 .page {
   margin: 0 auto;
   padding: 0 4rem;
+  min-height: 100svh;
 
   @media screen and (max-width: 680px) {
     padding: 0;
@@ -17,6 +18,11 @@
   padding: 2rem;
 
   .section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     .container {
       display: flex;
       flex-direction: column;
@@ -41,4 +47,11 @@
       object-fit: contain;
     }
   }
+}
+
+.page.auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

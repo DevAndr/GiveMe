@@ -1,7 +1,14 @@
 @import "breakpoints/include-media";
 
 .appBar {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 0;
+  border: none;
+  background-color: white;
+
   .leftElements {
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,6 +25,44 @@
   }
 
   .rightElements {
+    gap: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
 
+    .btn-auth {
+
+    }
+
+    .profile {
+      cursor: pointer;
+    }
   }
+}
+
+.nav-link-bar {
+  gap: .5rem;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  font-weight: 600;
+
+  svg {
+    color: color-mix(in srgb, #000000 50%, white);
+  }
+
+  a {
+    color: inherit;
+    font-weight: inherit;
+  }
+
+  &:hover {
+    color: color-mix(in srgb, var(--primary) 70%, #000000);
+  }
+}
+
+.menu-nav-bar {
+  gap: 1rem;
+  display: flex;
 }
