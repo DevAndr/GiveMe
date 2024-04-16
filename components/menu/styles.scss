@@ -1,0 +1,37 @@
+.menu-dashboard {
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .item {
+    gap: .5rem;
+    display: flex;
+    color: #535353;
+    transition: all 150ms linear;
+    font-weight: 600;
+
+    svg {
+      color: #868686;
+      transition: all 150ms linear;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    &:hover {
+      color: var(--primary);
+
+      svg {
+        color: inherit;
+      }
+    }
+  }
+
+  .item.active {
+    color: var(--primary);
+    svg {
+      color: inherit;
+    }
+  }
+}
