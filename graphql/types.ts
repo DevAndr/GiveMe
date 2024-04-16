@@ -1,5 +1,9 @@
-import {ACCESS_TYPE} from "../../components/multi-chekbox";
 import {MarketType} from "../../components/marketPlace";
+
+export enum ACCESS_TYPE {
+    PUBLIC= "PUBLIC",
+    PRIVATE = "PRIVATE"
+}
 
 export interface ITokens {
     access_token: string;
