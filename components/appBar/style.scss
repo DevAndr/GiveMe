@@ -45,11 +45,13 @@
   gap: .5rem;
   display: flex;
   align-items: center;
-  color: var(--primary);
+  color: #535353;
   font-weight: 600;
+  transition: all 150ms linear;
 
   svg {
-    color: color-mix(in srgb, #000000 50%, white);
+    color: #868686;
+    transition: all 150ms linear;
   }
 
   a {
@@ -58,7 +60,18 @@
   }
 
   &:hover {
-    color: color-mix(in srgb, var(--primary) 70%, #000000);
+    color: var(--primary);
+
+    svg {
+      color: inherit;
+    }
+  }
+}
+
+.nav-link-bar.active {
+  color: var(--primary);
+  svg {
+    color: inherit;
   }
 }
 

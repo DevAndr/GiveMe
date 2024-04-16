@@ -1,7 +1,7 @@
 $unit: 1rem;
 
 @for $i from 1 through 6 {
-  $size: calc(1rem + calc(7 - $i) * .5rem);
+  $size: calc(1rem + calc(7 - $i) * .25rem);
 
   h#{$i} {
     font-size: $size;
