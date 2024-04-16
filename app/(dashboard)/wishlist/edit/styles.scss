@@ -1,0 +1,23 @@
+.slider-splitter {
+  width: 100%;
+
+  .list-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .details-list {
+
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+      padding: .25rem;
+    }
+
+    .action-bar{
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+}
