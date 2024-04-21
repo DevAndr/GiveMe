@@ -18,5 +18,11 @@
     .content {
      @apply p-4;
     }
+
+    @media screen and (max-width: 1920px){
+      .navigation{
+        display: none;
+      }
+    }
   }
 }

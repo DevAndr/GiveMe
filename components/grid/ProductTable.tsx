@@ -4,6 +4,7 @@ import {DataTable} from 'primereact/datatable';
 import {InputTextarea} from 'primereact/inputtextarea';
 import MarketPlace from '@/components/market/MarketPlace';
 import {InputText} from 'primereact/inputtext';
+import { Image } from 'primereact/image';
 
 interface ProductTableProps {
     selections: any[]
@@ -25,7 +26,10 @@ const ProductTable: FC<ProductTableProps> = ({selections, value}) => {
     }
 
     const imageBodyTemplate = (rowData: any) => {
-        return <img src={`${rowData.img}`}
+        console.log(rowData.img)
+
+        // return <Image src={rowData.img} alt={'photo'} width={'96'} height={'96'}/>
+        return <img src={rowData.img}
                     onError={(e: any) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
                     alt={rowData.image} className="w-4rem"/>
     }
