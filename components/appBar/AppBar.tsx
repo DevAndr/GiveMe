@@ -9,11 +9,8 @@ import {Button} from 'primereact/button';
 import './style.scss';
 import {useAuth} from '@/providers/auth/AuthProvider';
 import {useRouter} from 'next/navigation';
-import {Menubar} from 'primereact/menubar';
 import MenuAppBar from '@/components/appBar/MenuAppBar';
-import { CiViewList } from 'react-icons/ci';
-import {FaRegChartBar} from 'react-icons/fa6';
-import {FaChartLine, FaRegListAlt} from 'react-icons/fa';
+import {Sidebar} from 'primereact/sidebar';
 
 type AppBarType = 'dashboard' | 'default'
 
@@ -45,7 +42,7 @@ const AppBar: FC<AppBarProps> = ({type, isAuthenticated}) => {
 
 
     const LeftElements = <div className="leftElements">
-        <Button className="menuBtn" aria-label="Меню" icon="pi pi-bars" onClick={onClickMenu}/>
+        {isAuth && <Button className="menuBtn" aria-label="Меню" icon="pi pi-bars" onClick={onClickMenu}/>}
         <Logo/>
     </div>;
 
@@ -71,7 +68,9 @@ const AppBar: FC<AppBarProps> = ({type, isAuthenticated}) => {
     return (
         <>
             <Toolbar className="p-3 appBar" start={LeftElements} end={RightElements}/>
-            <NavBar handleHide={hideMenuHandle} toggle={show}/>
+            <Sidebar visible={show} onHide={() => setShow(false)}>
+                <NavBar handleHide={hideMenuHandle} toggle={show}/>
+            </Sidebar>
         </>
     );
 };
