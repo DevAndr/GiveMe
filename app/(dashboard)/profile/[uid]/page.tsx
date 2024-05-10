@@ -4,7 +4,7 @@ import './style.scss'
 
 interface PageProps {
     params: {
-        uid: string
+        id: string
     };
 }
 
@@ -12,7 +12,7 @@ const Page: FC<PageProps> = ({params}) => {
 
     return (
         <div className='page'>
-            <h1 className='pageTitle'>{params.uid}</h1>
+            <h1 className='pageTitle'>{params.id}</h1>
             <small className='statusUser'>Статус пользователя</small>
             <div>
                 React (иногда React.js или ReactJS) — JavaScript-библиотека[5] с открытым исходным кодом для разработки
