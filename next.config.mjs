@@ -12,7 +12,13 @@ const nextConfig = {
         includePaths: [path.join(__filename, 'styles')],
     },
     images: {
-        domains: ['ae01.alicdn.com', 'cgmood.com', 'cdn.shopify.com', 'images.hepsiburada.net', 'localhost:3000']
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '3000',
+            }
+        ]
     },
     env: {
         BACKEND_HOST: process.env.BACKEND_HOST,
