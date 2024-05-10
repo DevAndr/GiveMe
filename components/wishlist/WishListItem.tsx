@@ -12,10 +12,10 @@ import './styles.scss'
 
 interface WishListItemProps {
     data: IList;
-    currentWishList?: IList;
+    currentWishList: IList | null;
     onSetCurrentWishList: (data: IList) => void;
     onRemoveWishList?: (uidList: string) => Promise<any>;
-    confirm: (event: MouseEvent<HTMLElement>) => void;
+    confirm: (event: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const WishListItem: FC<WishListItemProps> = ({
@@ -36,14 +36,14 @@ const WishListItem: FC<WishListItemProps> = ({
 
     const handleEditWishList = async () => {
         if (isEdit) {
-            await updateWishList({data: {description, name, uid: data.uid, uidUser: data.uidUser}});
+            await updateWishList({data: {description, name, id: data.id, idUser: data.idUser}});
         }
 
         setIsEdit(prevState => !prevState);
     };
 
     return (<div id="item" className={`wish-list-item flex align-items-center p-2 w-full justify-content-between hover:text-primary
-             border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.uid === data.uid && 'text-primary bg-primary-100'}`}
+             border-round mb-1 mt-1 hover:bg-black-alpha-10 ${currentWishList?.id === data.id && 'text-primary bg-primary-50'}`}
                  onClick={(e) => onSetCurrentWishList(data)}>
             <div id="item-title" className="product-detail cursor-pointer">
                 {
@@ -75,33 +75,33 @@ const WishListItem: FC<WishListItemProps> = ({
                             <div className="text-gray-500">
                                 <span className={`${countCompleteProduct && 'font-medium'}`}>пусто</span>
                             </div>
-
                         </div>
                     }
                 </div>
             </div>
-            <div className="flex flex-column align-items-end"
+            <div className="controls"
                  onClick={(e) => e.stopPropagation()}>
                 <MultiCheckbox value={data.access} onChange={async (value) => {
-                    await updateWishList({data: {access: value, uid: data.uid, uidUser: data.uidUser}});
+                    await updateWishList({data: {access: value, id: data.id, idUser: data.idUser}});
                 }}/>
-                <br/>
-                <div className="gap-3 flex">
+                <div className="btns">
                     <Button icon={`pi ${isEdit ? 'pi-check' : 'pi-pencil'}`}
                             tooltip={isEdit ? "Готово" : "Редактировать"}
                             tooltipOptions={{position: "right"}}
-                            className={`p-button-rounded p-button-help p-button-outlined border-round btnSmall`}
+                            className={`p-button-rounded p-button-outlined border-round btnSmall`}
                             aria-label={isEdit ? "Готово" : "Редактировать"} onClick={handleEditWishList}/>
 
                     <Button icon="pi pi-times" tooltip="Удалить" tooltipOptions={{position: "right"}}
-                            className={`p-button-rounded p-button-help p-button-outlined border-round p-2 w-1rem
+                            className={`p-button-rounded p-button-outlined border-round p-2 w-1rem
                              h-1rem btnSmall delete`}
                             aria-label="Удалить" onClick={(e) => {
+
                         confirm.bind({
                             accept: async () => {
-                                const {data: removedList} = await removeList(data.uid);
-                            }, reject: {}
-                        })(e);
+                                const {data: removedList} = await removeList(data.id);
+                            }, reject: {},
+                            data
+                        })(e)
                     }}/>
                 </div>
             </div>
