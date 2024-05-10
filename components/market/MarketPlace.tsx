@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
-import {MarketType} from '@/components/dialogs/ProductDialog';
 import './styles.scss';
+import {MarketType} from '@/graphql/types';
 
 interface MarketPlaceProps {
     type: MarketType;
