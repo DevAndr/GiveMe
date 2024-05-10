@@ -1,7 +1,7 @@
 import {MarketType} from "../../components/marketPlace";
 
 export enum ACCESS_TYPE {
-    PUBLIC= "PUBLIC",
+    PUBLIC = "PUBLIC",
     PRIVATE = "PRIVATE"
 }
 
@@ -25,87 +25,87 @@ export interface AuthData {
 }
 
 export interface RsponseAuth {
-    logIn: ITokens
+    logIn: ITokens;
 }
 
 export interface ParamsAuth {
-    data: IAuthData
+    data: IAuthData;
 }
 
 export interface ParamsSignUpAuth {
-    data: ISignUpAuthData
+    data: ISignUpAuthData;
 }
 
 export interface ICreateProductData {
-    uidWishList: string
-    name: string
-    link: string
-    description?: string
-    labels: string[]
+    idWishList: string;
+    name: string;
+    link: string;
+    description?: string;
+    labels: string[];
 }
 
 export type UpdateEditorProductType = Omit<ICreateProductData, "link"> & {
-    uid: string
+    id: string
 }
 
 export interface IProduct extends ICreateProductData {
-    img?: string
+    img?: string;
 }
 
 export interface ParamsCreateProduct {
-    data: ICreateProductData & { marketPlace?: MarketType }
+    data: ICreateProductData & { marketPlace?: MarketType };
 }
 
 export interface RsponseProduct {
-    data: IProduct
+    data: IProduct;
 }
 
 //---------------------
 
 export interface ICreateListData {
-    name: string
-    description?: string
+    name: string;
+    description?: string;
 }
 
 export interface IList {
-    uid: string
-    uidUser: string
-    name: string
-    description?: string
-    access?: ACCESS_TYPE
-    products?: []
+    id: string;
+    idUser: string;
+    name: string;
+    description?: string;
+    access?: ACCESS_TYPE;
+    products?: Product[];
 }
 
 export interface ParamsCreateList {
-    data: ICreateListData
+    data: ICreateListData;
 }
 
 export interface ResponseList {
-    data: IList
+    data: IList;
 }
 
 export interface ParamsRemoveList {
-    uid: string
+    id: string;
 }
 
 //----------------------------------------
 export interface ResponseListCurrentUser {
-    wishListsCurrentUser: IList[]
+    wishListsCurrentUser: IList[];
 }
 
 export interface SubCreatedList {
-    listCreated: IList
+    listCreated: IList;
 }
 
 export interface UIDUser {
-    uidUser: string
+    idUser: string;
 }
 
 export interface ParamsSubCreatedList extends UIDUser {
 }
 
 export interface SubRemoveList {
-    list: IList
+    listRemoved: IList;
 }
 
 export interface ParamsSubRemoveList extends UIDUser {
@@ -113,21 +113,20 @@ export interface ParamsSubRemoveList extends UIDUser {
 
 export interface ParamsRefreshToken {
     data: {
-        // uid: string,
         refreshToken: string
-    }
+    };
 }
 
 export interface ParamsAuthWithTwitch {
-    code: string
+    code: string;
 }
 
 export interface ResponseAuthWitch {
-    data: ITokens
+    data: ITokens;
 }
 
 export interface ResponseRefreshToken {
-    refresh: ITokens
+    refresh: ITokens;
 }
 
 export interface ResponseUpdateWishList {
@@ -135,30 +134,113 @@ export interface ResponseUpdateWishList {
 }
 
 export interface ParamsUpdateWishList {
-    data: Partial<IList>
+    data: Partial<IList>;
+}
+
+export type MarketType = 'OZON' | 'WB'
+
+enum StatusOrder {
+    OPEN = 'OPEN',
+    ACTIVE = 'ACTIVE',
+    PROCESSING = 'PROCESSING',
+    COMPLETED = 'COMPLETED',
+    PENDING = 'PENDING',
+    PAYED = 'PAYED'
+}
+
+enum StatusProduct {
+    VALIDATION = 'VALIDATION',
+    ACTIVE = 'ACTIVE',
+    COMPLETED = 'COMPLETED'
+}
+
+export type Product = {
+    name: string;
+    description: string;
+    price: number;
+    royalties: number;
+    delivery: number;
+    marketPlace: MarketType;
+    link: string;
+    img: string;
+    status: StatusProduct;
+    idWishList: string;
+    id: string;
+    labels: any[];
+    idSender?: string;
+    descriptionReceiver?: string;
+    likes: number;
+    disLikes: number;
+}
+
+
+export type Order = {
+    id: string
+    createAt: Date
+    updateAt: Date
+    name: string
+    description: string
+    price: number
+    status: StatusOrder
+    products: Product[]
+    transactionId: string
+}
+
+type Sender = {
+    id: string
+    email: string
+    nickname: string
+}
+
+export interface User {
+    id: string;
+    email: string;
+    name: string;
 }
 
 export interface ResponseProducts {
-    productsWishList: any[]
+    productsWishList: Product[];
 }
 
 export interface ResponseRemovedProducts {
-    removeProducts: any[]
+    removeProducts: any[];
 }
 
 export interface ParamsProductsWIshList {
-    uidWishList: string
+    idWishList: string;
 }
 
 export interface ParamsRemoveProducts {
-    products: string[]
+    products: string[];
 }
 
 export interface ResponseUpdateProduct {
-    updateProduct: any
+    updateProduct: any;
 }
 
 export interface ParamsUpdateProduct {
-    data: UpdateEditorProductType
+    data: UpdateEditorProductType;
 }
 
+export type ResponseGetUser = {
+    user: User;
+}
+
+type UpdateOrder = {
+    id: string
+    name: string
+    description: string
+    productIds: string[]
+}
+
+export interface ParamsPathOrder {
+    data: Partial<UpdateOrder>;
+}
+
+export type ResponsePathOrder = {
+    pathOrder: Order;
+}
+
+export type ResponseCreateOrGetSender = {
+    getOrCreateSender: Sender
+}
