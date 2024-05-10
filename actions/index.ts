@@ -1,11 +1,14 @@
-import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
-export function redirectToHome() {
-    redirect('/')
-};
 
 export function getCookieAT() {
-    const cookie = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1] || '';
-    console.log('cookie', cookie);
-    return cookie
+    return document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1] || ''
+}
+
+export function getCookieUID() {
+    return document.cookie.split('; ').find(row => row.startsWith('uid='))?.split('=')[1] || '';
+}
+
+export function getCookieUserName() {
+    return cookies().get('uid')
 }
