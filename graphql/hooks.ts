@@ -29,13 +29,12 @@ import {
 
 export const useRemoveList = () => {
     const [removeList] = useMutation<ResponseList, ParamsRemoveList>(REMOVE_LIST);
-    return (uid: string) => {
-
+    return (id: string) => {
         return removeList({
-            variables: {uid},
+            variables: {id},
             update: async (store: ApolloCache<IList>) => {
 
-                const data = await store.readQuery<ResponseListCurrentUser>({
+                const data = store.readQuery<ResponseListCurrentUser>({
                     query: GET_LISTS_CURRENT_USER,
                 });
 
@@ -43,7 +42,7 @@ export const useRemoveList = () => {
                     query: GET_LISTS_CURRENT_USER,
                     data: {
                         wishListsCurrentUser: data?.wishListsCurrentUser?.filter(
-                            list => list.uid !== uid,
+                            list => list.id !== id,
                         ),
                     },
                 });
@@ -54,9 +53,10 @@ export const useRemoveList = () => {
 
 export const useGetListsCurrentUser = () => useQuery<ResponseListCurrentUser>(GET_LISTS_CURRENT_USER);
 
-export const useProductsWishList = (uidWishList: string) => {
-        if (uidWishList)
-            return useQuery<ResponseListCurrentUser>(GET_PRODUCTS_BY_UID_LIST, {variables: {uidWishList}})
+export const useProductsWishList = (idWishList: string) => {
+        if (idWishList)
+            return useQuery<ResponseProducts, ParamsProductsWIshList>(GET_PRODUCTS_BY_UID_LIST, {variables: {idWishList}})
+    else return {data: null, loading: true, error: null}
 }
 
 export const useGetTokens = () => useMutation<ResponseRefreshToken, {}>(REFRESH_TOKEN);
@@ -77,7 +77,7 @@ export const useUpdateWishList = () => {
                     data: {
                         wishListsCurrentUser: data?.wishListsCurrentUser?.map(
                             list => {
-                                if (list.uid === params.data.uid)
+                                if (list.id === params.data.id)
                                     return {...list, ...params.data}
                                 return list
                             },
@@ -92,22 +92,22 @@ export const useUpdateWishList = () => {
 export const useRemoveProducts = () => {
     const [removeProducts] = useMutation<ResponseRemovedProducts, ParamsRemoveProducts>(REMOVE_PRODUCTS)
 
-    return (uidWishList: string, params: string[]) => {
+    return (idWishList: string, params: string[]) => {
         return removeProducts({
             variables: {
                 products: params
             },
             update: async (cache: ApolloCache<any>, result, options) => {
                 const data = await cache.readQuery<ResponseProducts, ParamsProductsWIshList>({
-                    variables: {uidWishList},
+                    variables: {idWishList},
                     query: GET_PRODUCTS_BY_UID_LIST,
                 });
 
                 await cache.writeQuery({
                     query: GET_PRODUCTS_BY_UID_LIST,
-                    variables: {uidWishList},
+                    variables: {idWishList},
                     data: {
-                        productsWishList: data?.productsWishList?.filter(product => !params.includes(product.uid))
+                        productsWishList: data?.productsWishList?.filter(product => !params.includes(product.id))
                     },
                 });
             }
@@ -118,30 +118,29 @@ export const useRemoveProducts = () => {
 export const useUpdateEditorProducts = () => {
     const [updateProducts] = useMutation<ResponseUpdateProduct, ParamsUpdateProduct>(UPDATE_EDITOR_PRODUCT)
 
-    return (uidWishList: string, product: any) => {
+    return (idWishList: string, product: any) => {
 
-        console.log(uidWishList, product)
+        console.log(idWishList, product)
 
         return updateProducts({
             variables: {
-                data: {uid: product.uid, uidWishList: product.uidWishList, labels: product.labels,
+                data: {id: product.id, idWishList: product.idWishList, labels: product.labels,
                     description: product.description, name: product.name}
             },
             update: async (cache: ApolloCache<any>, result, options) => {
                 const data = await cache.readQuery<ResponseProducts, ParamsProductsWIshList>({
-                    variables: {uidWishList},
+                    variables: {idWishList},
                     query: GET_PRODUCTS_BY_UID_LIST,
                 });
 
                 await cache.writeQuery({
                     query: GET_PRODUCTS_BY_UID_LIST,
-                    variables: {uidWishList},
+                    variables: {idWishList},
                     data: {
                         productsWishList: data?.productsWishList?.map(p => {
-                            if (p.uid.includes(product.uid)) {
+                            if (p.id.includes(product.id)) {
                                 return {...p, ...product}
                             }
-
                             return p
                         })
                     },
