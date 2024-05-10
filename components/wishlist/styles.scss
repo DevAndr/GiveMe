@@ -108,5 +108,24 @@
 }
 
 .wish-list-item {
+  cursor: pointer;
 
+  .product-detail {
+    .name-list{
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.controls {
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .btns {
+    gap: .5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
 }

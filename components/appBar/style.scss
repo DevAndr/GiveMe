@@ -1,11 +1,13 @@
 @import "breakpoints/include-media";
 
 .appBar {
+  top: 0;
   display: flex;
   justify-content: space-between;
   border-radius: 0;
   border: none;
   background-color: white;
+  position: sticky;
 
   .leftElements {
     height: 40px;
@@ -18,7 +20,7 @@
       width: 2.5rem;
       height: 2.5rem;
 
-      @include media('>S') {
+      @include media('>XL') {
         display: none;
       }
     }
@@ -70,6 +72,7 @@
 
 .nav-link-bar.active {
   color: var(--primary);
+
   svg {
     color: inherit;
   }
@@ -78,4 +81,8 @@
 .menu-nav-bar {
   gap: 1rem;
   display: flex;
+
+  @include media('<L') {
+    display: none;
+  }
 }
