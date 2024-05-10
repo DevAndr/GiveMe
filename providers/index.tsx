@@ -6,6 +6,7 @@ import {PrimeReactProvider} from "primereact/api";
 import client from '@/graphql/client';
 import {ApolloProvider} from '@apollo/client';
 import AuthProvider from '@/providers/auth/AuthProvider';
+import StoreProvider from '@/providers/store/StoreProvider';
 
 interface ProvidersProps {
     children: ReactNode;
@@ -16,7 +17,9 @@ const Providers: FC<ProvidersProps> = ({children}) => {
         <AuthProvider>
             <ApolloProvider client={client}>
                 <PrimeReactProvider value={{ripple: true}}>
-                    {children}
+                    <StoreProvider>
+                        {children}
+                    </StoreProvider>
                 </PrimeReactProvider>
             </ApolloProvider>
         </AuthProvider>
