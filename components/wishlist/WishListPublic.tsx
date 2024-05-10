@@ -1,11 +1,13 @@
-'use client'
+'use client';
 
 import React, {FC} from 'react';
 import Image from "next/image";
-import assetEmptyImg from '../../assets/images/empty.png'
-import './styles.scss'
+import assetEmptyImg from '../../assets/images/empty.png';
+import './styles.scss';
 import {ItemWIshList} from "@/components/types";
 import WishCard from "@/components/card/WishCard";
+import {Product} from '@/graphql/types';
+import LocalCartService from '@/services/LocalCartService';
 
 const data: ItemWIshList[] = [
     {
@@ -78,32 +80,35 @@ const data: ItemWIshList[] = [
         price: 300,
         image: 'https://cdn.shopify.com/s/files/1/0026/7331/1788/products/cd_1200x1200.jpg'
     }
-]
+];
 
 interface WishListViewProps {
-
+    keyList: string;
+    products: Product[];
+    selectedProducts: string[];
+    setSelectedProducts: (value: string) => void;
 }
 
 
-const WishListPublic: FC<WishListViewProps> = () => {
-
-
+const WishListPublic: FC<WishListViewProps> = ({products, keyList, selectedProducts, setSelectedProducts}) => {
     const headerList = (title: string) => {
-        return (<p>{title}</p>)
+        return (<p>{title}</p>);
     };
 
-    const emptyMessage = (<div className='empty-msg'>
+    const emptyMessage = (<div className="empty-msg">
         <Image src={assetEmptyImg} alt={'Пустой список'} width={64} height={64}/>
         <p>Список пуст</p>
     </div>);
 
     return (
-        <ul className='list wish'>
+        <ul className="list wish">
             {
-                data.map(wish => <li className='item'><WishCard data={wish}/></li>)
+                products.map(wish => <li className="item"><WishCard keyList={keyList}
+                                                                    selectedProducts={selectedProducts} data={wish}
+                                                                    setSelectedProducts={setSelectedProducts}/></li>)
             }
         </ul>
     );
-}
+};
 
 export default WishListPublic;
