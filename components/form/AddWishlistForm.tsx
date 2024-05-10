@@ -54,7 +54,7 @@ const AddWishlistForm: FC<AddWishlistFormProps> = ({}) => {
                                placeholder="Описание" value={descriptionList}
                                onChange={handleChangeDescList}/>
             </div>
-            <div className='field'>
+            <div className='field mb-0'>
                 <Button className="w-full" label="Добавить" icon="pi pi-plus" onClick={handleAddList}/>
             </div>
         </form>
