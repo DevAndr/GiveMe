@@ -3,7 +3,7 @@ import {gql} from '@apollo/client';
 const GET_USERS = gql`
     query Users {
         users {
-            uid
+            id
             name
             email
         }
@@ -19,7 +19,7 @@ const IS_AUTH = gql`
 const CURRENT_USER = gql`
     query CurrentUser {
         currentUser {
-            uid
+            id
             name
             email
             role
@@ -57,18 +57,18 @@ const CREATE_PRODUCT_TO_LIST = gql`
 const CREATE_LIST = gql`
     mutation CreateList($data: InputCreateList) {
         createList(data: $data) {
-            uid
-            uidUser
+            id
+            idUser
             name
             description
         }
     }`;
 
 const REMOVE_LIST = gql`
-    mutation RemoveList($uid: String) {
-        removeList(uid: $uid) {
-            uid
-            uidUser
+    mutation RemoveList($id: String) {
+        removeList(id: $id) {
+            id
+            idUser
             name
             description
         }
@@ -83,17 +83,17 @@ const REFRESH_TOKEN = gql`
     }`;
 
 const GET_USER_BY_UID = gql`
-    query User($uid: String!) {
-        user(uid: $uid) {
-            uid
+    query User($id: String!) {
+        user(id: $id) {
+            id
             email
             name
         }
     }`;
 
 const GET_PRODUCTS_BY_UID_LIST = gql`
-    query ProductsWishList($uidWishList: String!) {
-        productsWishList(uidWishList: $uidWishList) {
+    query ProductsWishList($idWishList: String!) {
+        productsWishList(idWishList: $idWishList) {
             name
             description
             price
@@ -103,10 +103,10 @@ const GET_PRODUCTS_BY_UID_LIST = gql`
             link
             img
             status
-            uidWishList
-            uid
+            idWishList
+            id
             labels
-            uidReceiver
+            idSender
             descriptionReceiver
             likes
             disLikes
@@ -114,22 +114,22 @@ const GET_PRODUCTS_BY_UID_LIST = gql`
     }`;
 
 const GET_LIST_BY_ID_FOR_USER = gql`
-    query WishLisByIdForUser($uidUser: String, $uidList: String) {
-        wishLisByIdForUser(uidUser: $uidUser, uidList: $uidList) {
-            uid
+    query WishLisByIdForUser($idUser: String, $idList: String) {
+        wishLisByIdForUser(idUser: $idUser, idList: $idList) {
+            id
             name
             description
-            uidUser
+            idUser
         }
     }`;
 
 const GET_LISTS_CURRENT_USER = gql`
     query WishListsCurrentUser {
         wishListsCurrentUser {
-            uid
+            id
             name
             description
-            uidUser
+            idUser
             access
             products {
                 status
@@ -138,32 +138,39 @@ const GET_LISTS_CURRENT_USER = gql`
     }`;
 
 const SUB_CREATED_LIST = gql`
-    subscription Subscription($uidUser: String!) {
-        listCreated(uidUser: $uidUser) {
-            uid
-            uidUser
+    subscription ListCreated($idUser: String!) {
+        listCreated(idUser: $idUser) {
+            id
+            idUser
             name
             description
         }
     }`;
 
-const SUB_LIST = gql`
-    subscription Subscription($uidUser: String!) {
-        list(uidUser: $uidUser) {
-            uid
-            uidUser
+const SUB_REMOVED_LIST = gql`
+    subscription ListRemoved($idUser: String!) {
+        listRemoved(idUser: $idUser) {
+            id
             name
             description
+            idUser
+            access
+            user {
+                id
+            }
+            products {
+                id
+            }
         }
     }`;
 
 const UPDATE_LIST = gql`
     mutation UpdateList($data: InputUpdateList) {
         updateList(data: $data) {
-            uid
+            id
             name
             description
-            uidUser
+            idUser
             access
         }
     }
@@ -172,8 +179,8 @@ const UPDATE_LIST = gql`
 const UPDATE_EDITOR_PRODUCT = gql`
     mutation UpdateProduct($data: InputUpdateEditorProduct) {
         updateProduct(data: $data) {
-            uid
-            uidWishList
+            id
+            idWishList
             name
             description
             labels
@@ -184,8 +191,8 @@ const UPDATE_EDITOR_PRODUCT = gql`
 const REMOVE_PRODUCTS = gql`
     mutation RemoveProducts($products: [String]!) {
         removeProducts(products: $products) {
-            uid
-            uidWishList
+            id
+            idWishList
         }
     }
 `
@@ -198,6 +205,43 @@ const AUTH_WITH_TWITCH = gql`
         }
     }
 `
+
+const PATH_ORDER = gql`
+    mutation PathOrder($data: UpdateInput!) {
+        pathOrder(data: $data) {
+            id
+            name
+            description
+            price
+            status
+            products {
+                id
+                name
+            }
+        }
+    }`
+
+const GET_ORDER_BY_ID = gql`
+    query GetOrder($getOrderId: String!) {
+        getOrder(id: $getOrderId) {
+            id
+            name
+            description
+            price
+            status
+            products  
+        }
+    }`
+
+const GET_OR_CREATE_SENDER = gql`
+    query GetOrCreateSender {
+        getOrCreateSender {
+            id 
+            email
+            nickname 
+        }
+    }
+    `
 
 export default {
     Mutation: {
@@ -220,6 +264,8 @@ export default {
 };
 
 export {
+    GET_ORDER_BY_ID,
+    PATH_ORDER,
     GET_USERS,
     LOG_IN,
     AUTH_WITH_TWITCH,
@@ -233,10 +279,11 @@ export {
     GET_LISTS_CURRENT_USER,
     SUB_CREATED_LIST,
     REMOVE_LIST,
-    SUB_LIST,
+    SUB_REMOVED_LIST,
     UPDATE_LIST,
     GET_PRODUCTS_BY_UID_LIST,
     REFRESH_TOKEN,
     REMOVE_PRODUCTS,
-    UPDATE_EDITOR_PRODUCT
+    UPDATE_EDITOR_PRODUCT,
+    GET_OR_CREATE_SENDER
 }
