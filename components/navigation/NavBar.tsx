@@ -1,58 +1,10 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {Sidebar} from 'primereact/sidebar';
 import {Menu} from 'primereact/menu';
+import DashboardMenu from '@/components/menu/DashboardMenu';
 
-interface IMenuItem {
-    label?: string
-    icon?: string
-    separator?: true
-}
 
-interface IMenu {
-    label?: string
-    items?: IMenuItem[]
-    separator?: true
-}
 
-const menuItems: IMenu[] = [
-    {
-        label: "Списки желаний",
-        items: [
-            {
-                label: "Сладости",
-                icon: "pi pi-book"
-            },
-            {
-                label: "Шмотки",
-                icon: "pi pi-book"
-            },
-            {
-                label: "Для игр",
-                icon: "pi pi-book"
-            }
-        ]
-    },
-    {
-        separator: true
-    },
-    {
-        label: "Настройки",
-        items: [
-            {
-                label: "Профиль",
-                icon: "pi pi-user-edit"
-            },
-            {
-                label: "Уведомления",
-                icon: "pi pi-bell"
-            },
-            {
-                label: "Безопасность",
-                icon: "pi pi-shield"
-            }
-        ]
-    }
-]
 interface NavBarProps {
     toggle: boolean
     handleHide: () => void
@@ -67,11 +19,8 @@ const NavBar: FC<NavBarProps> = ({toggle, handleHide}) => {
 
     return (
         <Sidebar modal={false} className="p-sidebar-sm" visible={visibleLeft} onHide={handleHide} showCloseIcon={true}>
-            <h5>Панель управления</h5>
-
-            <div className="card">
-                <Menu className="w-full" model={menuItems}/>
-            </div>
+            <h5>Меню</h5>
+            <DashboardMenu/>
         </Sidebar>
     )
 };
