@@ -1,6 +1,6 @@
 import React, {ChangeEventHandler, FC, useState} from 'react';
 import {CREATE_PRODUCT_TO_LIST, GET_PRODUCTS_BY_UID_LIST} from '@/graphql';
-import {IProduct, ParamsCreateProduct, RsponseProduct} from '@/graphql/types';
+import {IProduct, MarketType, ParamsCreateProduct, RsponseProduct} from '@/graphql/types';
 import {Dialog} from 'primereact/dialog';
 import {InputText} from 'primereact/inputtext';
 import {Button} from 'primereact/button';
@@ -8,7 +8,7 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {Chips} from 'primereact/chips';
 import {useMutation} from '@apollo/client';
 
-export type MarketType = 'OZON' | 'WB'
+
 
 interface ProductDialogProps {
     visible: boolean
@@ -33,7 +33,7 @@ const ProductDialog: FC<ProductDialogProps> = ({visible, onHide, currentUIDWishL
             const {data: dataProduct} = await createProduct({
                 variables: {
                     data: {
-                        uidWishList: currentUIDWishList,
+                        idWishList: currentUIDWishList,
                         name: nameProduct,
                         link: linkProduct,
                         marketPlace: typeMarketPlace,
@@ -42,7 +42,7 @@ const ProductDialog: FC<ProductDialogProps> = ({visible, onHide, currentUIDWishL
                     }
                 },
                 refetchQueries: [
-                    {query: GET_PRODUCTS_BY_UID_LIST, variables: {uidWishList: currentUIDWishList}},
+                    {query: GET_PRODUCTS_BY_UID_LIST, variables: {idWishList: currentUIDWishList}},
                     'ProductsWishList'
                 ],
             })
