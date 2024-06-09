@@ -10,7 +10,6 @@ import {Button} from 'primereact/button';
 import Link from 'next/link';
 import * as Yup from 'yup';
 import InputMessage from '@/components/error/InputMessage';
-import redirectToHome from '@/actions';
 import {useRouter} from 'next/navigation';
 import LocalStorageService from '@/services/LocalStorageService';
 
@@ -148,15 +147,6 @@ const AuthForm: FC<AuthFormProps> = ({view = 'SIG_IN'}) => {
                                            onChange={formikSignUp.handleChange} name="name" placeholder="Имя"
                                            aria-describedby="name-help"/>
                                 <InputMessage idInput="name-help" value={formikSignUp.errors.name}/>
-                            </div>
-
-                            <div className="wrap-input">
-                                <label htmlFor="login">Логин</label>
-                                <InputText id="login" className="input p-inputtext-sm" type="email"
-                                           value={formikSignUp.values.login}
-                                           onChange={formikSignUp.handleChange} name="login" placeholder="Login"
-                                           aria-describedby="login-help"/>
-                                <InputMessage idInput="login-help" value={formikSignUp.errors.login}/>
                             </div>
 
                             <div className="wrap-input">
