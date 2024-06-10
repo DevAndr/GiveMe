@@ -1,5 +1,4 @@
 import React, {FC, useContext, useState, createContext, useLayoutEffect} from 'react';
-import {getCookieAT} from '@/actions';
 
 type AuthContextType = {
     isAuth: boolean;
@@ -25,12 +24,12 @@ const AuthProvider: FC<AuthProviderProps> = ({children}) => {
     const [isAuth, setIsAuth] = useState<boolean>(false);
 
     useLayoutEffect(() => {
-        const at = getCookieAT();
+        const at = true;
         if (at)
             setIsAuth(true);
         else
             setIsAuth(false);
-    }, [])
+    }, []);
 
     return (
         <AuthContext.Provider value={{isAuth}}>

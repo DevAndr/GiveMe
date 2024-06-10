@@ -34,8 +34,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-yarn.lock
-
-.idea
-/public/uploads/images/

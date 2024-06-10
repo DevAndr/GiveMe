@@ -1,34 +1,22 @@
-import React, {FC, ReactNode} from 'react';
-import './style.scss';
-import AppBar from "@/components/appBar/AppBar";
-import Footer from "@/components/footer/Footer";
-import DashboardMenu from "@/components/menu/DashboardMenu";
-import Content from '@/components/wrapper/Content';
+import React, {FC} from 'react';
+import NavBar from '@/components/Navbar/NavBar';
 
-interface DashboardLayoutProps {
-    children: ReactNode;
-    // hideAppBar?: boolean;
+interface LayoutProps {
+    children: React.ReactNode;
 }
 
-const DashboardLayout: FC<DashboardLayoutProps> = ({children,}) => {
-
+const Layout: FC<LayoutProps> = ({children}) => {
     return (
-        <div className="dashboardLayout">
-            <header>
-                <AppBar/>
-            </header>
-            <main className="main">
-                <nav className="navigation">
-                    <DashboardMenu/>
-                </nav>
-
-                <Content typeView={'fullScreenInTop'}>
-                    {children}
-                </Content>
+        <div>
+            <NavBar/>
+            <main>
+                {children}
             </main>
-            <Footer/>
+            <footer>
+
+            </footer>
         </div>
     );
 };
 
-export default DashboardLayout;
+export default Layout;
