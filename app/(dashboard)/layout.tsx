@@ -1,5 +1,7 @@
 import React, {FC} from 'react';
 import NavBar from '@/components/Navbar/NavBar';
+import Footer from "@/components/Footer/Footer";
+import './styles.scss'
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -7,14 +9,12 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({children}) => {
     return (
-        <div>
+        <div className='dashboard-layout'>
             <NavBar/>
             <main>
                 {children}
             </main>
-            <footer>
-
-            </footer>
+            <Footer/>
         </div>
     );
 };

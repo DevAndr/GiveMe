@@ -1,0 +1,10 @@
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+
+  main {
+    height: 100svh;
+    padding: 24px;
+  }
+}
