@@ -39,8 +39,7 @@ const NavBar: FC<NavBarProps> = ({}) => {
                     className="sm:hidden"
                 />
                 <NavbarBrand>
-                   <div>Logo</div>
-                    <p className="font-bold text-inherit">ACME</p>
+                    <p className="font-bold text-inherit">LOGO</p>
                 </NavbarBrand>
             </NavbarContent>
 
@@ -63,11 +62,11 @@ const NavBar: FC<NavBarProps> = ({}) => {
             </NavbarContent>
             <NavbarContent justify="end">
                 <NavbarItem className="hidden lg:flex">
-                    <Link href="#">Login</Link>
+                    <Link href="#">Войти</Link>
                 </NavbarItem>
                 <NavbarItem>
                     <Button as={Link} color="primary" href="#" variant="flat">
-                        Sign Up
+                        Регистрация
                     </Button>
                 </NavbarItem>
             </NavbarContent>

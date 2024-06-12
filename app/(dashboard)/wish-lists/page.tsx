@@ -1,6 +1,8 @@
 // 'use client'
 
 import React, {FC} from 'react';
+import SignUpDialog from '@/components/dialog/SignUpDialog';
+import SignInDialog from '@/components/dialog/SignInDialog';
 
 interface PageProps {
 
@@ -16,6 +18,8 @@ const Page: FC<PageProps> = async ({}) => {
                    // Array(100).fill(null).map((_, index) => (<li key={index}>{index}</li>))
                 }
             </ul>
+            {/*<SignUpDialog/>*/}
+            <SignInDialog/>
         </div>
     );
 };
