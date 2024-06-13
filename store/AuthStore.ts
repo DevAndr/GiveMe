@@ -1,26 +1,39 @@
 import {create} from "zustand";
 
 type State = {
-    isAuth: boolean
-    dialog: {
+    signInDialog: {
+        show: boolean
+    },
+    signUpDialog: {
         show: boolean
     }
 }
 
 type Actions = {
-    hideDialog: () => void
-    openDialog: () => void
+    hideSignInDialog: () => void
+    openSignInDialog: () => void
+    hideSignUpDialog: () => void
+    openSignUpDialog: () => void
 }
 
-const useAuthStore = create<State & Actions>((set, get) => ({
-    isAuth: false,
-    dialog: {
+const useAuthDialogsStore = create<State & Actions>((set, get) => ({
+    signUpDialog: {
         show: false
     },
-    hideDialog: () => {
-        set({dialog: {show: false}})
+    signInDialog: {
+        show: false
     },
-    openDialog: () => {
-        set({dialog: {show: true}})
-    }
+    hideSignInDialog: () => {
+        set({signInDialog: {show: false}})
+    },
+    openSignInDialog: () => {
+        set({signInDialog: {show: true}})
+    },
+    hideSignUpDialog: () => {
+        set({signUpDialog: {show: false}})
+    },
+    openSignUpDialog: () => {
+        set({signUpDialog: {show: true}})
+    },
 }))
+export default useAuthDialogsStore

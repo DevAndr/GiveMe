@@ -5,6 +5,7 @@ import {Modal, ModalContent} from "@nextui-org/modal";
 import {Button, Checkbox, Input, ModalBody, ModalFooter, ModalHeader} from '@nextui-org/react';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import useAuthDialogsStore from "@/store/AuthStore";
 
 
 interface SignUpDialogProps {
@@ -28,6 +29,8 @@ const schemaRegistration = Yup.object().shape({
 });
 
 const SignUpDialog: FC<SignUpDialogProps> = () => {
+    const state = useAuthDialogsStore(state => state.signUpDialog)
+    const hideSignUpDialog = useAuthDialogsStore(state => state.hideSignUpDialog)
     const formik = useFormik<RegistrationForm>({
         initialValues: {
             name: '',
@@ -44,8 +47,10 @@ const SignUpDialog: FC<SignUpDialogProps> = () => {
         },
     });
 
+    console.log('SignUpDialog')
+
     return (
-        <Modal isOpen={true}>
+        <Modal isOpen={state.show} onClose={hideSignUpDialog}>
             <ModalContent>
                 {(onClose) => (
                     <form onSubmit={formik.handleSubmit}>

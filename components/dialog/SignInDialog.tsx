@@ -5,6 +5,7 @@ import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Button, Input, ModalBody, ModalHeader} from '@nextui-org/react';
 import {Modal, ModalContent} from '@nextui-org/modal';
+import useAuthDialogsStore from "@/store/AuthStore";
 
 interface SignInDialogProps {
 
@@ -21,6 +22,8 @@ const schemaLogin = Yup.object().shape({
 });
 
 const SignInDialog: FC<SignInDialogProps> = ({}) => {
+    const state = useAuthDialogsStore(state => state.signInDialog)
+    const hideSignInDialog = useAuthDialogsStore(state => state.hideSignInDialog)
     const formik = useFormik<LoginForm>({
         initialValues: {
             email: '',
@@ -33,7 +36,7 @@ const SignInDialog: FC<SignInDialogProps> = ({}) => {
     });
 
     return (
-        <Modal isOpen={true}>
+        <Modal isOpen={state.show} onClose={hideSignInDialog}>
             <ModalContent>
                 <form onSubmit={formik.handleSubmit}>
                     <ModalHeader className="flex flex-col gap-1">Авторизация</ModalHeader>

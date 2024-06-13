@@ -1,4 +1,6 @@
 import React, {FC, useContext, useState, createContext, useLayoutEffect} from 'react';
+import SignUpDialog from "@/components/dialog/SignUpDialog";
+import SignInDialog from "@/components/dialog/SignInDialog";
 
 type AuthContextType = {
     isAuth: boolean;
@@ -31,9 +33,14 @@ const AuthProvider: FC<AuthProviderProps> = ({children}) => {
             setIsAuth(false);
     }, []);
 
+    const showSigInDialog = () => {}
+    const showSigUpDialog = () => {}
+
     return (
         <AuthContext.Provider value={{isAuth}}>
             {children}
+            <SignUpDialog/>
+            <SignInDialog/>
         </AuthContext.Provider>
     );
 };
