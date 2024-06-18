@@ -6,6 +6,8 @@ import * as Yup from 'yup';
 import {Button, Input, ModalBody, ModalHeader} from '@nextui-org/react';
 import {Modal, ModalContent} from '@nextui-org/modal';
 import useAuthDialogsStore from "@/store/AuthStore";
+import {signIn} from '@/services/AuthService';
+import LocalStorageService from '@/services/LocalStorageService';
 
 interface SignInDialogProps {
 
@@ -31,7 +33,10 @@ const SignInDialog: FC<SignInDialogProps> = ({}) => {
         },
         validationSchema: schemaLogin,
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            signIn({email: values.email, password: values.password}).then(res => {
+                LocalStorageService.setValue('accessToken', res.data.access_token);
+                LocalStorageService.setValue('refreshToken', res.data.refresh_token);
+            })
         },
     });
 

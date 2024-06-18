@@ -11,6 +11,7 @@ import {
     NavbarMenuToggle
 } from '@nextui-org/react';
 import Link from 'next/link';
+import AuthButtons from '@/components/Navbar/AuthButtons';
 
 interface NavBarProps {
 
@@ -61,14 +62,7 @@ const NavBar: FC<NavBarProps> = ({}) => {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent justify="end">
-                <NavbarItem className="hidden lg:flex">
-                    <Link href="#">Войти</Link>
-                </NavbarItem>
-                <NavbarItem>
-                    <Button as={Link} color="primary" href="#" variant="flat">
-                        Регистрация
-                    </Button>
-                </NavbarItem>
+                <AuthButtons/>
             </NavbarContent>
             <NavbarMenu>
                 {menuItems.map((item, index) => (
