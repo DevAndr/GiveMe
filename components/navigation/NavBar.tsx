@@ -19,7 +19,6 @@ const NavBar: FC<NavBarProps> = ({toggle, handleHide}) => {
 
     return (
         <Sidebar modal={false} className="p-sidebar-sm" visible={visibleLeft} onHide={handleHide} showCloseIcon={true}>
-            <h5>Меню</h5>
             <DashboardMenu/>
         </Sidebar>
     )

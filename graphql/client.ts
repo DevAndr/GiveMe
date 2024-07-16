@@ -11,13 +11,9 @@ import AuthService from "../services/auth.service";
 import {GraphQLWsLink} from "@apollo/client/link/subscriptions";
 import {createClient} from 'graphql-ws';
 import {getMainDefinition} from "@apollo/client/utilities";
-import {TokenRefreshLink} from 'apollo-link-token-refresh';
-import {decodeJwt} from "jose";
 import {REFRESH_TOKEN} from "./gqls";
-import {ParamsRefreshToken, ResponseRefreshToken} from "./types";
-import {useGetTokens} from "./hooks";
+import { ResponseRefreshToken} from "./types";
 import {deleteCookie} from "cookies-next";
-import {GraphQLError} from 'graphql/error';
 import LocalStorageService from '@/services/LocalStorageService';
 
 const HOST_GRAPHQL = process.env.HOST_GRAPQL;

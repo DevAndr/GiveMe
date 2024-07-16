@@ -14,15 +14,17 @@ interface ProvidersProps {
 
 const Providers: FC<ProvidersProps> = ({children}) => {
     return (
-        <AuthProvider>
-            <ApolloProvider client={client}>
+
+        <ApolloProvider client={client}>
+            <AuthProvider>
                 <PrimeReactProvider value={{ripple: true}}>
                     <StoreProvider>
                         {children}
                     </StoreProvider>
                 </PrimeReactProvider>
-            </ApolloProvider>
-        </AuthProvider>
+            </AuthProvider>
+        </ApolloProvider>
+
     );
 };
 

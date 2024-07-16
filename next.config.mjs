@@ -17,8 +17,9 @@ const nextConfig = {
                 protocol: 'http',
                 hostname: 'localhost',
                 port: '3000',
-            }
-        ]
+            },
+        ],
+        domains: ['localhost', 'www.worldatlas.com'],
     },
     env: {
         BACKEND_HOST: process.env.BACKEND_HOST,

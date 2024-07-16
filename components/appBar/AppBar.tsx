@@ -17,9 +17,10 @@ type AppBarType = 'dashboard' | 'default'
 interface AppBarProps {
     type?: AppBarType;
     isAuthenticated?: boolean;
+    hideMenuBtn?: boolean;
 }
 
-const AppBar: FC<AppBarProps> = ({type, isAuthenticated}) => {
+const AppBar: FC<AppBarProps> = ({type, isAuthenticated, hideMenuBtn}) => {
     const router = useRouter();
     const {isAuth} = useAuth();
     const [show, setShow] = useState(false);
@@ -42,25 +43,27 @@ const AppBar: FC<AppBarProps> = ({type, isAuthenticated}) => {
 
 
     const LeftElements = <div className="leftElements">
-        {isAuth && <Button className="menuBtn" aria-label="Меню" icon="pi pi-bars" onClick={onClickMenu}/>}
+        {isAuth && hideMenuBtn && <Button className="menuBtn" aria-label="Меню" icon="pi pi-bars" onClick={onClickMenu}/>}
         <Logo/>
     </div>;
 
     const RightElements = <div className="rightElements">
-        <MenuAppBar items={[
-            {
-                label: 'Списки желаний',
-                link: '/wish-lists',
-                // icon: <FaRegListAlt />
-            },
-            {
-                label: 'Статистика',
-                link: '/statistics',
-                // icon: <FaChartLine />
-            },
-        ]}/>
         {
-            isAuth ? <Avatar className="profile" icon="pi pi-user" size="normal" shape="circle"/> :
+            isAuth ? <>
+                    {/*<MenuAppBar items={[*/}
+                    {/*    {*/}
+                    {/*        label: 'Списки желаний',*/}
+                    {/*        link: '/wish-lists',*/}
+                    {/*        // icon: <FaRegListAlt />*/}
+                    {/*    },*/}
+                    {/*    {*/}
+                    {/*        label: 'Статистика',*/}
+                    {/*        link: '/statistics',*/}
+                    {/*        // icon: <FaChartLine />*/}
+                    {/*    },*/}
+                    {/*]}/>*/}
+                    <Avatar className="profile" icon="pi pi-user" size="normal" shape="circle"/>
+                </> :
                 <Button className="btn-auth" size="small" label="Войти" icon="pi pi-sign-in" onClick={authHandle}/>
         }
     </div>;

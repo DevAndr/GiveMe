@@ -10,12 +10,12 @@ interface DashboardLayoutProps {
     // hideAppBar?: boolean;
 }
 
-const DashboardLayout: FC<DashboardLayoutProps> = ({children,}) => {
+const DashboardLayout: FC<DashboardLayoutProps> = ({children}) => {
 
     return (
         <div className="dashboardLayout">
             <header>
-                <AppBar/>
+                <AppBar hideMenuBtn={true}/>
             </header>
             <main className="main">
                 <nav className="navigation">
