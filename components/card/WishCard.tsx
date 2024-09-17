@@ -14,11 +14,11 @@ import {Button} from 'primereact/button';
 interface WishCardProps {
     keyList: string;
     selectedProducts: string[];
-    setSelectedProducts: (value: string) => void;
+    // setSelectedProducts: (value: string) => void;
     data: Product;
 }
 
-const WishCard: FC<WishCardProps> = ({data, keyList, selectedProducts, setSelectedProducts}) => {
+const WishCard: FC<WishCardProps> = ({data, keyList, selectedProducts}) => {
     const isGifted = !!data.idSender;
     const giver = 'Hella';
 
@@ -49,7 +49,7 @@ const WishCard: FC<WishCardProps> = ({data, keyList, selectedProducts, setSelect
                     !isGifted ? <div className="flex justify-between items-center">
                             <div className="price">{data.price} ₽</div>
                             <CartBtn keyList={keyList} isSelected={!!selectedProducts.find(e => e === data.id)}
-                                     productId={data.id} onSelectedProduct={setSelectedProducts}/>
+                                     productId={data.id} onSelectedProduct={(v) => {}}/>
                         </div> :
                         <div className="gift">
                             {

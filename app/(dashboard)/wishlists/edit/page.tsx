@@ -37,13 +37,14 @@ import {Toolbar} from 'primereact/toolbar';
 import ProductTable from '@/components/grid/ProductTable';
 import {useRouter} from 'next/navigation';
 import {getCookieUID, getCookieUserName} from '@/actions';
+import CreateListDialog from '@/components/dialogs/CreateListDialog';
 
 interface EditWishListPageProps {
 
 }
 
 const EditWishListPage: FC<EditWishListPageProps> = () => {
-    const uid = getCookieUID()
+    const uid = getCookieUID();
     const refUID = useRef<string>(getCookieUID());
     const router = useRouter();
     const [currentWishList, setCurrentWishList] = useState<IList | null>(null);
@@ -68,7 +69,8 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
     const removeProducts = useRemoveProducts();
     const updateProduct = useUpdateEditorProducts();
     const [visible, setVisible] = useState<boolean>(false);
-    const [showDialog, setShowDialog] = useState(false);
+    const [showProductDialog, setShowProductDialog] = useState(false);
+    const [showCreateListDialog, setShowCreateListDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const refToast = useRef<null | any>(null);
@@ -111,7 +113,7 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
     }, [refUID.current]);
 
     const handleAddProduct = () => {
-        setShowDialog(true);
+        setShowProductDialog(true);
     };
 
     const accept = () => {
@@ -197,7 +199,7 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
             refToast.current.show({
                 severity: 'error',
                 summary: 'Внимание',
-                detail: 'Не удалось удалить желания ',
+                detail: 'Не удалось удалить желания',
                 life: 3000
             });
     };
@@ -237,13 +239,14 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
     };
 
     const getLinkToWishList = (): string => {
-        const urlViewList = `/wishlists/${currentWishList?.idUser}/${currentWishList?.id}`;
+        const {origin} = window.location;
+        const urlViewList = `${origin}/wishlists/${currentWishList?.idUser}/${currentWishList?.id}`;
         return urlViewList;
     };
 
     const handleCopyUrl = async () => {
         const urlViewList = getLinkToWishList();
-        await navigator.clipboard.writeText(urlViewList)
+        await navigator.clipboard.writeText(urlViewList);
         refToast.current.show({severity: 'success', summary: 'Готово', detail: 'Скопировано', life: 3000});
     };
 
@@ -284,6 +287,10 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
         });
     }
 
+    const hideCreateListDialog = () => {
+        setShowCreateListDialog(false);
+    }
+
     return (
         <div className="w-full">
             <div className="flex justify-between items-start flex-wrap">
@@ -300,7 +307,10 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
                                           emptyMessage={EmptyWishLists}
                                           rows={10} inline scrollHeight="500px"/>
                     }
-                    <AddWishlistForm/>
+                    {/*<AddWishlistForm/>*/}
+                    <div className='m-2'>
+                        <Button className="w-full" label="Добавить" icon="pi pi-plus" onClick={() => setShowCreateListDialog(true)}/>
+                    </div>
                 </SplitterPanel>
                 <SplitterPanel size={70} minSize={60} className="details-list">
                     <div className="overflow-hidden">
@@ -320,9 +330,10 @@ const EditWishListPage: FC<EditWishListPageProps> = () => {
                     </div>
                 </SplitterPanel>
             </Splitter>
-            <ProductDialog currentUIDWishList={currentWishList?.id} visible={showDialog}
+            <CreateListDialog visible={showCreateListDialog} onHide={hideCreateListDialog}/>
+            <ProductDialog currentUIDWishList={currentWishList?.id} visible={showProductDialog}
                            onShow={handleAddProduct} onHide={() => {
-                setShowDialog(false);
+                setShowProductDialog(false);
             }}/>
             <ConfirmPopup visible={visible} onHide={() => setVisible(false)} icon="pi pi-exclamation-triangle"
                           accept={accept} reject={reject}/>

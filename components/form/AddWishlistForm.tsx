@@ -42,6 +42,7 @@ const AddWishlistForm: FC<AddWishlistFormProps> = ({}) => {
             setDescriptionList("");
         }
     };
+
     return (<div className='wrap-new-wish-list'>
         <h5>Новый список</h5>
         <form className='form-wish-list'>

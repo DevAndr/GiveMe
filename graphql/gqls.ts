@@ -113,6 +113,28 @@ const GET_PRODUCTS_BY_UID_LIST = gql`
         }
     }`;
 
+const GET_PRODUCTS_BY_UID_LIST_PUBLIC = gql`
+    query ProductsWishListPublic($idWishList: String!) {
+        productsWishListPublic(idWishList: $idWishList) {
+            name
+            description
+            price
+            royalties
+            delivery
+            marketPlace
+            link
+            img
+            status
+            idWishList
+            id
+            labels
+            idSender
+            descriptionReceiver
+            likes
+            disLikes
+        }
+    }`;
+
 const GET_LIST_BY_ID_FOR_USER = gql`
     query WishLisByIdForUser($idUser: String, $idList: String) {
         wishLisByIdForUser(idUser: $idUser, idList: $idList) {
@@ -285,5 +307,6 @@ export {
     REFRESH_TOKEN,
     REMOVE_PRODUCTS,
     UPDATE_EDITOR_PRODUCT,
-    GET_OR_CREATE_SENDER
+    GET_OR_CREATE_SENDER,
+    GET_PRODUCTS_BY_UID_LIST_PUBLIC
 }

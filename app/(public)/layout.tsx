@@ -1,6 +1,7 @@
 import React, {FC, ReactNode} from 'react';
 import Footer from '@/components/footer/Footer';
 import AppBar from '@/components/appBar/AppBar';
+import './styles.scss'
 
 interface PublicLayoutProps {
     children: ReactNode;
@@ -12,7 +13,7 @@ const PublicLayout: FC<PublicLayoutProps> = ({children}) => {
             <header>
                 <AppBar/>
             </header>
-            <main>
+            <main className="content">
                 {children}
             </main>
             <Footer/>

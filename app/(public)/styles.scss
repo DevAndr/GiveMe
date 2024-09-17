@@ -1,0 +1,7 @@
+@import "breakpoints/include-media";
+
+.public-layout {
+  .content {
+    @apply p-4;
+  }
+}

@@ -4,6 +4,7 @@ import AppBar from "@/components/appBar/AppBar";
 import Footer from "@/components/footer/Footer";
 import DashboardMenu from "@/components/menu/DashboardMenu";
 import Content from '@/components/wrapper/Content';
+import AuthProvider from '@/providers/auth/AuthProvider';
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -13,21 +14,23 @@ interface DashboardLayoutProps {
 const DashboardLayout: FC<DashboardLayoutProps> = ({children}) => {
 
     return (
-        <div className="dashboardLayout">
-            <header>
-                <AppBar hideMenuBtn={true}/>
-            </header>
-            <main className="main">
-                <nav className="navigation">
-                    <DashboardMenu/>
-                </nav>
+        <AuthProvider>
+            <div className="dashboardLayout">
+                <header>
+                    <AppBar hideMenuBtn={true}/>
+                </header>
+                <main className="main">
+                    <nav className="navigation">
+                        <DashboardMenu/>
+                    </nav>
 
-                <Content typeView={'fullScreenInTop'}>
-                    {children}
-                </Content>
-            </main>
-            <Footer/>
-        </div>
+                    <Content typeView={'fullScreenInTop'}>
+                        {children}
+                    </Content>
+                </main>
+                <Footer/>
+            </div>
+        </AuthProvider>
     );
 };
 

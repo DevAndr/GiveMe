@@ -16,13 +16,13 @@ const Providers: FC<ProvidersProps> = ({children}) => {
     return (
 
         <ApolloProvider client={client}>
-            <AuthProvider>
+            {/*<AuthProvider>*/}
                 <PrimeReactProvider value={{ripple: true}}>
                     <StoreProvider>
                         {children}
                     </StoreProvider>
                 </PrimeReactProvider>
-            </AuthProvider>
+            {/*</AuthProvider>*/}
         </ApolloProvider>
 
     );

@@ -8,8 +8,6 @@ import {InputTextarea} from 'primereact/inputtextarea';
 import {Chips} from 'primereact/chips';
 import {useMutation} from '@apollo/client';
 
-
-
 interface ProductDialogProps {
     visible: boolean
     currentUIDWishList?: string
@@ -62,10 +60,10 @@ const ProductDialog: FC<ProductDialogProps> = ({visible, onHide, currentUIDWishL
     }
 
     const footerContainer = () => {
-        return <>
+        return <div className='flex gap-2 justify-end'>
             <Button label="Отмена" icon="pi pi-times" className="p-button-outlined p-button-sm" onClick={handleCancel}/>
             <Button label="Добавить" icon="pi pi-check" className="p-button p-button-sm" onClick={handleSave}/>
-        </>
+        </div>
     }
 
     const hideDialog = () => {

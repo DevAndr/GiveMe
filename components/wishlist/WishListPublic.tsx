@@ -1,4 +1,4 @@
-'use client';
+
 
 import React, {FC} from 'react';
 import Image from "next/image";
@@ -86,26 +86,29 @@ interface WishListViewProps {
     keyList: string;
     products: Product[];
     selectedProducts: string[];
-    setSelectedProducts: (value: string) => void;
+    // setSelectedProducts: (value: string) => void;
 }
 
 
-const WishListPublic: FC<WishListViewProps> = ({products, keyList, selectedProducts, setSelectedProducts}) => {
-    const headerList = (title: string) => {
-        return (<p>{title}</p>);
-    };
+const WishListPublic: FC<WishListViewProps> = ({products, keyList, selectedProducts,  }) => {
 
-    const emptyMessage = (<div className="empty-msg">
-        <Image src={assetEmptyImg} alt={'Пустой список'} width={64} height={64}/>
-        <p>Список пуст</p>
+    const emptyMessage = (<div className='flex justify-center align-center'>
+        <div className="empty-msg">
+            <Image src={assetEmptyImg} alt={'Пустой список'} width={64} height={64}/>
+            <p>Список пуст или не доступен по ссылке</p>
+        </div>
     </div>);
+
+    if (products.length === 0) {
+        return emptyMessage;
+    }
 
     return (
         <ul className="list wish">
             {
                 products.map(wish => <li className="item"><WishCard keyList={keyList}
                                                                     selectedProducts={selectedProducts} data={wish}
-                                                                    setSelectedProducts={setSelectedProducts}/></li>)
+                                                                     /></li>)
             }
         </ul>
     );
